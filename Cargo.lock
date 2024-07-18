@@ -284,9 +284,9 @@ dependencies = [
 
 [[package]]
 name = "devil"
-version = "0.0.2"
+version = "0.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b9ffbf1300ad9db6bfd614d4f77cbafb5d1a934f96aaa44d4c6d4f3473ac4e3"
+checksum = "7fa9b3f93dbdc58c0597a40ba99f4709cfbf92f4d3f5786659a070575766d129"
 dependencies = [
  "pkg-config",
 ]
