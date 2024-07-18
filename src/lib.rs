@@ -5,7 +5,8 @@ use std::{
     ffi::{c_char, c_int, c_void, CStr},
     io,
     pin::Pin,
-    ptr::{null_mut, NonNull},
+    ptr::null_mut,
+    sync::atomic::{AtomicPtr, Ordering},
     task::{self, Poll},
 };
 
@@ -55,7 +56,7 @@ const INTERFACE: sys::libinput_interface = sys::libinput_interface {
 };
 
 pub struct Libinput {
-    raw: NonNull<sys::libinput>,
+    raw: AtomicPtr<sys::libinput>,
     fd: AsyncFd<i32>,
     is_first: bool,
 }
@@ -73,14 +74,14 @@ impl Libinput {
         }
 
         Ok(Self {
-            raw: unsafe { NonNull::new_unchecked(libinput) },
+            raw: AtomicPtr::new(libinput),
             fd: AsyncFd::new(unsafe { sys::libinput_get_fd(libinput) })?,
             is_first: true,
         })
     }
 
-    pub const fn as_raw(&self) -> *mut sys::libinput {
-        self.raw.as_ptr()
+    pub fn as_raw(&self) -> *mut sys::libinput {
+        self.raw.load(Ordering::SeqCst)
     }
 
     pub fn assign_seat(&self, seat: &CStr) -> Result<(), Error> {
