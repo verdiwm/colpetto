@@ -1,15 +1,17 @@
-use std::ptr::{null, null_mut};
+use std::ffi::CString;
 
-use colpetto::sys::{self, libinput_interface};
+use anyhow::Result as AnyResult;
+use colpetto::Libinput;
+use futures_util::TryStreamExt;
 
-fn main() {
-    unsafe {
-        let interface = libinput_interface {
-            open_restricted: todo!(),
-            close_restricted: todo!(),
-        };
+#[tokio::main]
+async fn main() -> AnyResult<()> {
+    let mut libinput = Libinput::new()?;
+    libinput.assign_seat(CString::new("seat0").unwrap().as_c_str())?;
 
-
-        let context = sys::libinput_udev_create_context(&interface, null_mut(), udev);
+    while let Some(event) = libinput.try_next().await? {
+        dbg!(event);
     }
+
+    Ok(())
 }
