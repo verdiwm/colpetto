@@ -3,7 +3,7 @@ pub mod sys;
 
 use std::{
     ffi::{c_char, c_int, c_void, CStr},
-    io,
+    io, mem,
     pin::Pin,
     sync::{
         atomic::{AtomicPtr, Ordering},
@@ -34,15 +34,15 @@ unsafe extern "C" fn open_restricted(
     flags: c_int,
     user_data: *mut c_void,
 ) -> c_int {
-    let handler = user_data as *mut Handler;
-    let handler = unsafe { &mut *handler };
+    let handler = user_data as *const Handler;
+    let handler = unsafe { &*handler };
 
     (handler.open)(CStr::from_ptr(path), flags)
 }
 
 unsafe extern "C" fn close_restricted(fd: c_int, user_data: *mut c_void) {
-    let handler = user_data as *mut Handler;
-    let handler = unsafe { &mut *handler };
+    let handler = user_data as *const Handler;
+    let handler = unsafe { &*handler };
 
     (handler.close)(fd)
 }
@@ -57,19 +57,19 @@ pub struct Libinput {
 }
 
 struct Handler {
-    open: Box<dyn FnMut(&CStr, c_int) -> c_int>,
-    close: Box<dyn FnMut(c_int)>,
+    open: Box<dyn Fn(&CStr, c_int) -> c_int>,
+    close: Box<dyn Fn(c_int)>,
 }
 
 impl Libinput {
     pub fn new<O, C>(open: O, close: C) -> Result<Self, Error>
     where
-        O: FnMut(&CStr, c_int) -> c_int + 'static,
-        C: FnMut(c_int) + 'static,
+        O: Fn(&CStr, c_int) -> c_int + 'static,
+        C: Fn(c_int) + 'static,
     {
         let udev = Udev::new()?;
 
-        let user_data = Arc::new(Handler {
+        let handler = Arc::new(Handler {
             open: Box::new(open),
             close: Box::new(close),
         });
@@ -77,7 +77,7 @@ impl Libinput {
         let libinput = unsafe {
             sys::libinput_udev_create_context(
                 &INTERFACE,
-                Arc::into_raw(user_data) as *const _ as _,
+                Arc::into_raw(handler) as *const _ as _,
                 udev.as_raw().cast(),
             )
         };
@@ -148,17 +148,29 @@ impl Drop for Libinput {
         let user_data = unsafe { sys::libinput_get_user_data(self.as_raw()) };
 
         unsafe {
-            if sys::libinput_unref(self.as_raw()).is_null() {
-                drop(Arc::<Handler>::from_raw(user_data.cast()));
-            }
+            sys::libinput_unref(self.as_raw());
+            drop(Arc::<Handler>::from_raw(user_data.cast()));
         }
     }
 }
 
 impl Clone for Libinput {
     fn clone(&self) -> Self {
+        let handler: Arc<Handler> =
+            unsafe { Arc::from_raw(sys::libinput_get_user_data(self.as_raw()).cast()) };
+
+        let user_data = handler.clone();
+
+        mem::forget(handler);
+
+        let raw = unsafe { sys::libinput_ref(self.as_raw()) };
+
+        unsafe {
+            sys::libinput_set_user_data(raw, Arc::into_raw(user_data) as *const _ as _);
+        };
+
         Self {
-            raw: AtomicPtr::new(unsafe { sys::libinput_ref(self.as_raw()) }),
+            raw: AtomicPtr::new(raw),
         }
     }
 }
