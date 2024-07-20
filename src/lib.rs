@@ -5,7 +5,10 @@ use std::{
     ffi::{c_char, c_int, c_void, CStr},
     io,
     pin::Pin,
-    sync::atomic::{AtomicPtr, Ordering},
+    sync::{
+        atomic::{AtomicPtr, Ordering},
+        Arc,
+    },
     task::{self, Poll},
 };
 
@@ -66,7 +69,7 @@ impl Libinput {
     {
         let udev = Udev::new()?;
 
-        let user_data = Box::new(Handler {
+        let user_data = Arc::new(Handler {
             open: Box::new(open),
             close: Box::new(close),
         });
@@ -74,7 +77,7 @@ impl Libinput {
         let libinput = unsafe {
             sys::libinput_udev_create_context(
                 &INTERFACE,
-                Box::into_raw(user_data) as *mut _ as _, // FIXME: this is leaking memory
+                Arc::into_raw(user_data) as *const _ as _,
                 udev.as_raw().cast(),
             )
         };
@@ -146,7 +149,7 @@ impl Drop for Libinput {
 
         unsafe {
             if sys::libinput_unref(self.as_raw()).is_null() {
-                drop(Box::<Handler>::from_raw(user_data.cast()));
+                drop(Arc::<Handler>::from_raw(user_data.cast()));
             }
         }
     }
