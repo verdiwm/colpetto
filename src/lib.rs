@@ -142,8 +142,12 @@ impl Libinput {
 
 impl Drop for Libinput {
     fn drop(&mut self) {
+        let user_data = unsafe { sys::libinput_get_user_data(self.as_raw()) };
+
         unsafe {
-            sys::libinput_unref(self.as_raw());
+            if sys::libinput_unref(self.as_raw()).is_null() {
+                drop(Box::<Handler>::from_raw(user_data.cast()));
+            }
         }
     }
 }
