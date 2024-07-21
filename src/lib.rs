@@ -16,11 +16,13 @@ use devil::Udev;
 use futures_core::{ready, Stream};
 use tokio::io::unix::AsyncFd;
 
-mod event;
+pub mod event;
 pub use event::Event;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
+    #[error("Failed to resume libinput Context")]
+    Resume,
     #[error("Failed to create libinput context")]
     Context,
     #[error("Failed to assign seat")]
@@ -125,6 +127,17 @@ impl Libinput {
                 0 => Ok(()),
                 e => Err(Error::IoError(io::Error::from_raw_os_error(-e))),
             }
+        }
+    }
+
+    pub fn suspend(&self) {
+        unsafe { sys::libinput_suspend(self.as_raw()) }
+    }
+
+    pub fn resume(&self) -> Result<(), Error> {
+        match unsafe { sys::libinput_resume(self.as_raw()) } {
+            0 => Ok(()),
+            _ => Err(Error::Resume),
         }
     }
 
