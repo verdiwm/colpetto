@@ -142,17 +142,7 @@ impl Libinput {
     }
 
     pub fn get_event(&self) -> Option<Event> {
-        let raw = unsafe { sys::libinput_get_event(self.as_raw()) };
-
-        if raw.is_null() {
-            return None;
-        }
-
-        let event = Event::from_event_type(unsafe { sys::libinput_event_get_type(raw) });
-
-        unsafe { sys::libinput_event_destroy(raw) };
-
-        event
+        Event::get_event(self.as_raw())
     }
 }
 

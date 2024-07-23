@@ -21,7 +21,12 @@ pub enum DeviceEvent {
 
 #[derive(Debug)]
 pub enum KeyboardEvent {
-    Key,
+    Key(KeyboardEventKey),
+}
+
+#[derive(Debug)]
+pub struct KeyboardEventKey {
+    raw: *mut sys::libinput_event_keyboard,
 }
 
 #[derive(Debug)]
@@ -79,7 +84,15 @@ pub enum SwitchEvent {
 }
 
 impl Event {
-    pub(crate) fn from_event_type(event_type: sys::libinput_event_type) -> Option<Self> {
+    pub(crate) fn get_event(raw: *mut sys::libinput) -> Option<Self> {
+        let event = unsafe { sys::libinput_get_event(raw) };
+
+        if event.is_null() {
+            return None;
+        }
+
+        let event_type = unsafe { sys::libinput_event_get_type(event) };
+
         let event = match event_type {
             sys::libinput_event_type_LIBINPUT_EVENT_NONE => {
                 return None;
@@ -91,7 +104,11 @@ impl Event {
                 Event::Device(DeviceEvent::Removed)
             }
             sys::libinput_event_type_LIBINPUT_EVENT_KEYBOARD_KEY => {
-                Event::Keyboard(KeyboardEvent::Key)
+                let keyboard_event = unsafe { sys::libinput_event_get_keyboard_event(event) };
+
+                Event::Keyboard(KeyboardEvent::Key(KeyboardEventKey {
+                    raw: keyboard_event,
+                }))
             }
             sys::libinput_event_type_LIBINPUT_EVENT_POINTER_MOTION => {
                 Event::Pointer(PointerEvent::Motion)
@@ -179,7 +196,7 @@ impl Event {
             }
             _ => Event::Unknown,
         };
-
+        // unsafe { sys::libinput_event_destroy(raw) };
         Some(event)
     }
 }
