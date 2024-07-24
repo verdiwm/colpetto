@@ -12,7 +12,7 @@ repository = "https://github.com/verdiwm/colpetto"
 devil = "0.0.5"
 thiserror = "1.0.63"
 tracing = "0.1.40"
-tokio = { version = "1.38.1", features = ["net"] }
+tokio = { version = "1.39.1", features = ["net"] }
 futures-core = "0.3.30"
 
 [build-dependencies]
@@ -21,9 +21,9 @@ pkg-config = "0.3.30"
 [dev-dependencies]
 anyhow = "1.0.86"
 reconciler = "0.0.2"
-zbus = { version = "4.3.1", default-features = false, features = ["tokio"] }
+zbus = { version = "4.4.0", default-features = false, features = ["tokio"] }
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
-tokio = { version = "1.38.1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.39.1", features = ["macros", "rt-multi-thread"] }
 rustix = { version = "0.38.34", default-features = false, features = ["fs"] }
 futures-util = { version = "0.3.30", default-features = false }
 # stool = { version = "0.0.1", path = "../stool" }
