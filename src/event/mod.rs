@@ -26,7 +26,7 @@ pub enum KeyboardEvent {
 
 #[derive(Debug)]
 pub struct KeyboardEventKey {
-    raw: *mut sys::libinput_event_keyboard,
+    // raw: *mut sys::libinput_event_keyboard,
 }
 
 #[derive(Debug)]
@@ -107,7 +107,7 @@ impl Event {
                 let keyboard_event = unsafe { sys::libinput_event_get_keyboard_event(event) };
 
                 Event::Keyboard(KeyboardEvent::Key(KeyboardEventKey {
-                    raw: keyboard_event,
+                    // raw: keyboard_event,
                 }))
             }
             sys::libinput_event_type_LIBINPUT_EVENT_POINTER_MOTION => {
