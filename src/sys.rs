@@ -83,99 +83,219 @@ pub struct libinput_event_tablet_tool {
 pub struct libinput_event_tablet_pad {
     _unused: [u8; 0],
 }
-pub const libinput_log_priority_LIBINPUT_LOG_PRIORITY_DEBUG: libinput_log_priority = 10;
-pub const libinput_log_priority_LIBINPUT_LOG_PRIORITY_INFO: libinput_log_priority = 20;
-pub const libinput_log_priority_LIBINPUT_LOG_PRIORITY_ERROR: libinput_log_priority = 30;
+impl libinput_log_priority {
+    pub const LIBINPUT_LOG_PRIORITY_DEBUG: libinput_log_priority = libinput_log_priority(10);
+}
+impl libinput_log_priority {
+    pub const LIBINPUT_LOG_PRIORITY_INFO: libinput_log_priority = libinput_log_priority(20);
+}
+impl libinput_log_priority {
+    pub const LIBINPUT_LOG_PRIORITY_ERROR: libinput_log_priority = libinput_log_priority(30);
+}
+#[repr(transparent)]
 #[doc = " @ingroup base\n\n Log priority for internal logging messages."]
-pub type libinput_log_priority = ::core::ffi::c_uint;
-pub const libinput_device_capability_LIBINPUT_DEVICE_CAP_KEYBOARD: libinput_device_capability = 0;
-pub const libinput_device_capability_LIBINPUT_DEVICE_CAP_POINTER: libinput_device_capability = 1;
-pub const libinput_device_capability_LIBINPUT_DEVICE_CAP_TOUCH: libinput_device_capability = 2;
-pub const libinput_device_capability_LIBINPUT_DEVICE_CAP_TABLET_TOOL: libinput_device_capability =
-    3;
-pub const libinput_device_capability_LIBINPUT_DEVICE_CAP_TABLET_PAD: libinput_device_capability = 4;
-pub const libinput_device_capability_LIBINPUT_DEVICE_CAP_GESTURE: libinput_device_capability = 5;
-pub const libinput_device_capability_LIBINPUT_DEVICE_CAP_SWITCH: libinput_device_capability = 6;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_log_priority(pub ::core::ffi::c_uint);
+impl libinput_device_capability {
+    pub const LIBINPUT_DEVICE_CAP_KEYBOARD: libinput_device_capability =
+        libinput_device_capability(0);
+}
+impl libinput_device_capability {
+    pub const LIBINPUT_DEVICE_CAP_POINTER: libinput_device_capability =
+        libinput_device_capability(1);
+}
+impl libinput_device_capability {
+    pub const LIBINPUT_DEVICE_CAP_TOUCH: libinput_device_capability = libinput_device_capability(2);
+}
+impl libinput_device_capability {
+    pub const LIBINPUT_DEVICE_CAP_TABLET_TOOL: libinput_device_capability =
+        libinput_device_capability(3);
+}
+impl libinput_device_capability {
+    pub const LIBINPUT_DEVICE_CAP_TABLET_PAD: libinput_device_capability =
+        libinput_device_capability(4);
+}
+impl libinput_device_capability {
+    pub const LIBINPUT_DEVICE_CAP_GESTURE: libinput_device_capability =
+        libinput_device_capability(5);
+}
+impl libinput_device_capability {
+    pub const LIBINPUT_DEVICE_CAP_SWITCH: libinput_device_capability =
+        libinput_device_capability(6);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n Capabilities on a device. A device may have one or more capabilities\n at a time, capabilities remain static for the lifetime of the device."]
-pub type libinput_device_capability = ::core::ffi::c_uint;
-pub const libinput_key_state_LIBINPUT_KEY_STATE_RELEASED: libinput_key_state = 0;
-pub const libinput_key_state_LIBINPUT_KEY_STATE_PRESSED: libinput_key_state = 1;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_device_capability(pub ::core::ffi::c_uint);
+impl libinput_key_state {
+    pub const LIBINPUT_KEY_STATE_RELEASED: libinput_key_state = libinput_key_state(0);
+}
+impl libinput_key_state {
+    pub const LIBINPUT_KEY_STATE_PRESSED: libinput_key_state = libinput_key_state(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n Logical state of a key. Note that the logical state may not represent\n the physical state of the key."]
-pub type libinput_key_state = ::core::ffi::c_uint;
-pub const libinput_led_LIBINPUT_LED_NUM_LOCK: libinput_led = 1;
-pub const libinput_led_LIBINPUT_LED_CAPS_LOCK: libinput_led = 2;
-pub const libinput_led_LIBINPUT_LED_SCROLL_LOCK: libinput_led = 4;
-pub const libinput_led_LIBINPUT_LED_COMPOSE: libinput_led = 8;
-pub const libinput_led_LIBINPUT_LED_KANA: libinput_led = 16;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_key_state(pub ::core::ffi::c_uint);
+impl libinput_led {
+    pub const LIBINPUT_LED_NUM_LOCK: libinput_led = libinput_led(1);
+}
+impl libinput_led {
+    pub const LIBINPUT_LED_CAPS_LOCK: libinput_led = libinput_led(2);
+}
+impl libinput_led {
+    pub const LIBINPUT_LED_SCROLL_LOCK: libinput_led = libinput_led(4);
+}
+impl libinput_led {
+    pub const LIBINPUT_LED_COMPOSE: libinput_led = libinput_led(8);
+}
+impl libinput_led {
+    pub const LIBINPUT_LED_KANA: libinput_led = libinput_led(16);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n Mask reflecting LEDs on a device."]
-pub type libinput_led = ::core::ffi::c_uint;
-pub const libinput_button_state_LIBINPUT_BUTTON_STATE_RELEASED: libinput_button_state = 0;
-pub const libinput_button_state_LIBINPUT_BUTTON_STATE_PRESSED: libinput_button_state = 1;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_led(pub ::core::ffi::c_uint);
+impl libinput_button_state {
+    pub const LIBINPUT_BUTTON_STATE_RELEASED: libinput_button_state = libinput_button_state(0);
+}
+impl libinput_button_state {
+    pub const LIBINPUT_BUTTON_STATE_PRESSED: libinput_button_state = libinput_button_state(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n Logical state of a physical button. Note that the logical state may not\n represent the physical state of the button."]
-pub type libinput_button_state = ::core::ffi::c_uint;
-pub const libinput_pointer_axis_LIBINPUT_POINTER_AXIS_SCROLL_VERTICAL: libinput_pointer_axis = 0;
-pub const libinput_pointer_axis_LIBINPUT_POINTER_AXIS_SCROLL_HORIZONTAL: libinput_pointer_axis = 1;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_button_state(pub ::core::ffi::c_uint);
+impl libinput_pointer_axis {
+    pub const LIBINPUT_POINTER_AXIS_SCROLL_VERTICAL: libinput_pointer_axis =
+        libinput_pointer_axis(0);
+}
+impl libinput_pointer_axis {
+    pub const LIBINPUT_POINTER_AXIS_SCROLL_HORIZONTAL: libinput_pointer_axis =
+        libinput_pointer_axis(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n Axes on a device with the capability @ref LIBINPUT_DEVICE_CAP_POINTER\n that are not x or y coordinates.\n\n The two scroll axes @ref LIBINPUT_POINTER_AXIS_SCROLL_VERTICAL and\n @ref LIBINPUT_POINTER_AXIS_SCROLL_HORIZONTAL are engaged separately,\n depending on the device. libinput provides some scroll direction locking\n but it is up to the caller to determine which axis is needed and\n appropriate in the current interaction"]
-pub type libinput_pointer_axis = ::core::ffi::c_uint;
-#[doc = " The event is caused by the rotation of a wheel."]
-pub const libinput_pointer_axis_source_LIBINPUT_POINTER_AXIS_SOURCE_WHEEL:
-    libinput_pointer_axis_source = 1;
-#[doc = " The event is caused by the movement of one or more fingers on a\n device."]
-pub const libinput_pointer_axis_source_LIBINPUT_POINTER_AXIS_SOURCE_FINGER:
-    libinput_pointer_axis_source = 2;
-#[doc = " The event is caused by the motion of some device."]
-pub const libinput_pointer_axis_source_LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS:
-    libinput_pointer_axis_source = 3;
-#[doc = " The event is caused by the tilting of a mouse wheel rather than\n its rotation. This method is commonly used on mice without\n separate horizontal scroll wheels.\n\n @deprecated This axis source is deprecated as of libinput 1.16.\n It was never used by any device before libinput 1.16. All wheel\n tilt devices use @ref LIBINPUT_POINTER_AXIS_SOURCE_WHEEL instead."]
-pub const libinput_pointer_axis_source_LIBINPUT_POINTER_AXIS_SOURCE_WHEEL_TILT:
-    libinput_pointer_axis_source = 4;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_pointer_axis(pub ::core::ffi::c_uint);
+impl libinput_pointer_axis_source {
+    #[doc = " The event is caused by the rotation of a wheel."]
+    pub const LIBINPUT_POINTER_AXIS_SOURCE_WHEEL: libinput_pointer_axis_source =
+        libinput_pointer_axis_source(1);
+}
+impl libinput_pointer_axis_source {
+    #[doc = " The event is caused by the movement of one or more fingers on a\n device."]
+    pub const LIBINPUT_POINTER_AXIS_SOURCE_FINGER: libinput_pointer_axis_source =
+        libinput_pointer_axis_source(2);
+}
+impl libinput_pointer_axis_source {
+    #[doc = " The event is caused by the motion of some device."]
+    pub const LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS: libinput_pointer_axis_source =
+        libinput_pointer_axis_source(3);
+}
+impl libinput_pointer_axis_source {
+    #[doc = " The event is caused by the tilting of a mouse wheel rather than\n its rotation. This method is commonly used on mice without\n separate horizontal scroll wheels.\n\n @deprecated This axis source is deprecated as of libinput 1.16.\n It was never used by any device before libinput 1.16. All wheel\n tilt devices use @ref LIBINPUT_POINTER_AXIS_SOURCE_WHEEL instead."]
+    pub const LIBINPUT_POINTER_AXIS_SOURCE_WHEEL_TILT: libinput_pointer_axis_source =
+        libinput_pointer_axis_source(4);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n The source for a libinput_pointer_axis event. See\n libinput_event_pointer_get_axis_source() for details.\n\n @note Pointer axis sources are deprecated, the source is now encoded in\n the event types\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS."]
-pub type libinput_pointer_axis_source = ::core::ffi::c_uint;
-pub const libinput_tablet_pad_ring_axis_source_LIBINPUT_TABLET_PAD_RING_SOURCE_UNKNOWN:
-    libinput_tablet_pad_ring_axis_source = 1;
-#[doc = " The event is caused by the movement of one or more fingers on\n the ring."]
-pub const libinput_tablet_pad_ring_axis_source_LIBINPUT_TABLET_PAD_RING_SOURCE_FINGER:
-    libinput_tablet_pad_ring_axis_source = 2;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_pointer_axis_source(pub ::core::ffi::c_uint);
+impl libinput_tablet_pad_ring_axis_source {
+    pub const LIBINPUT_TABLET_PAD_RING_SOURCE_UNKNOWN: libinput_tablet_pad_ring_axis_source =
+        libinput_tablet_pad_ring_axis_source(1);
+}
+impl libinput_tablet_pad_ring_axis_source {
+    #[doc = " The event is caused by the movement of one or more fingers on\n the ring."]
+    pub const LIBINPUT_TABLET_PAD_RING_SOURCE_FINGER: libinput_tablet_pad_ring_axis_source =
+        libinput_tablet_pad_ring_axis_source(2);
+}
+#[repr(transparent)]
 #[doc = " @ingroup event_tablet_pad\n\n The source for a @ref LIBINPUT_EVENT_TABLET_PAD_RING event. See\n libinput_event_tablet_pad_get_ring_source() for details.\n\n @since 1.3"]
-pub type libinput_tablet_pad_ring_axis_source = ::core::ffi::c_uint;
-pub const libinput_tablet_pad_strip_axis_source_LIBINPUT_TABLET_PAD_STRIP_SOURCE_UNKNOWN:
-    libinput_tablet_pad_strip_axis_source = 1;
-#[doc = " The event is caused by the movement of one or more fingers on\n the strip."]
-pub const libinput_tablet_pad_strip_axis_source_LIBINPUT_TABLET_PAD_STRIP_SOURCE_FINGER:
-    libinput_tablet_pad_strip_axis_source = 2;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_tablet_pad_ring_axis_source(pub ::core::ffi::c_uint);
+impl libinput_tablet_pad_strip_axis_source {
+    pub const LIBINPUT_TABLET_PAD_STRIP_SOURCE_UNKNOWN: libinput_tablet_pad_strip_axis_source =
+        libinput_tablet_pad_strip_axis_source(1);
+}
+impl libinput_tablet_pad_strip_axis_source {
+    #[doc = " The event is caused by the movement of one or more fingers on\n the strip."]
+    pub const LIBINPUT_TABLET_PAD_STRIP_SOURCE_FINGER: libinput_tablet_pad_strip_axis_source =
+        libinput_tablet_pad_strip_axis_source(2);
+}
+#[repr(transparent)]
 #[doc = " @ingroup event_tablet_pad\n\n The source for a @ref LIBINPUT_EVENT_TABLET_PAD_STRIP event. See\n libinput_event_tablet_pad_get_strip_source() for details.\n\n @since 1.3"]
-pub type libinput_tablet_pad_strip_axis_source = ::core::ffi::c_uint;
-#[doc = "< A generic pen"]
-pub const libinput_tablet_tool_type_LIBINPUT_TABLET_TOOL_TYPE_PEN: libinput_tablet_tool_type = 1;
-#[doc = "< Eraser"]
-pub const libinput_tablet_tool_type_LIBINPUT_TABLET_TOOL_TYPE_ERASER: libinput_tablet_tool_type = 2;
-#[doc = "< A paintbrush-like tool"]
-pub const libinput_tablet_tool_type_LIBINPUT_TABLET_TOOL_TYPE_BRUSH: libinput_tablet_tool_type = 3;
-#[doc = "< Physical drawing tool, e.g.\nWacom Inking Pen"]
-pub const libinput_tablet_tool_type_LIBINPUT_TABLET_TOOL_TYPE_PENCIL: libinput_tablet_tool_type = 4;
-#[doc = "< An airbrush-like tool"]
-pub const libinput_tablet_tool_type_LIBINPUT_TABLET_TOOL_TYPE_AIRBRUSH: libinput_tablet_tool_type =
-    5;
-#[doc = "< A mouse bound to the tablet"]
-pub const libinput_tablet_tool_type_LIBINPUT_TABLET_TOOL_TYPE_MOUSE: libinput_tablet_tool_type = 6;
-#[doc = "< A mouse tool with a lens"]
-pub const libinput_tablet_tool_type_LIBINPUT_TABLET_TOOL_TYPE_LENS: libinput_tablet_tool_type = 7;
-#[doc = "< A rotary device with\npositional and rotation\ndata"]
-pub const libinput_tablet_tool_type_LIBINPUT_TABLET_TOOL_TYPE_TOTEM: libinput_tablet_tool_type = 8;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_tablet_pad_strip_axis_source(pub ::core::ffi::c_uint);
+impl libinput_tablet_tool_type {
+    #[doc = "< A generic pen"]
+    pub const LIBINPUT_TABLET_TOOL_TYPE_PEN: libinput_tablet_tool_type =
+        libinput_tablet_tool_type(1);
+}
+impl libinput_tablet_tool_type {
+    #[doc = "< Eraser"]
+    pub const LIBINPUT_TABLET_TOOL_TYPE_ERASER: libinput_tablet_tool_type =
+        libinput_tablet_tool_type(2);
+}
+impl libinput_tablet_tool_type {
+    #[doc = "< A paintbrush-like tool"]
+    pub const LIBINPUT_TABLET_TOOL_TYPE_BRUSH: libinput_tablet_tool_type =
+        libinput_tablet_tool_type(3);
+}
+impl libinput_tablet_tool_type {
+    #[doc = "< Physical drawing tool, e.g.\nWacom Inking Pen"]
+    pub const LIBINPUT_TABLET_TOOL_TYPE_PENCIL: libinput_tablet_tool_type =
+        libinput_tablet_tool_type(4);
+}
+impl libinput_tablet_tool_type {
+    #[doc = "< An airbrush-like tool"]
+    pub const LIBINPUT_TABLET_TOOL_TYPE_AIRBRUSH: libinput_tablet_tool_type =
+        libinput_tablet_tool_type(5);
+}
+impl libinput_tablet_tool_type {
+    #[doc = "< A mouse bound to the tablet"]
+    pub const LIBINPUT_TABLET_TOOL_TYPE_MOUSE: libinput_tablet_tool_type =
+        libinput_tablet_tool_type(6);
+}
+impl libinput_tablet_tool_type {
+    #[doc = "< A mouse tool with a lens"]
+    pub const LIBINPUT_TABLET_TOOL_TYPE_LENS: libinput_tablet_tool_type =
+        libinput_tablet_tool_type(7);
+}
+impl libinput_tablet_tool_type {
+    #[doc = "< A rotary device with\npositional and rotation\ndata"]
+    pub const LIBINPUT_TABLET_TOOL_TYPE_TOTEM: libinput_tablet_tool_type =
+        libinput_tablet_tool_type(8);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n Available tool types for a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_TOOL capability. The tool type defines the default\n usage of the tool as advertised by the manufacturer. Multiple different\n physical tools may share the same tool type, e.g. a Wacom Classic Pen,\n Wacom Pro Pen and a Wacom Grip Pen are all of type @ref\n LIBINPUT_TABLET_TOOL_TYPE_PEN.\n Use libinput_tablet_tool_get_tool_id() to get a specific model where applicable.\n\n Note that on some device, the eraser tool is on the tail end of a pen\n device. On other devices, e.g. MS Surface 3, the eraser is the pen tip\n while a button is held down.\n\n @note The @ref libinput_tablet_tool_type can only describe the default physical\n type of the device. For devices with adjustable physical properties\n the tool type remains the same, i.e. putting a Wacom stroke nib into a\n classic pen leaves the tool type as @ref LIBINPUT_TABLET_TOOL_TYPE_PEN.\n\n @since 1.2"]
-pub type libinput_tablet_tool_type = ::core::ffi::c_uint;
-pub const libinput_tablet_tool_proximity_state_LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_OUT:
-    libinput_tablet_tool_proximity_state = 0;
-pub const libinput_tablet_tool_proximity_state_LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_IN:
-    libinput_tablet_tool_proximity_state = 1;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_tablet_tool_type(pub ::core::ffi::c_uint);
+impl libinput_tablet_tool_proximity_state {
+    pub const LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_OUT: libinput_tablet_tool_proximity_state =
+        libinput_tablet_tool_proximity_state(0);
+}
+impl libinput_tablet_tool_proximity_state {
+    pub const LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_IN: libinput_tablet_tool_proximity_state =
+        libinput_tablet_tool_proximity_state(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n The state of proximity for a tool on a device. The device must have the @ref\n LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n The proximity of a tool is a binary state signalling whether the tool is\n within a detectable distance of the tablet device. A tool that is out of\n proximity cannot generate events.\n\n On some hardware a tool goes out of proximity when it ceases to touch the\n surface. On other hardware, the tool is still detectable within a short\n distance (a few cm) off the surface.\n\n @since 1.2"]
-pub type libinput_tablet_tool_proximity_state = ::core::ffi::c_uint;
-pub const libinput_tablet_tool_tip_state_LIBINPUT_TABLET_TOOL_TIP_UP:
-    libinput_tablet_tool_tip_state = 0;
-pub const libinput_tablet_tool_tip_state_LIBINPUT_TABLET_TOOL_TIP_DOWN:
-    libinput_tablet_tool_tip_state = 1;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_tablet_tool_proximity_state(pub ::core::ffi::c_uint);
+impl libinput_tablet_tool_tip_state {
+    pub const LIBINPUT_TABLET_TOOL_TIP_UP: libinput_tablet_tool_tip_state =
+        libinput_tablet_tool_tip_state(0);
+}
+impl libinput_tablet_tool_tip_state {
+    pub const LIBINPUT_TABLET_TOOL_TIP_DOWN: libinput_tablet_tool_tip_state =
+        libinput_tablet_tool_tip_state(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n The tip contact state for a tool on a device. The device must have\n the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n The tip contact state of a tool is a binary state signalling whether the tool is\n touching the surface of the tablet device.\n\n @since 1.2"]
-pub type libinput_tablet_tool_tip_state = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_tablet_tool_tip_state(pub ::core::ffi::c_uint);
 #[doc = " @ingroup tablet_pad_modes\n @struct libinput_tablet_pad_mode_group\n\n A mode on a tablet pad is a virtual grouping of functionality, usually\n based on some visual feedback like LEDs on the pad. The set of buttons,\n rings and strips that share the same mode are a \"mode group\". Whenever\n the mode changes, all buttons, rings and strips within this mode group\n are affected.\n\n Most tablets only have a single mode group, some tablets provide multiple\n mode groups through independent banks of LEDs (e.g. the Wacom Cintiq\n 24HD). libinput guarantees that at least one mode group is always\n available.\n\n This struct is refcounted, use libinput_tablet_pad_mode_group_ref() and\n libinput_tablet_pad_mode_group_unref().\n\n @since 1.4"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -273,92 +393,176 @@ unsafe extern "C" {
         group: *mut libinput_tablet_pad_mode_group,
     ) -> *mut ::core::ffi::c_void;
 }
-pub const libinput_switch_state_LIBINPUT_SWITCH_STATE_OFF: libinput_switch_state = 0;
-pub const libinput_switch_state_LIBINPUT_SWITCH_STATE_ON: libinput_switch_state = 1;
+impl libinput_switch_state {
+    pub const LIBINPUT_SWITCH_STATE_OFF: libinput_switch_state = libinput_switch_state(0);
+}
+impl libinput_switch_state {
+    pub const LIBINPUT_SWITCH_STATE_ON: libinput_switch_state = libinput_switch_state(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n The state of a switch. The default state of a switch is @ref\n LIBINPUT_SWITCH_STATE_OFF and no event is sent to confirm a switch in the\n off position. If a switch is logically on during initialization, libinput\n sends an event of type @ref LIBINPUT_EVENT_SWITCH_TOGGLE with a state\n @ref LIBINPUT_SWITCH_STATE_ON.\n\n @since 1.7"]
-pub type libinput_switch_state = ::core::ffi::c_uint;
-#[doc = " The laptop lid was closed when the switch state is @ref\n LIBINPUT_SWITCH_STATE_ON, or was opened when it is @ref\n LIBINPUT_SWITCH_STATE_OFF."]
-pub const libinput_switch_LIBINPUT_SWITCH_LID: libinput_switch = 1;
-#[doc = " This switch indicates whether the device is in normal laptop mode\n or behaves like a tablet-like device where the primary\n interaction is usually a touch screen. When in tablet mode, the\n keyboard and touchpad are usually inaccessible.\n\n If the switch is in state @ref LIBINPUT_SWITCH_STATE_OFF, the\n device is in laptop mode. If the switch is in state @ref\n LIBINPUT_SWITCH_STATE_ON, the device is in tablet mode and the\n keyboard or touchpad may not be  accessible.\n\n It is up to the caller to identify which devices are inaccessible\n in tablet mode."]
-pub const libinput_switch_LIBINPUT_SWITCH_TABLET_MODE: libinput_switch = 2;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_switch_state(pub ::core::ffi::c_uint);
+impl libinput_switch {
+    #[doc = " The laptop lid was closed when the switch state is @ref\n LIBINPUT_SWITCH_STATE_ON, or was opened when it is @ref\n LIBINPUT_SWITCH_STATE_OFF."]
+    pub const LIBINPUT_SWITCH_LID: libinput_switch = libinput_switch(1);
+}
+impl libinput_switch {
+    #[doc = " This switch indicates whether the device is in normal laptop mode\n or behaves like a tablet-like device where the primary\n interaction is usually a touch screen. When in tablet mode, the\n keyboard and touchpad are usually inaccessible.\n\n If the switch is in state @ref LIBINPUT_SWITCH_STATE_OFF, the\n device is in laptop mode. If the switch is in state @ref\n LIBINPUT_SWITCH_STATE_ON, the device is in tablet mode and the\n keyboard or touchpad may not be  accessible.\n\n It is up to the caller to identify which devices are inaccessible\n in tablet mode."]
+    pub const LIBINPUT_SWITCH_TABLET_MODE: libinput_switch = libinput_switch(2);
+}
+#[repr(transparent)]
 #[doc = " @ingroup device\n\n The type of a switch.\n\n @since 1.7"]
-pub type libinput_switch = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_switch(pub ::core::ffi::c_uint);
 #[doc = " @ingroup event_switch\n @struct libinput_event_switch\n\n A switch event representing a changed state in a switch.\n\n @since 1.7"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct libinput_event_switch {
     _unused: [u8; 0],
 }
-#[doc = " This is not a real event type, and is only used to tell the user that\n no new event is available in the queue. See\n libinput_next_event_type()."]
-pub const libinput_event_type_LIBINPUT_EVENT_NONE: libinput_event_type = 0;
-#[doc = " Signals that a device has been added to the context. The device will\n not be read until the next time the user calls libinput_dispatch()\n and data is available.\n\n This allows setting up initial device configuration before any events\n are created."]
-pub const libinput_event_type_LIBINPUT_EVENT_DEVICE_ADDED: libinput_event_type = 1;
-#[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
-pub const libinput_event_type_LIBINPUT_EVENT_DEVICE_REMOVED: libinput_event_type = 2;
-#[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
-pub const libinput_event_type_LIBINPUT_EVENT_KEYBOARD_KEY: libinput_event_type = 300;
-#[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
-pub const libinput_event_type_LIBINPUT_EVENT_POINTER_MOTION: libinput_event_type = 400;
-#[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
-pub const libinput_event_type_LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE: libinput_event_type = 401;
-#[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
-pub const libinput_event_type_LIBINPUT_EVENT_POINTER_BUTTON: libinput_event_type = 402;
-#[doc = " A scroll event from various sources.\n\n This event is deprecated as of libinput 1.19. Use\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS instead.\n\n Use libinput_event_pointer_get_axis_source() to determine the\n source of a scroll event. For libinput versions 1.19 and later,\n the source is encoded in the event type.\n\n This event is sent **in addition** to events of type\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS.\n Do not mix and match, either use the old event or the new events.\n libinput makes no guarantee about the relation between\n @ref LIBINPUT_EVENT_POINTER_AXIS and the new event types\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS. You may receive\n multiple zero, one or more new events per legacy event.\n\n @warning Ignore this event if you are processing\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS."]
-pub const libinput_event_type_LIBINPUT_EVENT_POINTER_AXIS: libinput_event_type = 403;
-#[doc = " A scroll event from a wheel. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_WHEEL. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-pub const libinput_event_type_LIBINPUT_EVENT_POINTER_SCROLL_WHEEL: libinput_event_type = 404;
-#[doc = " A scroll event caused by the movement of one or more fingers on a\n device. This event is sent is sent **in addition** to the @ref\n LIBINPUT_EVENT_POINTER_AXIS event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_FINGER. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-pub const libinput_event_type_LIBINPUT_EVENT_POINTER_SCROLL_FINGER: libinput_event_type = 405;
-#[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-pub const libinput_event_type_LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS: libinput_event_type = 406;
-#[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-pub const libinput_event_type_LIBINPUT_EVENT_TOUCH_DOWN: libinput_event_type = 500;
-#[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-pub const libinput_event_type_LIBINPUT_EVENT_TOUCH_UP: libinput_event_type = 501;
-#[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-pub const libinput_event_type_LIBINPUT_EVENT_TOUCH_MOTION: libinput_event_type = 502;
-#[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-pub const libinput_event_type_LIBINPUT_EVENT_TOUCH_CANCEL: libinput_event_type = 503;
-#[doc = " Signals the end of a set of touchpoints at one device sample\n time. This event has no coordinate information attached."]
-pub const libinput_event_type_LIBINPUT_EVENT_TOUCH_FRAME: libinput_event_type = 504;
-#[doc = " One or more axes have changed state on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_TOOL capability. This event is only sent\n when the tool is in proximity, see @ref\n LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY for details.\n\n The proximity event contains the initial state of the axis as the\n tool comes into proximity. An event of type @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS is only sent when an axis value\n changes from this initial state. It is possible for a tool to\n enter and leave proximity without sending an event of type @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS.\n\n An event of type @ref LIBINPUT_EVENT_TABLET_TOOL_AXIS is sent\n when the tip state does not change. See the documentation for\n @ref LIBINPUT_EVENT_TABLET_TOOL_TIP for more details.\n\n @since 1.2"]
-pub const libinput_event_type_LIBINPUT_EVENT_TABLET_TOOL_AXIS: libinput_event_type = 600;
-#[doc = " Signals that a tool has come in or out of proximity of a device with\n the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n Proximity events contain each of the current values for each axis,\n and these values may be extracted from them in the same way they are\n with @ref LIBINPUT_EVENT_TABLET_TOOL_AXIS events.\n\n Some tools may always be in proximity. For these tools, events of\n type @ref LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_IN are sent only once after @ref\n LIBINPUT_EVENT_DEVICE_ADDED, and events of type @ref\n LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_OUT are sent only once before @ref\n LIBINPUT_EVENT_DEVICE_REMOVED.\n\n If the tool that comes into proximity supports x/y coordinates,\n libinput guarantees that both x and y are set in the proximity\n event.\n\n When a tool goes out of proximity, the value of every axis should be\n assumed to have an undefined state and any buttons that are currently held\n down on the stylus are marked as released. Button release events for\n each button that was held down on the stylus are sent before the\n proximity out event.\n\n @since 1.2"]
-pub const libinput_event_type_LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY: libinput_event_type = 601;
-#[doc = " Signals that a tool has come in contact with the surface of a\n device with the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n On devices without distance proximity detection, the @ref\n LIBINPUT_EVENT_TABLET_TOOL_TIP is sent immediately after @ref\n LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY for the tip down event, and\n immediately before for the tip up event.\n\n The decision when a tip touches the surface is device-dependent\n and may be derived from pressure data or other means. If the tip\n state is changed by axes changing state, the\n @ref LIBINPUT_EVENT_TABLET_TOOL_TIP event includes the changed\n axes and no additional axis event is sent for this state change.\n In other words, a caller must look at both @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS and @ref\n LIBINPUT_EVENT_TABLET_TOOL_TIP events to know the current state\n of the axes.\n\n If a button state change occurs at the same time as a tip state\n change, the order of events is device-dependent.\n\n @since 1.2"]
-pub const libinput_event_type_LIBINPUT_EVENT_TABLET_TOOL_TIP: libinput_event_type = 602;
-#[doc = " Signals that a tool has changed a logical button state on a\n device with the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n Button state changes occur on their own and do not include axis\n state changes. If button and axis state changes occur within the\n same logical hardware event, the order of the @ref\n LIBINPUT_EVENT_TABLET_TOOL_BUTTON and @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS event is device-specific.\n\n This event is not to be confused with the button events emitted\n by the tablet pad. See @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON.\n\n @see LIBINPUT_EVENT_TABLET_PAD_BUTTON\n\n @since 1.2"]
-pub const libinput_event_type_LIBINPUT_EVENT_TABLET_TOOL_BUTTON: libinput_event_type = 603;
-#[doc = " A button pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A button differs from @ref LIBINPUT_EVENT_TABLET_PAD_KEY in that\n buttons are sequentially indexed from 0 and do not carry any\n other information.  Keys have a specific functionality assigned\n to them. The key code thus carries a semantic meaning, a button\n number does not.\n\n This event is not to be confused with the button events emitted\n by tools on a tablet (@ref LIBINPUT_EVENT_TABLET_TOOL_BUTTON).\n\n @since 1.3"]
-pub const libinput_event_type_LIBINPUT_EVENT_TABLET_PAD_BUTTON: libinput_event_type = 700;
-#[doc = " A status change on a tablet ring with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.3"]
-pub const libinput_event_type_LIBINPUT_EVENT_TABLET_PAD_RING: libinput_event_type = 701;
-#[doc = " A status change on a strip on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.3"]
-pub const libinput_event_type_LIBINPUT_EVENT_TABLET_PAD_STRIP: libinput_event_type = 702;
-#[doc = " A key pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A key differs from @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON in that\n keys have a specific functionality assigned to them (buttons are\n sequentially ordered). The key code thus carries a semantic\n meaning, a button number does not.\n\n @since 1.15"]
-pub const libinput_event_type_LIBINPUT_EVENT_TABLET_PAD_KEY: libinput_event_type = 703;
-#[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-pub const libinput_event_type_LIBINPUT_EVENT_TABLET_PAD_DIAL: libinput_event_type = 704;
-#[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-pub const libinput_event_type_LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN: libinput_event_type = 800;
-#[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-pub const libinput_event_type_LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE: libinput_event_type = 801;
-#[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-pub const libinput_event_type_LIBINPUT_EVENT_GESTURE_SWIPE_END: libinput_event_type = 802;
-#[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-pub const libinput_event_type_LIBINPUT_EVENT_GESTURE_PINCH_BEGIN: libinput_event_type = 803;
-#[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-pub const libinput_event_type_LIBINPUT_EVENT_GESTURE_PINCH_UPDATE: libinput_event_type = 804;
-#[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-pub const libinput_event_type_LIBINPUT_EVENT_GESTURE_PINCH_END: libinput_event_type = 805;
-#[doc = " @since 1.19"]
-pub const libinput_event_type_LIBINPUT_EVENT_GESTURE_HOLD_BEGIN: libinput_event_type = 806;
-#[doc = " @since 1.19"]
-pub const libinput_event_type_LIBINPUT_EVENT_GESTURE_HOLD_END: libinput_event_type = 807;
-#[doc = " @since 1.7"]
-pub const libinput_event_type_LIBINPUT_EVENT_SWITCH_TOGGLE: libinput_event_type = 900;
+impl libinput_event_type {
+    #[doc = " This is not a real event type, and is only used to tell the user that\n no new event is available in the queue. See\n libinput_next_event_type()."]
+    pub const LIBINPUT_EVENT_NONE: libinput_event_type = libinput_event_type(0);
+}
+impl libinput_event_type {
+    #[doc = " Signals that a device has been added to the context. The device will\n not be read until the next time the user calls libinput_dispatch()\n and data is available.\n\n This allows setting up initial device configuration before any events\n are created."]
+    pub const LIBINPUT_EVENT_DEVICE_ADDED: libinput_event_type = libinput_event_type(1);
+}
+impl libinput_event_type {
+    #[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
+    pub const LIBINPUT_EVENT_DEVICE_REMOVED: libinput_event_type = libinput_event_type(2);
+}
+impl libinput_event_type {
+    #[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
+    pub const LIBINPUT_EVENT_KEYBOARD_KEY: libinput_event_type = libinput_event_type(300);
+}
+impl libinput_event_type {
+    #[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
+    pub const LIBINPUT_EVENT_POINTER_MOTION: libinput_event_type = libinput_event_type(400);
+}
+impl libinput_event_type {
+    #[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
+    pub const LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE: libinput_event_type =
+        libinput_event_type(401);
+}
+impl libinput_event_type {
+    #[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
+    pub const LIBINPUT_EVENT_POINTER_BUTTON: libinput_event_type = libinput_event_type(402);
+}
+impl libinput_event_type {
+    #[doc = " A scroll event from various sources.\n\n This event is deprecated as of libinput 1.19. Use\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS instead.\n\n Use libinput_event_pointer_get_axis_source() to determine the\n source of a scroll event. For libinput versions 1.19 and later,\n the source is encoded in the event type.\n\n This event is sent **in addition** to events of type\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS.\n Do not mix and match, either use the old event or the new events.\n libinput makes no guarantee about the relation between\n @ref LIBINPUT_EVENT_POINTER_AXIS and the new event types\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS. You may receive\n multiple zero, one or more new events per legacy event.\n\n @warning Ignore this event if you are processing\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS."]
+    pub const LIBINPUT_EVENT_POINTER_AXIS: libinput_event_type = libinput_event_type(403);
+}
+impl libinput_event_type {
+    #[doc = " A scroll event from a wheel. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_WHEEL. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
+    pub const LIBINPUT_EVENT_POINTER_SCROLL_WHEEL: libinput_event_type = libinput_event_type(404);
+}
+impl libinput_event_type {
+    #[doc = " A scroll event caused by the movement of one or more fingers on a\n device. This event is sent is sent **in addition** to the @ref\n LIBINPUT_EVENT_POINTER_AXIS event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_FINGER. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
+    pub const LIBINPUT_EVENT_POINTER_SCROLL_FINGER: libinput_event_type = libinput_event_type(405);
+}
+impl libinput_event_type {
+    #[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
+    pub const LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS: libinput_event_type =
+        libinput_event_type(406);
+}
+impl libinput_event_type {
+    #[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
+    pub const LIBINPUT_EVENT_TOUCH_DOWN: libinput_event_type = libinput_event_type(500);
+}
+impl libinput_event_type {
+    #[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
+    pub const LIBINPUT_EVENT_TOUCH_UP: libinput_event_type = libinput_event_type(501);
+}
+impl libinput_event_type {
+    #[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
+    pub const LIBINPUT_EVENT_TOUCH_MOTION: libinput_event_type = libinput_event_type(502);
+}
+impl libinput_event_type {
+    #[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
+    pub const LIBINPUT_EVENT_TOUCH_CANCEL: libinput_event_type = libinput_event_type(503);
+}
+impl libinput_event_type {
+    #[doc = " Signals the end of a set of touchpoints at one device sample\n time. This event has no coordinate information attached."]
+    pub const LIBINPUT_EVENT_TOUCH_FRAME: libinput_event_type = libinput_event_type(504);
+}
+impl libinput_event_type {
+    #[doc = " One or more axes have changed state on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_TOOL capability. This event is only sent\n when the tool is in proximity, see @ref\n LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY for details.\n\n The proximity event contains the initial state of the axis as the\n tool comes into proximity. An event of type @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS is only sent when an axis value\n changes from this initial state. It is possible for a tool to\n enter and leave proximity without sending an event of type @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS.\n\n An event of type @ref LIBINPUT_EVENT_TABLET_TOOL_AXIS is sent\n when the tip state does not change. See the documentation for\n @ref LIBINPUT_EVENT_TABLET_TOOL_TIP for more details.\n\n @since 1.2"]
+    pub const LIBINPUT_EVENT_TABLET_TOOL_AXIS: libinput_event_type = libinput_event_type(600);
+}
+impl libinput_event_type {
+    #[doc = " Signals that a tool has come in or out of proximity of a device with\n the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n Proximity events contain each of the current values for each axis,\n and these values may be extracted from them in the same way they are\n with @ref LIBINPUT_EVENT_TABLET_TOOL_AXIS events.\n\n Some tools may always be in proximity. For these tools, events of\n type @ref LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_IN are sent only once after @ref\n LIBINPUT_EVENT_DEVICE_ADDED, and events of type @ref\n LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_OUT are sent only once before @ref\n LIBINPUT_EVENT_DEVICE_REMOVED.\n\n If the tool that comes into proximity supports x/y coordinates,\n libinput guarantees that both x and y are set in the proximity\n event.\n\n When a tool goes out of proximity, the value of every axis should be\n assumed to have an undefined state and any buttons that are currently held\n down on the stylus are marked as released. Button release events for\n each button that was held down on the stylus are sent before the\n proximity out event.\n\n @since 1.2"]
+    pub const LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY: libinput_event_type = libinput_event_type(601);
+}
+impl libinput_event_type {
+    #[doc = " Signals that a tool has come in contact with the surface of a\n device with the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n On devices without distance proximity detection, the @ref\n LIBINPUT_EVENT_TABLET_TOOL_TIP is sent immediately after @ref\n LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY for the tip down event, and\n immediately before for the tip up event.\n\n The decision when a tip touches the surface is device-dependent\n and may be derived from pressure data or other means. If the tip\n state is changed by axes changing state, the\n @ref LIBINPUT_EVENT_TABLET_TOOL_TIP event includes the changed\n axes and no additional axis event is sent for this state change.\n In other words, a caller must look at both @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS and @ref\n LIBINPUT_EVENT_TABLET_TOOL_TIP events to know the current state\n of the axes.\n\n If a button state change occurs at the same time as a tip state\n change, the order of events is device-dependent.\n\n @since 1.2"]
+    pub const LIBINPUT_EVENT_TABLET_TOOL_TIP: libinput_event_type = libinput_event_type(602);
+}
+impl libinput_event_type {
+    #[doc = " Signals that a tool has changed a logical button state on a\n device with the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n Button state changes occur on their own and do not include axis\n state changes. If button and axis state changes occur within the\n same logical hardware event, the order of the @ref\n LIBINPUT_EVENT_TABLET_TOOL_BUTTON and @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS event is device-specific.\n\n This event is not to be confused with the button events emitted\n by the tablet pad. See @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON.\n\n @see LIBINPUT_EVENT_TABLET_PAD_BUTTON\n\n @since 1.2"]
+    pub const LIBINPUT_EVENT_TABLET_TOOL_BUTTON: libinput_event_type = libinput_event_type(603);
+}
+impl libinput_event_type {
+    #[doc = " A button pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A button differs from @ref LIBINPUT_EVENT_TABLET_PAD_KEY in that\n buttons are sequentially indexed from 0 and do not carry any\n other information.  Keys have a specific functionality assigned\n to them. The key code thus carries a semantic meaning, a button\n number does not.\n\n This event is not to be confused with the button events emitted\n by tools on a tablet (@ref LIBINPUT_EVENT_TABLET_TOOL_BUTTON).\n\n @since 1.3"]
+    pub const LIBINPUT_EVENT_TABLET_PAD_BUTTON: libinput_event_type = libinput_event_type(700);
+}
+impl libinput_event_type {
+    #[doc = " A status change on a tablet ring with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.3"]
+    pub const LIBINPUT_EVENT_TABLET_PAD_RING: libinput_event_type = libinput_event_type(701);
+}
+impl libinput_event_type {
+    #[doc = " A status change on a strip on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.3"]
+    pub const LIBINPUT_EVENT_TABLET_PAD_STRIP: libinput_event_type = libinput_event_type(702);
+}
+impl libinput_event_type {
+    #[doc = " A key pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A key differs from @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON in that\n keys have a specific functionality assigned to them (buttons are\n sequentially ordered). The key code thus carries a semantic\n meaning, a button number does not.\n\n @since 1.15"]
+    pub const LIBINPUT_EVENT_TABLET_PAD_KEY: libinput_event_type = libinput_event_type(703);
+}
+impl libinput_event_type {
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
+    pub const LIBINPUT_EVENT_TABLET_PAD_DIAL: libinput_event_type = libinput_event_type(704);
+}
+impl libinput_event_type {
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
+    pub const LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN: libinput_event_type = libinput_event_type(800);
+}
+impl libinput_event_type {
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
+    pub const LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE: libinput_event_type = libinput_event_type(801);
+}
+impl libinput_event_type {
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
+    pub const LIBINPUT_EVENT_GESTURE_SWIPE_END: libinput_event_type = libinput_event_type(802);
+}
+impl libinput_event_type {
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
+    pub const LIBINPUT_EVENT_GESTURE_PINCH_BEGIN: libinput_event_type = libinput_event_type(803);
+}
+impl libinput_event_type {
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
+    pub const LIBINPUT_EVENT_GESTURE_PINCH_UPDATE: libinput_event_type = libinput_event_type(804);
+}
+impl libinput_event_type {
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
+    pub const LIBINPUT_EVENT_GESTURE_PINCH_END: libinput_event_type = libinput_event_type(805);
+}
+impl libinput_event_type {
+    #[doc = " @since 1.19"]
+    pub const LIBINPUT_EVENT_GESTURE_HOLD_BEGIN: libinput_event_type = libinput_event_type(806);
+}
+impl libinput_event_type {
+    #[doc = " @since 1.19"]
+    pub const LIBINPUT_EVENT_GESTURE_HOLD_END: libinput_event_type = libinput_event_type(807);
+}
+impl libinput_event_type {
+    #[doc = " @since 1.7"]
+    pub const LIBINPUT_EVENT_SWITCH_TOGGLE: libinput_event_type = libinput_event_type(900);
+}
+#[repr(transparent)]
 #[doc = " @ingroup base\n\n Event type for events returned by libinput_get_event()."]
-pub type libinput_event_type = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_event_type(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup event\n\n Destroy the event, freeing all associated resources. Resources obtained\n from this event must be considered invalid after this call.\n\n @warning Unlike other structs events are considered transient and\n <b>not</b> refcounted. Calling libinput_event_destroy() <b>will</b>\n destroy the event.\n\n @param event An event retrieved by libinput_get_event()."]
     pub fn libinput_event_destroy(event: *mut libinput_event);
@@ -1374,26 +1578,42 @@ unsafe extern "C" {
         group: *mut libinput_device_group,
     ) -> *mut ::core::ffi::c_void;
 }
-#[doc = "< Config applied successfully"]
-pub const libinput_config_status_LIBINPUT_CONFIG_STATUS_SUCCESS: libinput_config_status = 0;
-#[doc = "< Configuration not available on\nthis device"]
-pub const libinput_config_status_LIBINPUT_CONFIG_STATUS_UNSUPPORTED: libinput_config_status = 1;
-#[doc = "< Invalid parameter range"]
-pub const libinput_config_status_LIBINPUT_CONFIG_STATUS_INVALID: libinput_config_status = 2;
+impl libinput_config_status {
+    #[doc = "< Config applied successfully"]
+    pub const LIBINPUT_CONFIG_STATUS_SUCCESS: libinput_config_status = libinput_config_status(0);
+}
+impl libinput_config_status {
+    #[doc = "< Configuration not available on\nthis device"]
+    pub const LIBINPUT_CONFIG_STATUS_UNSUPPORTED: libinput_config_status =
+        libinput_config_status(1);
+}
+impl libinput_config_status {
+    #[doc = "< Invalid parameter range"]
+    pub const LIBINPUT_CONFIG_STATUS_INVALID: libinput_config_status = libinput_config_status(2);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config\n\n Status codes returned when applying configuration settings."]
-pub type libinput_config_status = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_status(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Return a string describing the error.\n\n @param status The status to translate to a string\n @return A human-readable string representing the error or NULL for an\n invalid status."]
     pub fn libinput_config_status_to_str(
         status: libinput_config_status,
     ) -> *const ::core::ffi::c_char;
 }
-#[doc = "< Tapping is to be disabled, or is\ncurrently disabled"]
-pub const libinput_config_tap_state_LIBINPUT_CONFIG_TAP_DISABLED: libinput_config_tap_state = 0;
-#[doc = "< Tapping is to be enabled, or is\ncurrently enabled"]
-pub const libinput_config_tap_state_LIBINPUT_CONFIG_TAP_ENABLED: libinput_config_tap_state = 1;
+impl libinput_config_tap_state {
+    #[doc = "< Tapping is to be disabled, or is\ncurrently disabled"]
+    pub const LIBINPUT_CONFIG_TAP_DISABLED: libinput_config_tap_state =
+        libinput_config_tap_state(0);
+}
+impl libinput_config_tap_state {
+    #[doc = "< Tapping is to be enabled, or is\ncurrently enabled"]
+    pub const LIBINPUT_CONFIG_TAP_ENABLED: libinput_config_tap_state = libinput_config_tap_state(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config"]
-pub type libinput_config_tap_state = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_tap_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Check if the device supports tap-to-click and how many fingers can be\n used for tapping. See\n libinput_device_config_tap_set_enabled() for more information.\n\n @param device The device to configure\n @return The number of fingers that can generate a tap event, or 0 if the\n device does not support tapping.\n\n @see libinput_device_config_tap_set_enabled\n @see libinput_device_config_tap_get_enabled\n @see libinput_device_config_tap_get_default_enabled"]
     pub fn libinput_device_config_tap_get_finger_count(
@@ -1419,22 +1639,34 @@ unsafe extern "C" {
         device: *mut libinput_device,
     ) -> libinput_config_tap_state;
 }
-#[doc = " 1/2/3 finger tap maps to left/right/middle"]
-pub const libinput_config_tap_button_map_LIBINPUT_CONFIG_TAP_MAP_LRM:
-    libinput_config_tap_button_map = 0;
-#[doc = " 1/2/3 finger tap maps to left/middle/right"]
-pub const libinput_config_tap_button_map_LIBINPUT_CONFIG_TAP_MAP_LMR:
-    libinput_config_tap_button_map = 1;
+impl libinput_config_tap_button_map {
+    #[doc = " 1/2/3 finger tap maps to left/right/middle"]
+    pub const LIBINPUT_CONFIG_TAP_MAP_LRM: libinput_config_tap_button_map =
+        libinput_config_tap_button_map(0);
+}
+impl libinput_config_tap_button_map {
+    #[doc = " 1/2/3 finger tap maps to left/middle/right"]
+    pub const LIBINPUT_CONFIG_TAP_MAP_LMR: libinput_config_tap_button_map =
+        libinput_config_tap_button_map(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config\n\n @since 1.5"]
-pub type libinput_config_tap_button_map = ::core::ffi::c_uint;
-#[doc = " 1/2/3 finger click maps to left/right/middle"]
-pub const libinput_config_clickfinger_button_map_LIBINPUT_CONFIG_CLICKFINGER_MAP_LRM:
-    libinput_config_clickfinger_button_map = 0;
-#[doc = " 1/2/3 finger click maps to left/middle/right"]
-pub const libinput_config_clickfinger_button_map_LIBINPUT_CONFIG_CLICKFINGER_MAP_LMR:
-    libinput_config_clickfinger_button_map = 1;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_tap_button_map(pub ::core::ffi::c_uint);
+impl libinput_config_clickfinger_button_map {
+    #[doc = " 1/2/3 finger click maps to left/right/middle"]
+    pub const LIBINPUT_CONFIG_CLICKFINGER_MAP_LRM: libinput_config_clickfinger_button_map =
+        libinput_config_clickfinger_button_map(0);
+}
+impl libinput_config_clickfinger_button_map {
+    #[doc = " 1/2/3 finger click maps to left/middle/right"]
+    pub const LIBINPUT_CONFIG_CLICKFINGER_MAP_LMR: libinput_config_clickfinger_button_map =
+        libinput_config_clickfinger_button_map(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config"]
-pub type libinput_config_clickfinger_button_map = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_clickfinger_button_map(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Set the finger number to button number mapping for tap-to-click. The\n default mapping on most devices is to have a 1, 2 and 3 finger tap to map\n to the left, right and middle button, respectively.\n A device may permit changing the button mapping but disallow specific\n maps. In this case @ref LIBINPUT_CONFIG_STATUS_UNSUPPORTED is returned,\n the caller is expected to handle this case correctly.\n\n Changing the button mapping may not take effect immediately,\n the device may wait until it is in a neutral state before applying any\n changes.\n\n The mapping may be changed when tap-to-click is disabled. The new mapping\n takes effect when tap-to-click is enabled in the future.\n\n @note It is an application bug to call this function for devices where\n libinput_device_config_tap_get_finger_count() returns 0.\n\n @param device The device to configure\n @param map The new finger-to-button number mapping\n @return A config status code. Changing the order on a device that does not\n support tapping always fails with @ref LIBINPUT_CONFIG_STATUS_UNSUPPORTED.\n\n @see libinput_device_config_tap_get_button_map\n @see libinput_device_config_tap_get_default_button_map\n\n @since 1.5"]
     pub fn libinput_device_config_tap_set_button_map(
@@ -1454,12 +1686,20 @@ unsafe extern "C" {
         device: *mut libinput_device,
     ) -> libinput_config_tap_button_map;
 }
-#[doc = " Drag is to be disabled, or is\n currently disabled."]
-pub const libinput_config_drag_state_LIBINPUT_CONFIG_DRAG_DISABLED: libinput_config_drag_state = 0;
-#[doc = " Drag is to be enabled, or is\n currently enabled"]
-pub const libinput_config_drag_state_LIBINPUT_CONFIG_DRAG_ENABLED: libinput_config_drag_state = 1;
+impl libinput_config_drag_state {
+    #[doc = " Drag is to be disabled, or is\n currently disabled."]
+    pub const LIBINPUT_CONFIG_DRAG_DISABLED: libinput_config_drag_state =
+        libinput_config_drag_state(0);
+}
+impl libinput_config_drag_state {
+    #[doc = " Drag is to be enabled, or is\n currently enabled"]
+    pub const LIBINPUT_CONFIG_DRAG_ENABLED: libinput_config_drag_state =
+        libinput_config_drag_state(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config\n\n A config status to distinguish or set dragging on a device. Currently\n implemented for tap-and-drag only, see\n libinput_device_config_tap_set_drag_enabled()\n\n @since 1.2"]
-pub type libinput_config_drag_state = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_drag_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Enable or disable tap-and-drag on this device. When enabled, a\n tap immediately followed by a finger down results in a button down event,\n subsequent finger motion thus triggers a drag. The button is released\n on finger up. See the libinput documentation for more details.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DRAG_ENABLED to enable, @ref\n LIBINPUT_CONFIG_DRAG_DISABLED to disable tap-and-drag\n\n @see libinput_device_config_tap_get_drag_enabled\n @see libinput_device_config_tap_get_default_drag_enabled\n\n @since 1.2"]
     pub fn libinput_device_config_tap_set_drag_enabled(
@@ -1479,20 +1719,30 @@ unsafe extern "C" {
         device: *mut libinput_device,
     ) -> libinput_config_drag_state;
 }
-#[doc = " Drag lock is to be disabled, or is currently disabled"]
-pub const libinput_config_drag_lock_state_LIBINPUT_CONFIG_DRAG_LOCK_DISABLED:
-    libinput_config_drag_lock_state = 0;
-#[doc = " Drag lock is to be enabled in timeout mode,\n  or is currently enabled in timeout mode"]
-pub const libinput_config_drag_lock_state_LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_TIMEOUT:
-    libinput_config_drag_lock_state = 1;
-#[doc = " legacy spelling for LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_TIMEOUT"]
-pub const libinput_config_drag_lock_state_LIBINPUT_CONFIG_DRAG_LOCK_ENABLED:
-    libinput_config_drag_lock_state = 1;
-#[doc = " Drag lock is to be enabled in sticky mode,\n  or is currently enabled in sticky mode"]
-pub const libinput_config_drag_lock_state_LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_STICKY:
-    libinput_config_drag_lock_state = 2;
+impl libinput_config_drag_lock_state {
+    #[doc = " Drag lock is to be disabled, or is currently disabled"]
+    pub const LIBINPUT_CONFIG_DRAG_LOCK_DISABLED: libinput_config_drag_lock_state =
+        libinput_config_drag_lock_state(0);
+}
+impl libinput_config_drag_lock_state {
+    #[doc = " Drag lock is to be enabled in timeout mode,\n  or is currently enabled in timeout mode"]
+    pub const LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_TIMEOUT: libinput_config_drag_lock_state =
+        libinput_config_drag_lock_state(1);
+}
+impl libinput_config_drag_lock_state {
+    #[doc = " legacy spelling for LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_TIMEOUT"]
+    pub const LIBINPUT_CONFIG_DRAG_LOCK_ENABLED: libinput_config_drag_lock_state =
+        libinput_config_drag_lock_state(1);
+}
+impl libinput_config_drag_lock_state {
+    #[doc = " Drag lock is to be enabled in sticky mode,\n  or is currently enabled in sticky mode"]
+    pub const LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_STICKY: libinput_config_drag_lock_state =
+        libinput_config_drag_lock_state(2);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config"]
-pub type libinput_config_drag_lock_state = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_drag_lock_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Enable or disable drag-lock during tapping on this device. When enabled,\n a finger may be lifted and put back on the touchpad and the drag process\n continues. A timeout for lifting the finger is optional. When disabled,\n lifting the finger during a tap-and-drag will immediately stop the drag.\n See the libinput documentation for more details.\n\n Enabling drag lock on a device that has tapping or tap-and-drag disabled is\n permitted, but has no effect until tapping and tap-and-drag are enabled.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_STICKY to enable drag\n lock in sticky mode,\n @ref LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_TIMEOUT to enable drag lock in timeout\n mode,\n or @ref LIBINPUT_CONFIG_DRAG_LOCK_DISABLED to disable drag lock\n\n @return A config status code. Disabling drag lock on a device that does not\n support tapping always succeeds.\n\n @see libinput_device_config_tap_get_drag_lock_enabled\n @see libinput_device_config_tap_get_default_drag_lock_enabled"]
     pub fn libinput_device_config_tap_set_drag_lock_enabled(
@@ -1588,16 +1838,25 @@ unsafe extern "C" {
         device: *mut libinput_device,
     ) -> libinput_config_area_rectangle;
 }
-#[doc = " Send events from this device normally. This is a placeholder\n mode only, any device detected by libinput can be enabled. Do not\n test for this value as bitmask."]
-pub const libinput_config_send_events_mode_LIBINPUT_CONFIG_SEND_EVENTS_ENABLED:
-    libinput_config_send_events_mode = 0;
-#[doc = " Do not send events through this device. Depending on the device,\n this may close all file descriptors on the device or it may leave\n the file descriptors open and route events through a different\n device.\n\n If this bit field is set, other disable modes may be\n ignored. For example, if both @ref\n LIBINPUT_CONFIG_SEND_EVENTS_DISABLED and @ref\n LIBINPUT_CONFIG_SEND_EVENTS_DISABLED_ON_EXTERNAL_MOUSE are set,\n the device remains disabled when all external pointer devices are\n unplugged."]
-pub const libinput_config_send_events_mode_LIBINPUT_CONFIG_SEND_EVENTS_DISABLED:
-    libinput_config_send_events_mode = 1;
-#[doc = " If an external pointer device is plugged in, do not send events\n from this device. This option may be available on built-in\n touchpads."]
-pub const libinput_config_send_events_mode_LIBINPUT_CONFIG_SEND_EVENTS_DISABLED_ON_EXTERNAL_MOUSE : libinput_config_send_events_mode = 2 ;
+impl libinput_config_send_events_mode {
+    #[doc = " Send events from this device normally. This is a placeholder\n mode only, any device detected by libinput can be enabled. Do not\n test for this value as bitmask."]
+    pub const LIBINPUT_CONFIG_SEND_EVENTS_ENABLED: libinput_config_send_events_mode =
+        libinput_config_send_events_mode(0);
+}
+impl libinput_config_send_events_mode {
+    #[doc = " Do not send events through this device. Depending on the device,\n this may close all file descriptors on the device or it may leave\n the file descriptors open and route events through a different\n device.\n\n If this bit field is set, other disable modes may be\n ignored. For example, if both @ref\n LIBINPUT_CONFIG_SEND_EVENTS_DISABLED and @ref\n LIBINPUT_CONFIG_SEND_EVENTS_DISABLED_ON_EXTERNAL_MOUSE are set,\n the device remains disabled when all external pointer devices are\n unplugged."]
+    pub const LIBINPUT_CONFIG_SEND_EVENTS_DISABLED: libinput_config_send_events_mode =
+        libinput_config_send_events_mode(1);
+}
+impl libinput_config_send_events_mode {
+    #[doc = " If an external pointer device is plugged in, do not send events\n from this device. This option may be available on built-in\n touchpads."]
+    pub const LIBINPUT_CONFIG_SEND_EVENTS_DISABLED_ON_EXTERNAL_MOUSE:
+        libinput_config_send_events_mode = libinput_config_send_events_mode(2);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config\n\n The send-event mode of a device defines when a device may generate events\n and pass those events to the caller."]
-pub type libinput_config_send_events_mode = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_send_events_mode(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Return the possible send-event modes for this device. These modes define\n when a device may process and send events.\n\n @param device The device to configure\n\n @return A bitmask of possible modes.\n\n @see libinput_device_config_send_events_set_mode\n @see libinput_device_config_send_events_get_mode\n @see libinput_device_config_send_events_get_default_mode"]
     pub fn libinput_device_config_send_events_get_modes(device: *mut libinput_device) -> u32;
@@ -1639,20 +1898,30 @@ unsafe extern "C" {
     #[doc = " @ingroup config\n\n Return the default speed setting for this device, normalized to a range\n of [-1, 1].\n See libinput_device_config_accel_set_speed() for details.\n\n @param device The device to configure\n @return The default speed setting for this device.\n\n @see libinput_device_config_accel_is_available\n @see libinput_device_config_accel_set_speed\n @see libinput_device_config_accel_get_speed"]
     pub fn libinput_device_config_accel_get_default_speed(device: *mut libinput_device) -> f64;
 }
-#[doc = " Placeholder for devices that don't have a configurable pointer\n acceleration profile."]
-pub const libinput_config_accel_profile_LIBINPUT_CONFIG_ACCEL_PROFILE_NONE:
-    libinput_config_accel_profile = 0;
-#[doc = " A flat acceleration profile. Pointer motion is accelerated by a\n constant (device-specific) factor, depending on the current\n speed.\n\n @see libinput_device_config_accel_set_speed"]
-pub const libinput_config_accel_profile_LIBINPUT_CONFIG_ACCEL_PROFILE_FLAT:
-    libinput_config_accel_profile = 1;
-#[doc = " An adaptive acceleration profile. Pointer acceleration depends\n on the input speed. This is the default profile for most devices."]
-pub const libinput_config_accel_profile_LIBINPUT_CONFIG_ACCEL_PROFILE_ADAPTIVE:
-    libinput_config_accel_profile = 2;
-#[doc = " A custom acceleration profile. Device movement acceleration depends\n on user defined custom acceleration functions for each movement\n type.\n\n @see libinput_config_accel_set_points"]
-pub const libinput_config_accel_profile_LIBINPUT_CONFIG_ACCEL_PROFILE_CUSTOM:
-    libinput_config_accel_profile = 4;
+impl libinput_config_accel_profile {
+    #[doc = " Placeholder for devices that don't have a configurable pointer\n acceleration profile."]
+    pub const LIBINPUT_CONFIG_ACCEL_PROFILE_NONE: libinput_config_accel_profile =
+        libinput_config_accel_profile(0);
+}
+impl libinput_config_accel_profile {
+    #[doc = " A flat acceleration profile. Pointer motion is accelerated by a\n constant (device-specific) factor, depending on the current\n speed.\n\n @see libinput_device_config_accel_set_speed"]
+    pub const LIBINPUT_CONFIG_ACCEL_PROFILE_FLAT: libinput_config_accel_profile =
+        libinput_config_accel_profile(1);
+}
+impl libinput_config_accel_profile {
+    #[doc = " An adaptive acceleration profile. Pointer acceleration depends\n on the input speed. This is the default profile for most devices."]
+    pub const LIBINPUT_CONFIG_ACCEL_PROFILE_ADAPTIVE: libinput_config_accel_profile =
+        libinput_config_accel_profile(2);
+}
+impl libinput_config_accel_profile {
+    #[doc = " A custom acceleration profile. Device movement acceleration depends\n on user defined custom acceleration functions for each movement\n type.\n\n @see libinput_config_accel_set_points"]
+    pub const LIBINPUT_CONFIG_ACCEL_PROFILE_CUSTOM: libinput_config_accel_profile =
+        libinput_config_accel_profile(4);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config\n\n @since 1.1"]
-pub type libinput_config_accel_profile = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_accel_profile(pub ::core::ffi::c_uint);
 #[doc = " @ingroup config\n\n A handle for configuration pointer acceleration.\n\n @warning Unlike other structs pointer acceleration configuration is\n considered transient and <b>not</b> refcounted. Calling\n libinput_config_accel_destroy() <b>will</b> destroy the configuration.\n\n To configure pointer acceleration, first create a config of a desired\n acceleration profile with libinput_config_accel_create(), then\n configure the profile-specific acceleration properties.\n\n In this version of libinput, this pointer acceleration configuration\n only provides configuration for @ref LIBINPUT_CONFIG_ACCEL_PROFILE_CUSTOM.\n\n For @ref LIBINPUT_CONFIG_ACCEL_PROFILE_CUSTOM use\n @ref libinput_config_accel_set_points.\n\n Once set up, apply the configuration to a device using\n libinput_device_config_accel_apply(). Once applied,\n destroy it with libinput_config_accel_destroy().\n\n @since 1.23"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -1676,14 +1945,25 @@ unsafe extern "C" {
         accel_config: *mut libinput_config_accel,
     ) -> libinput_config_status;
 }
-#[doc = " The default acceleration type used as a fallback when other\n acceleration types are not provided."]
-pub const libinput_config_accel_type_LIBINPUT_ACCEL_TYPE_FALLBACK: libinput_config_accel_type = 0;
-#[doc = " Acceleration type for regular pointer movement. This\n type is always supported."]
-pub const libinput_config_accel_type_LIBINPUT_ACCEL_TYPE_MOTION: libinput_config_accel_type = 1;
-#[doc = " Acceleration type for scroll movement.\n This type is supported by mouse and touchpad."]
-pub const libinput_config_accel_type_LIBINPUT_ACCEL_TYPE_SCROLL: libinput_config_accel_type = 2;
+impl libinput_config_accel_type {
+    #[doc = " The default acceleration type used as a fallback when other\n acceleration types are not provided."]
+    pub const LIBINPUT_ACCEL_TYPE_FALLBACK: libinput_config_accel_type =
+        libinput_config_accel_type(0);
+}
+impl libinput_config_accel_type {
+    #[doc = " Acceleration type for regular pointer movement. This\n type is always supported."]
+    pub const LIBINPUT_ACCEL_TYPE_MOTION: libinput_config_accel_type =
+        libinput_config_accel_type(1);
+}
+impl libinput_config_accel_type {
+    #[doc = " Acceleration type for scroll movement.\n This type is supported by mouse and touchpad."]
+    pub const LIBINPUT_ACCEL_TYPE_SCROLL: libinput_config_accel_type =
+        libinput_config_accel_type(2);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config\n\n Acceleration types are categories of movement by a device that may have\n specific acceleration functions applied. A device always supports the\n @ref LIBINPUT_ACCEL_TYPE_MOTION type (for regular pointer motion). Other\n types (e.g. scrolling) may be added in the future.\n\n The special type @ref LIBINPUT_ACCEL_TYPE_FALLBACK specifies the acceleration\n function to be moved for any movement produced by the device that does not\n have a specific acceleration type defined.\n\n Use to specify the acceleration function type in\n @ref libinput_config_accel_set_points\n\n Each device implements a subset of those types, see a list of supported\n devices for each movement type definition.\n\n @see LIBINPUT_ACCEL_ARG_TYPE\n @since 1.23"]
-pub type libinput_config_accel_type = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_accel_type(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Defines the acceleration function for a given movement type\n in an acceleration configuration with the profile\n @ref LIBINPUT_CONFIG_ACCEL_PROFILE_CUSTOM.\n\n Movement types are specific to each device, @see libinput_config_accel_type.\n\n Each custom acceleration function is defined by ``n`` points spaced uniformly\n along the x-axis starting from 0 and continuing in a constant step size.\n There by the function is defined by the following points:\n (0 * step, f[0]), (1 * step, f[1]), ..., ((n - 1) * step, f[n - 1]).\n The x-axis represents the device-speed in device units per millisecond.\n The y-axis represents the pointer-speed.\n\n It is up to the user to define those values in accordance with device DPI\n and screen DPI.\n\n @param accel_config The acceleration configuration to modify.\n @param accel_type The movement type to configure a custom function for.\n @param step The distance between each point along the x-axis.\n @param npoints The number of points of the custom acceleration function.\n @param points The points' y-values of the custom acceleration function.\n\n @return A config status code.\n\n @see libinput_config_accel\n @since 1.23"]
     pub fn libinput_config_accel_set_points(
@@ -1767,17 +2047,25 @@ unsafe extern "C" {
         device: *mut libinput_device,
     ) -> ::core::ffi::c_int;
 }
-#[doc = " Do not send software-emulated button events. This has no effect\n on events generated by physical buttons."]
-pub const libinput_config_click_method_LIBINPUT_CONFIG_CLICK_METHOD_NONE:
-    libinput_config_click_method = 0;
-#[doc = " Use software-button areas to generate button events."]
-pub const libinput_config_click_method_LIBINPUT_CONFIG_CLICK_METHOD_BUTTON_AREAS:
-    libinput_config_click_method = 1;
-#[doc = " The number of fingers decides which button press to generate."]
-pub const libinput_config_click_method_LIBINPUT_CONFIG_CLICK_METHOD_CLICKFINGER:
-    libinput_config_click_method = 2;
+impl libinput_config_click_method {
+    #[doc = " Do not send software-emulated button events. This has no effect\n on events generated by physical buttons."]
+    pub const LIBINPUT_CONFIG_CLICK_METHOD_NONE: libinput_config_click_method =
+        libinput_config_click_method(0);
+}
+impl libinput_config_click_method {
+    #[doc = " Use software-button areas to generate button events."]
+    pub const LIBINPUT_CONFIG_CLICK_METHOD_BUTTON_AREAS: libinput_config_click_method =
+        libinput_config_click_method(1);
+}
+impl libinput_config_click_method {
+    #[doc = " The number of fingers decides which button press to generate."]
+    pub const LIBINPUT_CONFIG_CLICK_METHOD_CLICKFINGER: libinput_config_click_method =
+        libinput_config_click_method(2);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config\n\n The click method defines when to generate software-emulated\n buttons, usually on a device that does not have a specific physical\n button available."]
-pub type libinput_config_click_method = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_click_method(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Check which button click methods a device supports. The button click\n method defines when to generate software-emulated buttons, usually on a\n device that does not have a specific physical button available.\n\n @param device The device to configure\n\n @return A bitmask of possible methods.\n\n @see libinput_device_config_click_get_methods\n @see libinput_device_config_click_set_method\n @see libinput_device_config_click_get_method"]
     pub fn libinput_device_config_click_get_methods(device: *mut libinput_device) -> u32;
@@ -1820,14 +2108,20 @@ unsafe extern "C" {
         device: *mut libinput_device,
     ) -> libinput_config_clickfinger_button_map;
 }
-#[doc = " Middle mouse button emulation is to be disabled, or\n is currently disabled."]
-pub const libinput_config_middle_emulation_state_LIBINPUT_CONFIG_MIDDLE_EMULATION_DISABLED:
-    libinput_config_middle_emulation_state = 0;
-#[doc = " Middle mouse button emulation is to be enabled, or\n is currently enabled."]
-pub const libinput_config_middle_emulation_state_LIBINPUT_CONFIG_MIDDLE_EMULATION_ENABLED:
-    libinput_config_middle_emulation_state = 1;
+impl libinput_config_middle_emulation_state {
+    #[doc = " Middle mouse button emulation is to be disabled, or\n is currently disabled."]
+    pub const LIBINPUT_CONFIG_MIDDLE_EMULATION_DISABLED: libinput_config_middle_emulation_state =
+        libinput_config_middle_emulation_state(0);
+}
+impl libinput_config_middle_emulation_state {
+    #[doc = " Middle mouse button emulation is to be enabled, or\n is currently enabled."]
+    pub const LIBINPUT_CONFIG_MIDDLE_EMULATION_ENABLED: libinput_config_middle_emulation_state =
+        libinput_config_middle_emulation_state(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config"]
-pub type libinput_config_middle_emulation_state = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_middle_emulation_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Check if middle mouse button emulation configuration is available on this\n device. See libinput_device_config_middle_emulation_set_enabled() for\n more details.\n\n @note Some devices provide middle mouse button emulation but do not allow\n enabling/disabling that emulation. These devices return zero in\n libinput_device_config_middle_emulation_is_available().\n\n @param device The device to query\n\n @return Non-zero if middle mouse button emulation is available and can be\n configured, zero otherwise.\n\n @see libinput_device_config_middle_emulation_set_enabled\n @see libinput_device_config_middle_emulation_get_enabled\n @see libinput_device_config_middle_emulation_get_default_enabled"]
     pub fn libinput_device_config_middle_emulation_is_available(
@@ -1853,20 +2147,30 @@ unsafe extern "C" {
         device: *mut libinput_device,
     ) -> libinput_config_middle_emulation_state;
 }
-#[doc = " Never send scroll events instead of pointer motion events.\n This has no effect on events generated by scroll wheels."]
-pub const libinput_config_scroll_method_LIBINPUT_CONFIG_SCROLL_NO_SCROLL:
-    libinput_config_scroll_method = 0;
-#[doc = " Send scroll events when two fingers are logically down on the\n device."]
-pub const libinput_config_scroll_method_LIBINPUT_CONFIG_SCROLL_2FG: libinput_config_scroll_method =
-    1;
-#[doc = " Send scroll events when a finger moves along the bottom or\n right edge of a device."]
-pub const libinput_config_scroll_method_LIBINPUT_CONFIG_SCROLL_EDGE: libinput_config_scroll_method =
-    2;
-#[doc = " Send scroll events when a button is down and the device moves\n along a scroll-capable axis."]
-pub const libinput_config_scroll_method_LIBINPUT_CONFIG_SCROLL_ON_BUTTON_DOWN:
-    libinput_config_scroll_method = 4;
+impl libinput_config_scroll_method {
+    #[doc = " Never send scroll events instead of pointer motion events.\n This has no effect on events generated by scroll wheels."]
+    pub const LIBINPUT_CONFIG_SCROLL_NO_SCROLL: libinput_config_scroll_method =
+        libinput_config_scroll_method(0);
+}
+impl libinput_config_scroll_method {
+    #[doc = " Send scroll events when two fingers are logically down on the\n device."]
+    pub const LIBINPUT_CONFIG_SCROLL_2FG: libinput_config_scroll_method =
+        libinput_config_scroll_method(1);
+}
+impl libinput_config_scroll_method {
+    #[doc = " Send scroll events when a finger moves along the bottom or\n right edge of a device."]
+    pub const LIBINPUT_CONFIG_SCROLL_EDGE: libinput_config_scroll_method =
+        libinput_config_scroll_method(2);
+}
+impl libinput_config_scroll_method {
+    #[doc = " Send scroll events when a button is down and the device moves\n along a scroll-capable axis."]
+    pub const LIBINPUT_CONFIG_SCROLL_ON_BUTTON_DOWN: libinput_config_scroll_method =
+        libinput_config_scroll_method(4);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config\n\n The scroll method of a device selects when to generate scroll axis events\n instead of pointer motion events."]
-pub type libinput_config_scroll_method = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_scroll_method(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Check which scroll methods a device supports. The method defines when to\n generate scroll axis events instead of pointer motion events.\n\n @param device The device to configure\n\n @return A bitmask of possible methods.\n\n @see libinput_device_config_scroll_set_method\n @see libinput_device_config_scroll_get_method\n @see libinput_device_config_scroll_get_default_method\n @see libinput_device_config_scroll_set_button\n @see libinput_device_config_scroll_get_button\n @see libinput_device_config_scroll_get_default_button"]
     pub fn libinput_device_config_scroll_get_methods(device: *mut libinput_device) -> u32;
@@ -1905,11 +2209,17 @@ unsafe extern "C" {
     #[doc = " @ingroup config\n\n Get the default button for the @ref LIBINPUT_CONFIG_SCROLL_ON_BUTTON_DOWN\n method for this device.\n\n If @ref LIBINPUT_CONFIG_SCROLL_ON_BUTTON_DOWN scroll method is not supported,\n or no default button is set, this function returns 0.\n\n @param device The device to configure\n @return The default button for the @ref\n LIBINPUT_CONFIG_SCROLL_ON_BUTTON_DOWN method\n\n @see libinput_device_config_scroll_get_methods\n @see libinput_device_config_scroll_set_method\n @see libinput_device_config_scroll_get_method\n @see libinput_device_config_scroll_get_default_method\n @see libinput_device_config_scroll_set_button\n @see libinput_device_config_scroll_get_button"]
     pub fn libinput_device_config_scroll_get_default_button(device: *mut libinput_device) -> u32;
 }
-pub const libinput_config_scroll_button_lock_state_LIBINPUT_CONFIG_SCROLL_BUTTON_LOCK_DISABLED:
-    libinput_config_scroll_button_lock_state = 0;
-pub const libinput_config_scroll_button_lock_state_LIBINPUT_CONFIG_SCROLL_BUTTON_LOCK_ENABLED:
-    libinput_config_scroll_button_lock_state = 1;
-pub type libinput_config_scroll_button_lock_state = ::core::ffi::c_uint;
+impl libinput_config_scroll_button_lock_state {
+    pub const LIBINPUT_CONFIG_SCROLL_BUTTON_LOCK_DISABLED:
+        libinput_config_scroll_button_lock_state = libinput_config_scroll_button_lock_state(0);
+}
+impl libinput_config_scroll_button_lock_state {
+    pub const LIBINPUT_CONFIG_SCROLL_BUTTON_LOCK_ENABLED: libinput_config_scroll_button_lock_state =
+        libinput_config_scroll_button_lock_state(1);
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_scroll_button_lock_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Set the scroll button lock. If the state is\n @ref LIBINPUT_CONFIG_SCROLL_BUTTON_LOCK_DISABLED, the button must\n physically be held down for button scrolling to work.\n If the state is\n @ref LIBINPUT_CONFIG_SCROLL_BUTTON_LOCK_ENABLED, the button is considered\n logically down after the first press and release sequence, and logically\n up after the second press and release sequence.\n\n @param device The device to configure\n @param state The state to set the scroll button lock to\n\n @return A config status code. Disabling the scroll button lock on\n device that does not support button scrolling always succeeds.\n\n @see libinput_device_config_scroll_set_button\n @see libinput_device_config_scroll_get_button\n @see libinput_device_config_scroll_get_default_button"]
     pub fn libinput_device_config_scroll_set_button_lock(
@@ -1929,10 +2239,17 @@ unsafe extern "C" {
         device: *mut libinput_device,
     ) -> libinput_config_scroll_button_lock_state;
 }
-pub const libinput_config_dwt_state_LIBINPUT_CONFIG_DWT_DISABLED: libinput_config_dwt_state = 0;
-pub const libinput_config_dwt_state_LIBINPUT_CONFIG_DWT_ENABLED: libinput_config_dwt_state = 1;
+impl libinput_config_dwt_state {
+    pub const LIBINPUT_CONFIG_DWT_DISABLED: libinput_config_dwt_state =
+        libinput_config_dwt_state(0);
+}
+impl libinput_config_dwt_state {
+    pub const LIBINPUT_CONFIG_DWT_ENABLED: libinput_config_dwt_state = libinput_config_dwt_state(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config\n\n Possible states for the disable-while-typing feature."]
-pub type libinput_config_dwt_state = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_dwt_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Check if this device supports configurable disable-while-typing feature.\n This feature is usually available on built-in touchpads and disables the\n touchpad while typing. See the libinput documentation for details.\n\n @param device The device to configure\n @return 0 if this device does not support disable-while-typing, or 1\n otherwise.\n\n @see libinput_device_config_dwt_set_enabled\n @see libinput_device_config_dwt_get_enabled\n @see libinput_device_config_dwt_get_default_enabled"]
     pub fn libinput_device_config_dwt_is_available(
@@ -1958,10 +2275,18 @@ unsafe extern "C" {
         device: *mut libinput_device,
     ) -> libinput_config_dwt_state;
 }
-pub const libinput_config_dwtp_state_LIBINPUT_CONFIG_DWTP_DISABLED: libinput_config_dwtp_state = 0;
-pub const libinput_config_dwtp_state_LIBINPUT_CONFIG_DWTP_ENABLED: libinput_config_dwtp_state = 1;
+impl libinput_config_dwtp_state {
+    pub const LIBINPUT_CONFIG_DWTP_DISABLED: libinput_config_dwtp_state =
+        libinput_config_dwtp_state(0);
+}
+impl libinput_config_dwtp_state {
+    pub const LIBINPUT_CONFIG_DWTP_ENABLED: libinput_config_dwtp_state =
+        libinput_config_dwtp_state(1);
+}
+#[repr(transparent)]
 #[doc = " @ingroup config\n\n Possible states for the disable-while-trackpointing feature.\n\n @since 1.21"]
-pub type libinput_config_dwtp_state = ::core::ffi::c_uint;
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_dwtp_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Check if this device supports configurable disable-while-trackpointing\n feature. This feature is usually available on Thinkpads and disables the\n touchpad while using the trackpoint. See the libinput documentation for\n details.\n\n @param device The device to configure\n @return 0 if this device does not support disable-while-trackpointing, or 1\n otherwise.\n\n @see libinput_device_config_dwtp_set_enabled\n @see libinput_device_config_dwtp_get_enabled\n @see libinput_device_config_dwtp_get_default_enabled\n\n @since 1.21"]
     pub fn libinput_device_config_dwtp_is_available(

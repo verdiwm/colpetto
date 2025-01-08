@@ -167,7 +167,7 @@ impl Libinput {
 
         let event_type = unsafe { sys::libinput_event_get_type(event) };
 
-        if event_type == sys::libinput_event_type_LIBINPUT_EVENT_NONE {
+        if event_type == sys::libinput_event_type::LIBINPUT_EVENT_NONE {
             return None;
         }
 

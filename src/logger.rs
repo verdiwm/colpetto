@@ -17,9 +17,9 @@ pub unsafe extern "C" fn tracing_logger(
     let message = CStr::from_ptr(message).to_string_lossy();
 
     match priority {
-        sys::libinput_log_priority_LIBINPUT_LOG_PRIORITY_INFO => info!("{message}"),
-        sys::libinput_log_priority_LIBINPUT_LOG_PRIORITY_DEBUG => debug!("{message}"),
-        sys::libinput_log_priority_LIBINPUT_LOG_PRIORITY_ERROR => error!("{message}"),
+        sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_INFO => info!("{message}"),
+        sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_DEBUG => debug!("{message}"),
+        sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_ERROR => error!("{message}"),
         _ => println!("{message}"),
     }
 }
@@ -36,7 +36,7 @@ pub(crate) fn setup_logger(libinput: *mut sys::libinput, logger: Logger) {
     unsafe {
         sys::libinput_log_set_priority(
             libinput,
-            sys::libinput_log_priority_LIBINPUT_LOG_PRIORITY_DEBUG,
+            sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_DEBUG,
         );
     }
 
