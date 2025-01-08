@@ -1,7 +1,7 @@
 use std::ffi::CString;
 
 use anyhow::Result as AnyResult;
-use colpetto::Libinput;
+use colpetto::{event::KeyboardEvent, Event, Libinput};
 use futures_util::TryStreamExt;
 use rustix::{
     fd::{FromRawFd, IntoRawFd, OwnedFd},
@@ -27,7 +27,11 @@ async fn main() -> AnyResult<()> {
     let mut stream = libinput.event_stream()?;
 
     while let Some(event) = stream.try_next().await? {
-        dbg!(event);
+        if let Event::Keyboard(KeyboardEvent::Key(event_key)) = event {
+            let state = event_key.key_state();
+            let key = event_key.key();
+            println!("Key \"{key}\" {state}")
+        }
     }
 
     Ok(())
