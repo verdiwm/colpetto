@@ -84,19 +84,11 @@ pub enum SwitchEvent {
 }
 
 impl Event {
-    pub(crate) fn get_event(raw: *mut sys::libinput) -> Option<Self> {
-        let event = unsafe { sys::libinput_get_event(raw) };
-
-        if event.is_null() {
-            return None;
-        }
-
-        let event_type = unsafe { sys::libinput_event_get_type(event) };
-
+    pub(crate) fn from_raw(
+        raw: *mut sys::libinput_event,
+        event_type: sys::libinput_event_type,
+    ) -> Self {
         let event = match event_type {
-            sys::libinput_event_type_LIBINPUT_EVENT_NONE => {
-                return None;
-            }
             sys::libinput_event_type_LIBINPUT_EVENT_DEVICE_ADDED => {
                 Event::Device(DeviceEvent::Added)
             }
@@ -104,7 +96,7 @@ impl Event {
                 Event::Device(DeviceEvent::Removed)
             }
             sys::libinput_event_type_LIBINPUT_EVENT_KEYBOARD_KEY => {
-                let keyboard_event = unsafe { sys::libinput_event_get_keyboard_event(event) };
+                // let keyboard_event = unsafe { sys::libinput_event_get_keyboard_event(raw) };
 
                 Event::Keyboard(KeyboardEvent::Key(KeyboardEventKey {
                     // raw: keyboard_event,
@@ -196,7 +188,9 @@ impl Event {
             }
             _ => Event::Unknown,
         };
-        // unsafe { sys::libinput_event_destroy(raw) };
-        Some(event)
+
+        unsafe { sys::libinput_event_destroy(raw) };
+
+        event
     }
 }
