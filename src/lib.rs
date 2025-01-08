@@ -4,6 +4,7 @@ pub mod sys;
 use std::{
     ffi::{c_char, c_int, c_void, CStr},
     io, mem,
+    os::fd::RawFd,
     pin::Pin,
     sync::{
         atomic::{AtomicPtr, Ordering},
@@ -39,7 +40,10 @@ unsafe extern "C" fn open_restricted(
     let handler = user_data as *const Handler;
     let handler = unsafe { &*handler };
 
-    (handler.open)(CStr::from_ptr(path), flags)
+    match (handler.open)(CStr::from_ptr(path), flags) {
+        Ok(fd) => fd,
+        Err(errno) => errno,
+    }
 }
 
 unsafe extern "C" fn close_restricted(fd: c_int, user_data: *mut c_void) {
@@ -59,14 +63,14 @@ pub struct Libinput {
 }
 
 struct Handler {
-    open: Box<dyn Fn(&CStr, c_int) -> c_int>,
+    open: Box<dyn Fn(&CStr, c_int) -> Result<RawFd, c_int>>,
     close: Box<dyn Fn(c_int)>,
 }
 
 impl Libinput {
     pub fn new<O, C>(open: O, close: C) -> Result<Self, Error>
     where
-        O: Fn(&CStr, c_int) -> c_int + 'static,
+        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static,
         C: Fn(c_int) + 'static,
     {
         let udev = Udev::new()?;
