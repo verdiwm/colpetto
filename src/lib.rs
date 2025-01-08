@@ -17,6 +17,9 @@ use devil::Udev;
 use futures_core::{ready, Stream};
 use tokio::io::unix::AsyncFd;
 
+mod logger;
+pub use logger::{tracing_logger, Logger};
+
 pub mod event;
 pub use event::Event;
 
@@ -73,6 +76,14 @@ impl Libinput {
         O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static,
         C: Fn(c_int) + 'static,
     {
+        Self::with_logger(open, close, None)
+    }
+
+    pub fn with_logger<O, C>(open: O, close: C, logger: Logger) -> Result<Self, Error>
+    where
+        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static,
+        C: Fn(c_int) + 'static,
+    {
         let udev = Udev::new()?;
 
         let handler = Arc::new(Handler {
@@ -91,6 +102,8 @@ impl Libinput {
         if libinput.is_null() {
             return Err(Error::Context);
         }
+
+        logger::setup_logger(libinput, logger);
 
         Ok(Self {
             raw: AtomicPtr::new(libinput),
