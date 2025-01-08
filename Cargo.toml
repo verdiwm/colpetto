@@ -8,12 +8,20 @@ authors = ["Federico Maria Morrone <contact@morrone.dev>"]
 readme = "README.md"
 repository = "https://github.com/verdiwm/colpetto"
 
+[features]
+tracing = ["dep:tracing"]
+log = ["dep:log"]
+
 [dependencies]
 devil = "0.0.6"
-thiserror = "2.0.8"
-tracing = "0.1.41"
-tokio = { version = "1.42.0", features = ["net"] }
 futures-core = "0.3.31"
+thiserror = "2.0.8"
+tokio = { version = "1.42.0", features = ["net"] }
+
+# Loggers
+log = { version = "0.4.22", optional = true }
+tracing = { version = "0.1.41", optional = true }
+
 
 [build-dependencies]
 cc = "1.2.7"
@@ -27,4 +35,3 @@ tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 tokio = { version = "1.42.0", features = ["macros", "rt-multi-thread"] }
 rustix = { version = "0.38.42", default-features = false, features = ["fs"] }
 futures-util = { version = "0.3.31", default-features = false }
-# stool = { version = "0.0.1", path = "../stool" }

@@ -18,7 +18,7 @@ use futures_core::{ready, Stream};
 use tokio::io::unix::AsyncFd;
 
 mod logger;
-pub use logger::{tracing_logger, Logger};
+pub use logger::*;
 
 pub mod event;
 pub use event::Event;

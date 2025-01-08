@@ -129,6 +129,7 @@ dependencies = [
  "devil",
  "futures-core",
  "futures-util",
+ "log",
  "pkg-config",
  "reconciler",
  "rustix",
