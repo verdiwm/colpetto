@@ -6,14 +6,16 @@ use futures_util::TryStreamExt;
 use rustix::{
     fd::{FromRawFd, IntoRawFd, OwnedFd},
     fs::{open, Mode, OFlags},
+    io::Errno,
 };
 
 #[tokio::main]
 async fn main() -> AnyResult<()> {
     let libinput = Libinput::new(
-        |path, flags| match open(path, OFlags::from_bits_retain(flags as u32), Mode::empty()) {
-            Ok(fd) => fd.into_raw_fd(),
-            Err(errno) => errno.raw_os_error(),
+        |path, flags| {
+            open(path, OFlags::from_bits_retain(flags as u32), Mode::empty())
+                .map(IntoRawFd::into_raw_fd)
+                .map_err(Errno::raw_os_error)
         },
         |fd| drop(unsafe { OwnedFd::from_raw_fd(fd) }),
     )?;
