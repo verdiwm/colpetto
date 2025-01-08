@@ -1,5 +1,5 @@
 use std::ffi::{c_char, CStr};
-use tracing::{debug, error, info};
+use tracing::{debug, error, info, trace};
 
 use crate::sys;
 
@@ -20,7 +20,7 @@ pub unsafe extern "C" fn tracing_logger(
         sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_INFO => info!("{message}"),
         sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_DEBUG => debug!("{message}"),
         sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_ERROR => error!("{message}"),
-        _ => println!("{message}"),
+        _ => trace!("{message}"),
     }
 }
 
