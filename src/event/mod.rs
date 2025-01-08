@@ -89,101 +89,101 @@ impl Event {
         event_type: sys::libinput_event_type,
     ) -> Self {
         let event = match event_type {
-            sys::libinput_event_type_LIBINPUT_EVENT_DEVICE_ADDED => {
+            sys::libinput_event_type::LIBINPUT_EVENT_DEVICE_ADDED => {
                 Event::Device(DeviceEvent::Added)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_DEVICE_REMOVED => {
+            sys::libinput_event_type::LIBINPUT_EVENT_DEVICE_REMOVED => {
                 Event::Device(DeviceEvent::Removed)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_KEYBOARD_KEY => {
+            sys::libinput_event_type::LIBINPUT_EVENT_KEYBOARD_KEY => {
                 // let keyboard_event = unsafe { sys::libinput_event_get_keyboard_event(raw) };
 
                 Event::Keyboard(KeyboardEvent::Key(KeyboardEventKey {
                     // raw: keyboard_event,
                 }))
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_POINTER_MOTION => {
+            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_MOTION => {
                 Event::Pointer(PointerEvent::Motion)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE => {
+            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE => {
                 Event::Pointer(PointerEvent::MotionAbsolute)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_POINTER_BUTTON => {
+            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_BUTTON => {
                 Event::Pointer(PointerEvent::Button)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_POINTER_AXIS => {
+            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_AXIS => {
                 Event::Pointer(PointerEvent::Axis)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_POINTER_SCROLL_WHEEL => {
+            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_SCROLL_WHEEL => {
                 Event::Pointer(PointerEvent::ScrollWheel)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_POINTER_SCROLL_FINGER => {
+            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_SCROLL_FINGER => {
                 Event::Pointer(PointerEvent::ScrollFinger)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS => {
+            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS => {
                 Event::Pointer(PointerEvent::ScrollContinuous)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TOUCH_DOWN => Event::Touch(TouchEvent::Down),
-            sys::libinput_event_type_LIBINPUT_EVENT_TOUCH_UP => Event::Touch(TouchEvent::Up),
-            sys::libinput_event_type_LIBINPUT_EVENT_TOUCH_MOTION => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_DOWN => Event::Touch(TouchEvent::Down),
+            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_UP => Event::Touch(TouchEvent::Up),
+            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_MOTION => {
                 Event::Touch(TouchEvent::Motion)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TOUCH_CANCEL => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_CANCEL => {
                 Event::Touch(TouchEvent::Cancel)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TOUCH_FRAME => Event::Touch(TouchEvent::Frame),
-            sys::libinput_event_type_LIBINPUT_EVENT_TABLET_TOOL_AXIS => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_FRAME => Event::Touch(TouchEvent::Frame),
+            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_TOOL_AXIS => {
                 Event::TabletTool(TabletToolEvent::Axis)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY => {
                 Event::TabletTool(TabletToolEvent::Proximity)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TABLET_TOOL_TIP => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_TOOL_TIP => {
                 Event::TabletTool(TabletToolEvent::Tip)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TABLET_TOOL_BUTTON => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_TOOL_BUTTON => {
                 Event::TabletTool(TabletToolEvent::Button)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TABLET_PAD_BUTTON => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_PAD_BUTTON => {
                 Event::TabletPad(TabletPadEvent::Button)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TABLET_PAD_RING => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_PAD_RING => {
                 Event::TabletPad(TabletPadEvent::Ring)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TABLET_PAD_STRIP => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_PAD_STRIP => {
                 Event::TabletPad(TabletPadEvent::Strip)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TABLET_PAD_KEY => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_PAD_KEY => {
                 Event::TabletPad(TabletPadEvent::Key)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_TABLET_PAD_DIAL => {
+            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_PAD_DIAL => {
                 Event::TabletPad(TabletPadEvent::Dial)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN => {
+            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN => {
                 Event::Gesture(GestureEvent::SwipeBegin)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE => {
+            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE => {
                 Event::Gesture(GestureEvent::SwipeUpdate)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_GESTURE_SWIPE_END => {
+            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_SWIPE_END => {
                 Event::Gesture(GestureEvent::SwipeEnd)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_GESTURE_PINCH_BEGIN => {
+            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_PINCH_BEGIN => {
                 Event::Gesture(GestureEvent::PinchBegin)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_GESTURE_PINCH_UPDATE => {
+            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_PINCH_UPDATE => {
                 Event::Gesture(GestureEvent::PinchUpdate)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_GESTURE_PINCH_END => {
+            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_PINCH_END => {
                 Event::Gesture(GestureEvent::PinchEnd)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_GESTURE_HOLD_BEGIN => {
+            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_HOLD_BEGIN => {
                 Event::Gesture(GestureEvent::HoldBegin)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_GESTURE_HOLD_END => {
+            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_HOLD_END => {
                 Event::Gesture(GestureEvent::HoldEnd)
             }
-            sys::libinput_event_type_LIBINPUT_EVENT_SWITCH_TOGGLE => {
+            sys::libinput_event_type::LIBINPUT_EVENT_SWITCH_TOGGLE => {
                 Event::Switch(SwitchEvent::Toggle)
             }
             _ => Event::Unknown,
