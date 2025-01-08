@@ -11,13 +11,16 @@ use rustix::{
 
 #[tokio::main]
 async fn main() -> AnyResult<()> {
-    let libinput = Libinput::new(
+    tracing_subscriber::fmt::init();
+
+    let libinput = Libinput::with_logger(
         |path, flags| {
             open(path, OFlags::from_bits_retain(flags as u32), Mode::empty())
                 .map(IntoRawFd::into_raw_fd)
                 .map_err(Errno::raw_os_error)
         },
         |fd| drop(unsafe { OwnedFd::from_raw_fd(fd) }),
+        Some(colpetto::tracing_logger),
     )?;
     libinput.assign_seat(CString::new("seat0").unwrap().as_c_str())?;
 
