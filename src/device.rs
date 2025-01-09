@@ -14,4 +14,8 @@ impl Device {
     pub fn name(&self) -> &CStr {
         unsafe { CStr::from_ptr(sys::libinput_device_get_name(self.raw)) }
     }
+
+    pub fn udev_device(&self) -> devil::Device {
+        unsafe { devil::Device::from_raw(sys::libinput_device_get_udev_device(self.raw).cast()) }
+    }
 }
