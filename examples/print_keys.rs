@@ -1,4 +1,4 @@
-use std::ffi::CString;
+use std::{ffi::CString, path::Path};
 
 use anyhow::Result as AnyResult;
 use colpetto::{
@@ -33,9 +33,15 @@ async fn main() -> AnyResult<()> {
         if let Event::Keyboard(KeyboardEvent::Key(event_key)) = event {
             let device = event_key.device();
             let device_name = device.name().to_string_lossy();
+            let udev_device = device.udev_device();
+            let device_path = udev_device.devnode().unwrap_or(Path::new("Unknown"));
             let state = event_key.key_state();
             let key = event_key.key();
-            println!("Key \"{key}\" {state} on \"{device_name}\"")
+
+            println!(
+                "Key \"{key}\" {state} on \"{device_name}\" at node \"{device_path}\"",
+                device_path = device_path.display()
+            )
         }
     }
 
