@@ -175,6 +175,15 @@ impl Libinput {
 
         Some(Event::from_raw(event, event_type))
     }
+
+    // FIXME: can we actually retrieve an error?
+    pub fn udev_assign_seat(&self, seat_id: &CStr) -> Result<(), ()> {
+        match unsafe { sys::libinput_udev_assign_seat(self.as_raw(), seat_id.as_ptr()) } {
+            0 => Ok(()),
+            -1 => Err(()),
+            _ => Err(()), // This *should* be a panic but I think it's better to error out
+        }
+    }
 }
 
 impl Drop for Libinput {
