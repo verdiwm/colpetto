@@ -232,3 +232,30 @@ impl Event {
         event
     }
 }
+
+pub struct Device {
+    raw: *mut sys::libinput_device,
+}
+
+pub trait AsEvent: sealed::EventSealed {
+    fn as_raw_event(&self) -> *mut sys::libinput_event;
+
+    fn device(&self) -> Device {
+        Device {
+            raw: unsafe { sys::libinput_event_get_device(self.as_raw_event()) },
+        }
+    }
+}
+
+impl AsEvent for KeyboardEventKey {
+    fn as_raw_event(&self) -> *mut sys::libinput_event {
+        unsafe { sys::libinput_event_keyboard_get_base_event(self.raw) }
+    }
+}
+
+mod sealed {
+
+    pub trait EventSealed {}
+
+    impl EventSealed for super::KeyboardEventKey {}
+}
