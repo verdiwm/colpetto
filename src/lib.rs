@@ -17,11 +17,13 @@ use devil::Udev;
 use futures_core::{ready, Stream};
 use tokio::io::unix::AsyncFd;
 
-mod logger;
-pub use logger::*;
-
+mod device;
 pub mod event;
+mod logger;
+
+pub use device::Device;
 pub use event::Event;
+pub use logger::*;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
