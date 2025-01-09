@@ -1,4 +1,4 @@
-use crate::sys;
+use crate::{sys, Device};
 
 #[derive(Debug)]
 pub enum Event {
@@ -233,17 +233,11 @@ impl Event {
     }
 }
 
-pub struct Device {
-    raw: *mut sys::libinput_device,
-}
-
 pub trait AsEvent: sealed::EventSealed {
     fn as_raw_event(&self) -> *mut sys::libinput_event;
 
     fn device(&self) -> Device {
-        Device {
-            raw: unsafe { sys::libinput_event_get_device(self.as_raw_event()) },
-        }
+        unsafe { Device::from_raw(sys::libinput_event_get_device(self.as_raw_event())) }
     }
 }
 
