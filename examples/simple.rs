@@ -1,7 +1,10 @@
 use std::ffi::CString;
 
 use anyhow::Result as AnyResult;
-use colpetto::{event::KeyboardEvent, Event, Libinput};
+use colpetto::{
+    event::{AsEvent, KeyboardEvent},
+    Event, Libinput,
+};
 use futures_util::TryStreamExt;
 use rustix::{
     fd::{FromRawFd, IntoRawFd, OwnedFd},
@@ -28,9 +31,11 @@ async fn main() -> AnyResult<()> {
 
     while let Some(event) = stream.try_next().await? {
         if let Event::Keyboard(KeyboardEvent::Key(event_key)) = event {
+            let device = event_key.device();
+            let device_name = device.name().to_string_lossy();
             let state = event_key.key_state();
             let key = event_key.key();
-            println!("Key \"{key}\" {state}")
+            println!("Key \"{key}\" {state} on \"{device_name}\"")
         }
     }
 
