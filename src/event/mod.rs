@@ -15,8 +15,13 @@ pub enum Event {
 
 #[derive(Debug)]
 pub enum DeviceEvent {
-    Added,
-    Removed,
+    Added(DeviceNotifyEvent),
+    Removed(DeviceNotifyEvent),
+}
+
+#[derive(Debug)]
+pub struct DeviceNotifyEvent {
+    raw: *mut sys::libinput_event_device_notify,
 }
 
 #[derive(Debug)]
@@ -132,10 +137,14 @@ impl Event {
     ) -> Self {
         let event = match event_type {
             sys::libinput_event_type::LIBINPUT_EVENT_DEVICE_ADDED => {
-                Event::Device(DeviceEvent::Added)
+                Event::Device(DeviceEvent::Added(DeviceNotifyEvent {
+                    raw: unsafe { sys::libinput_event_get_device_notify_event(raw) },
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_DEVICE_REMOVED => {
-                Event::Device(DeviceEvent::Removed)
+                Event::Device(DeviceEvent::Removed(DeviceNotifyEvent {
+                    raw: unsafe { sys::libinput_event_get_device_notify_event(raw) },
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_KEYBOARD_KEY => {
                 Event::Keyboard(KeyboardEvent::Key(KeyboardEventKey {
@@ -247,9 +256,16 @@ impl AsEvent for KeyboardEventKey {
     }
 }
 
+impl AsEvent for DeviceNotifyEvent {
+    fn as_raw_event(&self) -> *mut sys::libinput_event {
+        unsafe { sys::libinput_event_device_notify_get_base_event(self.raw) }
+    }
+}
+
 mod sealed {
 
     pub trait EventSealed {}
 
     impl EventSealed for super::KeyboardEventKey {}
+    impl EventSealed for super::DeviceNotifyEvent {}
 }
