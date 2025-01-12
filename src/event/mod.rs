@@ -26,11 +26,11 @@ pub struct DeviceNotifyEvent {
 
 #[derive(Debug)]
 pub enum KeyboardEvent {
-    Key(KeyboardEventKey),
+    Key(KeyboardKeyEvent),
 }
 
 #[derive(Debug)]
-pub struct KeyboardEventKey {
+pub struct KeyboardKeyEvent {
     raw: *mut sys::libinput_event_keyboard,
 }
 
@@ -58,7 +58,7 @@ impl KeyState {
     }
 }
 
-impl KeyboardEventKey {
+impl KeyboardKeyEvent {
     pub fn key(&self) -> u32 {
         unsafe { sys::libinput_event_keyboard_get_key(self.raw) }
     }
@@ -147,7 +147,7 @@ impl Event {
                 }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_KEYBOARD_KEY => {
-                Event::Keyboard(KeyboardEvent::Key(KeyboardEventKey {
+                Event::Keyboard(KeyboardEvent::Key(KeyboardKeyEvent {
                     raw: unsafe { sys::libinput_event_get_keyboard_event(raw) },
                 }))
             }
@@ -250,7 +250,7 @@ pub trait AsEvent: sealed::EventSealed {
     }
 }
 
-impl AsEvent for KeyboardEventKey {
+impl AsEvent for KeyboardKeyEvent {
     fn as_raw_event(&self) -> *mut sys::libinput_event {
         unsafe { sys::libinput_event_keyboard_get_base_event(self.raw) }
     }
@@ -266,6 +266,6 @@ mod sealed {
 
     pub trait EventSealed {}
 
-    impl EventSealed for super::KeyboardEventKey {}
+    impl EventSealed for super::KeyboardKeyEvent {}
     impl EventSealed for super::DeviceNotifyEvent {}
 }
