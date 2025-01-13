@@ -249,26 +249,36 @@ mod sealed {
 
     pub trait EventSealed {}
 
-    impl EventSealed for super::KeyboardKeyEvent {}
-    impl EventSealed for super::DeviceNotifyEvent {}
-    impl EventSealed for super::TouchUpEvent {}
-    impl EventSealed for super::TouchDownEvent {}
-    impl EventSealed for super::TouchFrameEvent {}
-    impl EventSealed for super::TouchCancelEvent {}
-    impl EventSealed for super::TouchMotionEvent {}
-    impl EventSealed for super::PointerMotionEvent {}
-    impl EventSealed for super::PointerMotionAbsoluteEvent {}
-    impl EventSealed for super::PointerButtonEvent {}
-    impl EventSealed for super::PointerAxisEvent {}
-    impl EventSealed for super::PointerScrollWheelEvent {}
-    impl EventSealed for super::PointerScrollFingerEvent {}
-    impl EventSealed for super::PointerScrollContinuousEvent {}
-    impl EventSealed for super::GestureSwipeBeginEvent {}
-    impl EventSealed for super::GestureSwipeUpdateEvent {}
-    impl EventSealed for super::GestureSwipeEndEvent {}
-    impl EventSealed for super::GesturePinchBeginEvent {}
-    impl EventSealed for super::GesturePinchUpdateEvent {}
-    impl EventSealed for super::GesturePinchEndEvent {}
-    impl EventSealed for super::GestureHoldBeginEvent {}
-    impl EventSealed for super::GestureHoldEndEvent {}
+    macro_rules! seal {
+        ($($event:ident,)+) => {
+            $(
+                impl EventSealed for super::$event {}
+            )+
+        };
+    }
+
+    seal! {
+        KeyboardKeyEvent,
+        DeviceNotifyEvent,
+        TouchUpEvent,
+        TouchDownEvent,
+        TouchFrameEvent,
+        TouchCancelEvent,
+        TouchMotionEvent,
+        PointerMotionEvent,
+        PointerMotionAbsoluteEvent,
+        PointerButtonEvent,
+        PointerAxisEvent,
+        PointerScrollWheelEvent,
+        PointerScrollFingerEvent,
+        PointerScrollContinuousEvent,
+        GestureSwipeBeginEvent,
+        GestureSwipeUpdateEvent,
+        GestureSwipeEndEvent,
+        GesturePinchBeginEvent,
+        GesturePinchUpdateEvent,
+        GesturePinchEndEvent,
+        GestureHoldBeginEvent,
+        GestureHoldEndEvent,
+    }
 }
