@@ -19,41 +19,50 @@ pub use tablet_tool::*;
 pub use touch::*;
 
 macro_rules! define_events {
-    ($raw:ident, $get:expr, $set:expr, $($event:ident,)+) => {
-        $(
-            pub struct $event {
-                raw: *mut $raw,
+    ($main:ident, $raw:ident, $get:expr, $set:expr, $($event:ident,)+) => {
+        paste::paste! {
+            #[derive(Debug)]
+            pub enum [<$main Event>] {
+                $(
+                    $event([<$main $event Event>]),
+                )+
             }
 
-            impl std::fmt::Debug for $event {
-                fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                    f.debug_struct(stringify!($event)).finish()
+            $(
+                pub struct [<$main $event Event>] {
+                    raw: *mut $raw,
                 }
-            }
 
-            impl crate::event::AsRawEvent for $event {
-                fn as_raw_event(&self) -> *mut crate::sys::libinput_event {
-                    unsafe { $get(self.raw) }
-                }
-            }
-
-            impl crate::event::FromRawEvent for $event {
-                unsafe fn from_raw_event(event: *mut crate::sys::libinput_event) -> Self {
-                    Self {
-                        raw: $set(event),
+                impl std::fmt::Debug for [<$main $event Event>] {
+                    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                        f.debug_struct(stringify!($event)).finish()
                     }
                 }
-            }
 
-            impl Drop for $event {
-                fn drop(&mut self) {
-                    unsafe {
-                        crate::sys::libinput_event_destroy(crate::event::AsRawEvent::as_raw_event(self));
+                impl crate::event::AsRawEvent for [<$main $event Event>] {
+                    fn as_raw_event(&self) -> *mut crate::sys::libinput_event {
+                        unsafe { $get(self.raw) }
                     }
                 }
-            }
 
-        )+
+                impl crate::event::FromRawEvent for [<$main $event Event>] {
+                    unsafe fn from_raw_event(event: *mut crate::sys::libinput_event) -> Self {
+                        Self {
+                            raw: $set(event),
+                        }
+                    }
+                }
+
+                impl Drop for [<$main $event Event>] {
+                    fn drop(&mut self) {
+                        unsafe {
+                            crate::sys::libinput_event_destroy(crate::event::AsRawEvent::as_raw_event(self));
+                        }
+                    }
+                }
+
+            )+
+        }
     };
 }
 

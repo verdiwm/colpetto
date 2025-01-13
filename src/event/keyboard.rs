@@ -3,18 +3,12 @@ use crate::sys::{
     libinput_event_keyboard_get_base_event,
 };
 
-use super::define_events;
-
-#[derive(Debug)]
-pub enum KeyboardEvent {
-    Key(KeyboardKeyEvent),
-}
-
-define_events!(
+super::define_events!(
+    Keyboard,
     libinput_event_keyboard,
     libinput_event_keyboard_get_base_event,
     libinput_event_get_keyboard_event,
-    KeyboardKeyEvent,
+    Key,
 );
 
 impl KeyboardKeyEvent {
