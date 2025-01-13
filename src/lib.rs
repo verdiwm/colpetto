@@ -69,6 +69,7 @@ const INTERFACE: sys::libinput_interface = sys::libinput_interface {
     close_restricted: Some(close_restricted),
 };
 
+#[derive(Debug)]
 pub struct Libinput {
     raw: AtomicPtr<sys::libinput>,
 }

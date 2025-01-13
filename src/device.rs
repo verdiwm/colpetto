@@ -2,12 +2,14 @@ use std::ffi::CStr;
 
 use crate::{sys, DeviceGroup, Seat};
 
+#[derive(Debug)]
 pub struct Device {
     raw: *mut sys::libinput_device,
 }
 
 #[repr(u32)]
 #[non_exhaustive]
+#[derive(Debug)]
 pub enum DeviceCapability {
     Gesture = sys::LIBINPUT_DEVICE_CAP_GESTURE,
     Keyboard = sys::LIBINPUT_DEVICE_CAP_KEYBOARD,

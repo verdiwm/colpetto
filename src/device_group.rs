@@ -1,5 +1,6 @@
 use crate::sys;
 
+#[derive(Debug)]
 pub struct DeviceGroup {
     #[allow(unused)]
     raw: *mut sys::libinput_device_group,

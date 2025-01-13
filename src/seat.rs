@@ -1,5 +1,6 @@
 use crate::sys;
 
+#[derive(Debug)]
 pub struct Seat {
     #[allow(unused)]
     raw: *mut sys::libinput_seat,

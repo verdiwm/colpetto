@@ -33,6 +33,7 @@ impl KeyboardKeyEvent {
     }
 }
 
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum KeyState {
     Released,
     Pressed,
