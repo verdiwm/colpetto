@@ -7,6 +7,7 @@ pub struct Device {
 }
 
 #[repr(u32)]
+#[non_exhaustive]
 pub enum DeviceCapability {
     Gesture = sys::LIBINPUT_DEVICE_CAP_GESTURE,
     Keyboard = sys::LIBINPUT_DEVICE_CAP_KEYBOARD,
