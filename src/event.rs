@@ -73,157 +73,66 @@ pub enum Event {
     Unknown,
 }
 
+macro_rules! map_raw {
+    ($outer:ident($inner:ident), $event:expr) => {
+        paste::paste! {
+            crate::Event::$outer(crate::event::[<$outer Event>]::$inner(unsafe {
+                crate::event::[<$outer $inner Event>]::from_raw_event($event)
+            }))
+        }
+    };
+}
+
 impl Event {
     pub(crate) fn from_raw(
         event: *mut sys::libinput_event,
-        event_type: sys::libinput_event_type,
+
+        event_type: sys::libinput_event_type::Type,
     ) -> Self {
+        use sys::libinput_event_type::*;
+
         let event = match event_type {
-            sys::libinput_event_type::LIBINPUT_EVENT_DEVICE_ADDED => {
-                Event::Device(DeviceEvent::Added(unsafe {
-                    DeviceNotifyEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_DEVICE_REMOVED => {
-                Event::Device(DeviceEvent::Removed(unsafe {
-                    DeviceNotifyEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_KEYBOARD_KEY => {
-                Event::Keyboard(KeyboardEvent::Key(unsafe {
-                    KeyboardKeyEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_MOTION => {
-                Event::Pointer(PointerEvent::Motion(unsafe {
-                    PointerMotionEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE => {
-                Event::Pointer(PointerEvent::MotionAbsolute(unsafe {
-                    PointerMotionAbsoluteEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_BUTTON => {
-                Event::Pointer(PointerEvent::Button(unsafe {
-                    PointerButtonEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_AXIS => {
-                Event::Pointer(PointerEvent::Axis(unsafe {
-                    PointerAxisEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_SCROLL_WHEEL => {
-                Event::Pointer(PointerEvent::ScrollWheel(unsafe {
-                    PointerScrollWheelEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_SCROLL_FINGER => {
-                Event::Pointer(PointerEvent::ScrollFinger(unsafe {
-                    PointerScrollFingerEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS => {
-                Event::Pointer(PointerEvent::ScrollContinuous(unsafe {
-                    PointerScrollContinuousEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_DOWN => {
-                Event::Touch(TouchEvent::Down(unsafe {
-                    TouchDownEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_UP => {
-                Event::Touch(TouchEvent::Up(unsafe {
-                    TouchUpEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_MOTION => {
-                Event::Touch(TouchEvent::Motion(unsafe {
-                    TouchMotionEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_CANCEL => {
-                Event::Touch(TouchEvent::Cancel(unsafe {
-                    TouchCancelEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_FRAME => {
-                Event::Touch(TouchEvent::Frame(unsafe {
-                    TouchFrameEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_TOOL_AXIS => {
-                Event::TabletTool(TabletToolEvent::Axis)
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY => {
-                Event::TabletTool(TabletToolEvent::Proximity)
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_TOOL_TIP => {
-                Event::TabletTool(TabletToolEvent::Tip)
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_TOOL_BUTTON => {
-                Event::TabletTool(TabletToolEvent::Button)
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_PAD_BUTTON => {
-                Event::TabletPad(TabletPadEvent::Button)
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_PAD_RING => {
-                Event::TabletPad(TabletPadEvent::Ring)
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_PAD_STRIP => {
-                Event::TabletPad(TabletPadEvent::Strip)
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_PAD_KEY => {
-                Event::TabletPad(TabletPadEvent::Key)
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_TABLET_PAD_DIAL => {
-                Event::TabletPad(TabletPadEvent::Dial)
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN => {
-                Event::Gesture(GestureEvent::SwipeBegin(unsafe {
-                    GestureSwipeBeginEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE => {
-                Event::Gesture(GestureEvent::SwipeUpdate(unsafe {
-                    GestureSwipeUpdateEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_SWIPE_END => {
-                Event::Gesture(GestureEvent::SwipeEnd(unsafe {
-                    GestureSwipeEndEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_PINCH_BEGIN => {
-                Event::Gesture(GestureEvent::PinchBegin(unsafe {
-                    GesturePinchBeginEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_PINCH_UPDATE => {
-                Event::Gesture(GestureEvent::PinchUpdate(unsafe {
-                    GesturePinchUpdateEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_PINCH_END => {
-                Event::Gesture(GestureEvent::PinchEnd(unsafe {
-                    GesturePinchEndEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_HOLD_BEGIN => {
-                Event::Gesture(GestureEvent::HoldBegin(unsafe {
-                    GestureHoldBeginEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_HOLD_END => {
-                Event::Gesture(GestureEvent::HoldEnd(unsafe {
-                    GestureHoldEndEvent::from_raw_event(event)
-                }))
-            }
-            sys::libinput_event_type::LIBINPUT_EVENT_SWITCH_TOGGLE => {
-                Event::Switch(SwitchEvent::Toggle)
-            }
+            LIBINPUT_EVENT_DEVICE_ADDED => map_raw!(Device(Added), event),
+            LIBINPUT_EVENT_DEVICE_REMOVED => map_raw!(Device(Removed), event),
+
+            LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN => map_raw!(Gesture(SwipeBegin), event),
+            LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE => map_raw!(Gesture(SwipeUpdate), event),
+            LIBINPUT_EVENT_GESTURE_SWIPE_END => map_raw!(Gesture(SwipeEnd), event),
+            LIBINPUT_EVENT_GESTURE_PINCH_BEGIN => map_raw!(Gesture(PinchBegin), event),
+            LIBINPUT_EVENT_GESTURE_PINCH_UPDATE => map_raw!(Gesture(PinchUpdate), event),
+            LIBINPUT_EVENT_GESTURE_PINCH_END => map_raw!(Gesture(PinchEnd), event),
+            LIBINPUT_EVENT_GESTURE_HOLD_BEGIN => map_raw!(Gesture(HoldBegin), event),
+            LIBINPUT_EVENT_GESTURE_HOLD_END => map_raw!(Gesture(HoldEnd), event),
+
+            LIBINPUT_EVENT_KEYBOARD_KEY => map_raw!(Keyboard(Key), event),
+
+            LIBINPUT_EVENT_POINTER_MOTION => map_raw!(Pointer(Motion), event),
+            LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE => map_raw!(Pointer(MotionAbsolute), event),
+            LIBINPUT_EVENT_POINTER_BUTTON => map_raw!(Pointer(Button), event),
+            LIBINPUT_EVENT_POINTER_AXIS => map_raw!(Pointer(Axis), event),
+            LIBINPUT_EVENT_POINTER_SCROLL_WHEEL => map_raw!(Pointer(ScrollWheel), event),
+            LIBINPUT_EVENT_POINTER_SCROLL_FINGER => map_raw!(Pointer(ScrollFinger), event),
+            LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS => map_raw!(Pointer(ScrollContinuous), event),
+
+            LIBINPUT_EVENT_SWITCH_TOGGLE => map_raw!(Switch(Toggle), event),
+
+            LIBINPUT_EVENT_TABLET_PAD_BUTTON => map_raw!(TabletPad(Button), event),
+            LIBINPUT_EVENT_TABLET_PAD_RING => map_raw!(TabletPad(Ring), event),
+            LIBINPUT_EVENT_TABLET_PAD_STRIP => map_raw!(TabletPad(Strip), event),
+            LIBINPUT_EVENT_TABLET_PAD_KEY => map_raw!(TabletPad(Key), event),
+            LIBINPUT_EVENT_TABLET_PAD_DIAL => map_raw!(TabletPad(Dial), event),
+
+            LIBINPUT_EVENT_TABLET_TOOL_AXIS => map_raw!(TabletTool(Axis), event),
+            LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY => map_raw!(TabletTool(Proximity), event),
+            LIBINPUT_EVENT_TABLET_TOOL_TIP => map_raw!(TabletTool(Tip), event),
+            LIBINPUT_EVENT_TABLET_TOOL_BUTTON => map_raw!(TabletTool(Button), event),
+
+            LIBINPUT_EVENT_TOUCH_DOWN => map_raw!(Touch(Down), event),
+            LIBINPUT_EVENT_TOUCH_UP => map_raw!(Touch(Up), event),
+            LIBINPUT_EVENT_TOUCH_MOTION => map_raw!(Touch(Motion), event),
+            LIBINPUT_EVENT_TOUCH_CANCEL => map_raw!(Touch(Cancel), event),
+            LIBINPUT_EVENT_TOUCH_FRAME => map_raw!(Touch(Frame), event),
+
             _ => Event::Unknown,
         };
 
@@ -258,21 +167,8 @@ mod sealed {
     }
 
     seal! {
-        KeyboardKeyEvent,
         DeviceAddedEvent,
         DeviceRemovedEvent,
-        TouchUpEvent,
-        TouchDownEvent,
-        TouchFrameEvent,
-        TouchCancelEvent,
-        TouchMotionEvent,
-        PointerMotionEvent,
-        PointerMotionAbsoluteEvent,
-        PointerButtonEvent,
-        PointerAxisEvent,
-        PointerScrollWheelEvent,
-        PointerScrollFingerEvent,
-        PointerScrollContinuousEvent,
         GestureSwipeBeginEvent,
         GestureSwipeUpdateEvent,
         GestureSwipeEndEvent,
@@ -281,5 +177,28 @@ mod sealed {
         GesturePinchEndEvent,
         GestureHoldBeginEvent,
         GestureHoldEndEvent,
+        KeyboardKeyEvent,
+        PointerMotionEvent,
+        PointerMotionAbsoluteEvent,
+        PointerButtonEvent,
+        PointerAxisEvent,
+        PointerScrollWheelEvent,
+        PointerScrollFingerEvent,
+        PointerScrollContinuousEvent,
+        SwitchToggleEvent,
+        TabletPadButtonEvent,
+        TabletPadRingEvent,
+        TabletPadStripEvent,
+        TabletPadKeyEvent,
+        TabletPadDialEvent,
+        TabletToolAxisEvent,
+        TabletToolProximityEvent,
+        TabletToolTipEvent,
+        TabletToolButtonEvent,
+        TouchUpEvent,
+        TouchDownEvent,
+        TouchFrameEvent,
+        TouchCancelEvent,
+        TouchMotionEvent,
     }
 }
