@@ -21,9 +21,14 @@ pub use touch::*;
 macro_rules! define_events {
     ($raw:ident, $get:expr, $set:expr, $($event:ident,)+) => {
         $(
-            #[derive(Debug)]
             pub struct $event {
                 raw: *mut $raw,
+            }
+
+            impl std::fmt::Debug for $event {
+                fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                    f.debug_struct(stringify!($event)).finish()
+                }
             }
 
             impl crate::event::AsRawEvent<$raw> for $event {
