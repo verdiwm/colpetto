@@ -23,6 +23,11 @@ pub struct DeviceGroup {
     raw: *mut sys::libinput_device_group,
 }
 
+pub struct Seat {
+    #[allow(unused)]
+    raw: *mut sys::libinput_seat,
+}
+
 impl Device {
     pub unsafe fn from_raw(raw: *mut sys::libinput_device) -> Self {
         Self { raw }
@@ -34,8 +39,36 @@ impl Device {
         }
     }
 
+    pub fn bustype_id(&self) -> u32 {
+        unsafe { sys::libinput_device_get_id_bustype(self.raw) }
+    }
+
+    pub fn product_id(&self) -> u32 {
+        unsafe { sys::libinput_device_get_id_product(self.raw) }
+    }
+
+    pub fn vendor_id(&self) -> u32 {
+        unsafe { sys::libinput_device_get_id_vendor(self.raw) }
+    }
+
     pub fn name(&self) -> &CStr {
         unsafe { CStr::from_ptr(sys::libinput_device_get_name(self.raw)) }
+    }
+
+    pub fn output_name(&self) -> Option<&CStr> {
+        let name = unsafe { sys::libinput_device_get_output_name(self.raw) };
+
+        if name.is_null() {
+            return None;
+        }
+
+        Some(unsafe { CStr::from_ptr(name) })
+    }
+
+    pub fn seat(&self) -> Seat {
+        Seat {
+            raw: unsafe { sys::libinput_device_get_seat(self.raw) },
+        }
     }
 
     pub fn udev_device(&self) -> devil::Device {
