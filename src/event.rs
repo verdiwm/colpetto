@@ -90,25 +90,39 @@ impl Event {
                 }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_POINTER_MOTION => {
-                Event::Pointer(PointerEvent::Motion)
+                Event::Pointer(PointerEvent::Motion(unsafe {
+                    PointerMotionEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE => {
-                Event::Pointer(PointerEvent::MotionAbsolute)
+                Event::Pointer(PointerEvent::MotionAbsolute(unsafe {
+                    PointerMotionAbsoluteEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_POINTER_BUTTON => {
-                Event::Pointer(PointerEvent::Button)
+                Event::Pointer(PointerEvent::Button(unsafe {
+                    PointerButtonEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_POINTER_AXIS => {
-                Event::Pointer(PointerEvent::Axis)
+                Event::Pointer(PointerEvent::Axis(unsafe {
+                    PointerAxisEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_POINTER_SCROLL_WHEEL => {
-                Event::Pointer(PointerEvent::ScrollWheel)
+                Event::Pointer(PointerEvent::ScrollWheel(unsafe {
+                    PointerScrollWheelEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_POINTER_SCROLL_FINGER => {
-                Event::Pointer(PointerEvent::ScrollFinger)
+                Event::Pointer(PointerEvent::ScrollFinger(unsafe {
+                    PointerScrollFingerEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS => {
-                Event::Pointer(PointerEvent::ScrollContinuous)
+                Event::Pointer(PointerEvent::ScrollContinuous(unsafe {
+                    PointerScrollContinuousEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_DOWN => {
                 Event::Touch(TouchEvent::Down(unsafe {
@@ -221,4 +235,11 @@ mod sealed {
     impl EventSealed for super::TouchFrameEvent {}
     impl EventSealed for super::TouchCancelEvent {}
     impl EventSealed for super::TouchMotionEvent {}
+    impl EventSealed for super::PointerMotionEvent {}
+    impl EventSealed for super::PointerMotionAbsoluteEvent {}
+    impl EventSealed for super::PointerButtonEvent {}
+    impl EventSealed for super::PointerAxisEvent {}
+    impl EventSealed for super::PointerScrollWheelEvent {}
+    impl EventSealed for super::PointerScrollFingerEvent {}
+    impl EventSealed for super::PointerScrollContinuousEvent {}
 }
