@@ -96,37 +96,15 @@ impl libinput_log_priority {
 #[doc = " @ingroup base\n\n Log priority for internal logging messages."]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct libinput_log_priority(pub ::core::ffi::c_uint);
-impl libinput_device_capability {
-    pub const LIBINPUT_DEVICE_CAP_KEYBOARD: libinput_device_capability =
-        libinput_device_capability(0);
-}
-impl libinput_device_capability {
-    pub const LIBINPUT_DEVICE_CAP_POINTER: libinput_device_capability =
-        libinput_device_capability(1);
-}
-impl libinput_device_capability {
-    pub const LIBINPUT_DEVICE_CAP_TOUCH: libinput_device_capability = libinput_device_capability(2);
-}
-impl libinput_device_capability {
-    pub const LIBINPUT_DEVICE_CAP_TABLET_TOOL: libinput_device_capability =
-        libinput_device_capability(3);
-}
-impl libinput_device_capability {
-    pub const LIBINPUT_DEVICE_CAP_TABLET_PAD: libinput_device_capability =
-        libinput_device_capability(4);
-}
-impl libinput_device_capability {
-    pub const LIBINPUT_DEVICE_CAP_GESTURE: libinput_device_capability =
-        libinput_device_capability(5);
-}
-impl libinput_device_capability {
-    pub const LIBINPUT_DEVICE_CAP_SWITCH: libinput_device_capability =
-        libinput_device_capability(6);
-}
-#[repr(transparent)]
+pub const LIBINPUT_DEVICE_CAP_KEYBOARD: libinput_device_capability = 0;
+pub const LIBINPUT_DEVICE_CAP_POINTER: libinput_device_capability = 1;
+pub const LIBINPUT_DEVICE_CAP_TOUCH: libinput_device_capability = 2;
+pub const LIBINPUT_DEVICE_CAP_TABLET_TOOL: libinput_device_capability = 3;
+pub const LIBINPUT_DEVICE_CAP_TABLET_PAD: libinput_device_capability = 4;
+pub const LIBINPUT_DEVICE_CAP_GESTURE: libinput_device_capability = 5;
+pub const LIBINPUT_DEVICE_CAP_SWITCH: libinput_device_capability = 6;
 #[doc = " @ingroup device\n\n Capabilities on a device. A device may have one or more capabilities\n at a time, capabilities remain static for the lifetime of the device."]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct libinput_device_capability(pub ::core::ffi::c_uint);
+pub type libinput_device_capability = ::core::ffi::c_uint;
 impl libinput_key_state {
     pub const LIBINPUT_KEY_STATE_RELEASED: libinput_key_state = libinput_key_state(0);
 }
