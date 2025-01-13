@@ -31,29 +31,28 @@ macro_rules! define_events {
                 }
             }
 
-            impl crate::event::AsRawEvent<$raw> for $event {
-                fn as_raw(&self) -> *mut $raw {
-                    self.raw
-                }
-
+            impl crate::event::AsRawEvent for $event {
                 fn as_raw_event(&self) -> *mut crate::sys::libinput_event {
                     unsafe { $get(self.raw) }
                 }
             }
 
-            impl crate::event::FromRawEvent<$raw> for $event {
-                unsafe fn from_raw(raw: *mut $raw) -> Self {
-                    Self {
-                        raw,
-                    }
-                }
-
+            impl crate::event::FromRawEvent for $event {
                 unsafe fn from_raw_event(event: *mut crate::sys::libinput_event) -> Self {
                     Self {
                         raw: $set(event),
                     }
                 }
             }
+
+            impl Drop for $event {
+                fn drop(&mut self) {
+                    unsafe {
+                        crate::sys::libinput_event_destroy(crate::event::AsRawEvent::as_raw_event(self));
+                    }
+                }
+            }
+
         )+
     };
 }
@@ -145,8 +144,8 @@ impl Event {
     }
 }
 
-pub trait AsRawEvent<T>: sealed::EventSealed {
-    fn as_raw(&self) -> *mut T;
+pub trait AsRawEvent: sealed::EventSealed {
+    // fn as_raw(&self) -> *mut T;
     fn as_raw_event(&self) -> *mut sys::libinput_event;
 
     fn device(&self) -> Device {
@@ -154,8 +153,8 @@ pub trait AsRawEvent<T>: sealed::EventSealed {
     }
 }
 
-pub trait FromRawEvent<T>: sealed::EventSealed {
-    unsafe fn from_raw(raw: *mut T) -> Self;
+pub trait FromRawEvent: sealed::EventSealed {
+    // unsafe fn from_raw(raw: *mut T) -> Self;
     unsafe fn from_raw_event(event: *mut sys::libinput_event) -> Self;
 }
 
