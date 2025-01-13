@@ -18,12 +18,17 @@ use futures_core::{ready, Stream};
 use tokio::io::unix::AsyncFd;
 
 mod device;
-pub mod event;
+mod device_group;
 mod logger;
+mod seat;
+
+pub mod event;
 
 pub use device::*;
+pub use device_group::*;
 pub use event::Event;
 pub use logger::*;
+pub use seat::*;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
