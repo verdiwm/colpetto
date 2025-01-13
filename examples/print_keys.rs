@@ -42,20 +42,20 @@ async fn main() -> AnyResult<()> {
                 println!(
                     "Key \"{key}\" {state} on \"{device_name}\" at node \"{device_path}\"",
                     device_path = device_path.display()
-                )
+                );
             }
             Event::Device(DeviceEvent::Added(event)) => {
                 let device = event.device();
                 let name = device.name().to_string_lossy();
 
-                println!("Found new device: \"{name}\"")
+                println!("Found new device: \"{name}\"");
             }
 
             Event::Device(DeviceEvent::Removed(event)) => {
                 let device = event.device();
                 let name = device.name().to_string_lossy();
 
-                println!("Lost device: \"{name}\"")
+                println!("Lost device: \"{name}\"");
             }
             _ => (),
         }
