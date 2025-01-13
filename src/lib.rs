@@ -21,7 +21,7 @@ mod device;
 pub mod event;
 mod logger;
 
-pub use device::Device;
+pub use device::*;
 pub use event::Event;
 pub use logger::*;
 
