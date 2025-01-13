@@ -1,6 +1,6 @@
 use std::ffi::CStr;
 
-use crate::sys;
+use crate::{sys, DeviceGroup, Seat};
 
 pub struct Device {
     raw: *mut sys::libinput_device,
@@ -16,44 +16,6 @@ pub enum DeviceCapability {
     TabletPad = sys::LIBINPUT_DEVICE_CAP_TABLET_PAD,
     TabletTool = sys::LIBINPUT_DEVICE_CAP_TABLET_TOOL,
     Touch = sys::LIBINPUT_DEVICE_CAP_TOUCH,
-}
-
-pub struct DeviceGroup {
-    #[allow(unused)]
-    raw: *mut sys::libinput_device_group,
-}
-
-impl DeviceGroup {
-    pub unsafe fn from_raw(raw: *mut sys::libinput_device_group) -> Self {
-        Self {
-            raw: sys::libinput_device_group_ref(raw),
-        }
-    }
-}
-
-impl Drop for DeviceGroup {
-    fn drop(&mut self) {
-        unsafe { sys::libinput_device_group_unref(self.raw) };
-    }
-}
-
-pub struct Seat {
-    #[allow(unused)]
-    raw: *mut sys::libinput_seat,
-}
-
-impl Seat {
-    pub unsafe fn from_raw(raw: *mut sys::libinput_seat) -> Self {
-        Self {
-            raw: sys::libinput_seat_ref(raw),
-        }
-    }
-}
-
-impl Drop for Seat {
-    fn drop(&mut self) {
-        unsafe { sys::libinput_seat_unref(self.raw) };
-    }
 }
 
 impl Device {
