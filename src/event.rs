@@ -259,7 +259,8 @@ mod sealed {
 
     seal! {
         KeyboardKeyEvent,
-        DeviceNotifyEvent,
+        DeviceAddedEvent,
+        DeviceRemovedEvent,
         TouchUpEvent,
         TouchDownEvent,
         TouchFrameEvent,
