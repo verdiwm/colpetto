@@ -18,6 +18,33 @@ pub use table_pad::*;
 pub use tablet_tool::*;
 pub use touch::*;
 
+macro_rules! define_events {
+    ($raw:ident, $get:expr, $set:expr, $($event:ident,)+) => {
+        $(
+            #[derive(Debug)]
+            pub struct $event {
+                raw: *mut $raw,
+            }
+
+            impl crate::event::AsRawEvent for $event {
+                fn as_raw_event(&self) -> *mut crate::sys::libinput_event {
+                    unsafe { $get(self.raw) }
+                }
+            }
+
+            impl crate::event::FromRawEvent for $event {
+                unsafe fn from_raw_event(event: *mut crate::sys::libinput_event) -> Self {
+                    Self {
+                        raw: $set(event),
+                    }
+                }
+            }
+        )+
+    };
+}
+
+pub(crate) use define_events;
+
 #[derive(Debug)]
 pub enum Event {
     Device(DeviceEvent),
@@ -73,15 +100,31 @@ impl Event {
             sys::libinput_event_type::LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS => {
                 Event::Pointer(PointerEvent::ScrollContinuous)
             }
-            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_DOWN => Event::Touch(TouchEvent::Down),
-            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_UP => Event::Touch(TouchEvent::Up),
+            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_DOWN => {
+                Event::Touch(TouchEvent::Down(unsafe {
+                    TouchDownEvent::from_raw_event(event)
+                }))
+            }
+            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_UP => {
+                Event::Touch(TouchEvent::Up(unsafe {
+                    TouchUpEvent::from_raw_event(event)
+                }))
+            }
             sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_MOTION => {
-                Event::Touch(TouchEvent::Motion)
+                Event::Touch(TouchEvent::Motion(unsafe {
+                    TouchMotionEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_CANCEL => {
-                Event::Touch(TouchEvent::Cancel)
+                Event::Touch(TouchEvent::Cancel(unsafe {
+                    TouchCancelEvent::from_raw_event(event)
+                }))
             }
-            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_FRAME => Event::Touch(TouchEvent::Frame),
+            sys::libinput_event_type::LIBINPUT_EVENT_TOUCH_FRAME => {
+                Event::Touch(TouchEvent::Frame(unsafe {
+                    TouchFrameEvent::from_raw_event(event)
+                }))
+            }
             sys::libinput_event_type::LIBINPUT_EVENT_TABLET_TOOL_AXIS => {
                 Event::TabletTool(TabletToolEvent::Axis)
             }
@@ -161,4 +204,9 @@ mod sealed {
 
     impl EventSealed for super::KeyboardKeyEvent {}
     impl EventSealed for super::DeviceNotifyEvent {}
+    impl EventSealed for super::TouchUpEvent {}
+    impl EventSealed for super::TouchDownEvent {}
+    impl EventSealed for super::TouchFrameEvent {}
+    impl EventSealed for super::TouchCancelEvent {}
+    impl EventSealed for super::TouchMotionEvent {}
 }
