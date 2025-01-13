@@ -15,6 +15,7 @@ use devil::Udev;
 
 mod device;
 mod device_group;
+mod logger;
 mod seat;
 
 pub mod event;
@@ -22,17 +23,13 @@ pub mod event;
 pub use device::*;
 pub use device_group::*;
 pub use event::Event;
+pub use logger::*;
 pub use seat::*;
 
 #[cfg(feature = "tokio")]
 mod event_stream;
 #[cfg(feature = "tokio")]
 pub use event_stream::EventStream;
-
-#[cfg(any(feature = "log", feature = "tracing"))]
-mod logger;
-#[cfg(any(feature = "log", feature = "tracing"))]
-pub use logger::*;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
