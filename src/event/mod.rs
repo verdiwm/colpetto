@@ -143,13 +143,16 @@ impl Event {
     }
 }
 
-pub trait RawEvent: sealed::EventSealed {
+pub trait AsRawEvent: sealed::EventSealed {
     fn as_raw_event(&self) -> *mut sys::libinput_event;
-    unsafe fn from_raw_event(event: *mut sys::libinput_event) -> Self;
 
     fn device(&self) -> Device {
         unsafe { Device::from_raw(sys::libinput_event_get_device(self.as_raw_event())) }
     }
+}
+
+pub trait FromRawEvent: sealed::EventSealed {
+    unsafe fn from_raw_event(event: *mut sys::libinput_event) -> Self;
 }
 
 mod sealed {

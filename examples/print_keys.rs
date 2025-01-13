@@ -2,7 +2,7 @@ use std::{ffi::CString, path::Path};
 
 use anyhow::Result as AnyResult;
 use colpetto::{
-    event::{KeyboardEvent, RawEvent},
+    event::{AsRawEvent, KeyboardEvent},
     Event, Libinput,
 };
 use futures_util::TryStreamExt;
