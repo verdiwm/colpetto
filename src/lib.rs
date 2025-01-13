@@ -5,17 +5,13 @@ use std::{
     ffi::{c_char, c_int, c_void, CStr},
     io, mem,
     os::fd::RawFd,
-    pin::Pin,
     sync::{
         atomic::{AtomicPtr, Ordering},
         Arc,
     },
-    task::{self, Poll},
 };
 
 use devil::Udev;
-use futures_core::{ready, Stream};
-use tokio::io::unix::AsyncFd;
 
 mod device;
 mod device_group;
@@ -29,6 +25,11 @@ pub use device_group::*;
 pub use event::Event;
 pub use logger::*;
 pub use seat::*;
+
+#[cfg(feature = "tokio")]
+mod event_stream;
+#[cfg(feature = "tokio")]
+pub use event_stream::EventStream;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -125,14 +126,6 @@ impl Libinput {
         unsafe { sys::libinput_get_fd(self.as_raw()) }
     }
 
-    pub fn event_stream(&self) -> Result<EventStream, Error> {
-        Ok(EventStream {
-            libinput: self.clone(),
-            fd: AsyncFd::new(self.get_fd())?,
-            is_first: true,
-        })
-    }
-
     pub fn assign_seat(&self, seat: &CStr) -> Result<(), Error> {
         unsafe {
             let res = sys::libinput_udev_assign_seat(self.as_raw(), seat.as_ptr());
@@ -223,38 +216,9 @@ impl Clone for Libinput {
     }
 }
 
-pub struct EventStream {
-    libinput: Libinput,
-    fd: AsyncFd<i32>,
-    is_first: bool,
-}
-
-impl Stream for EventStream {
-    type Item = Result<Event, Error>;
-
-    fn poll_next(mut self: Pin<&mut Self>, cx: &mut task::Context<'_>) -> Poll<Option<Self::Item>> {
-        loop {
-            // The first time we poll there is already device created events available
-            if self.is_first {
-                self.libinput.dispatch()?;
-
-                if let Some(event) = self.libinput.get_event() {
-                    return Poll::Ready(Some(Ok(event)));
-                } else {
-                    self.is_first = false;
-                    continue;
-                }
-            }
-
-            let mut guard = ready!(self.fd.poll_read_ready(cx))?;
-            self.libinput.dispatch()?;
-
-            if let Some(event) = self.libinput.get_event() {
-                return Poll::Ready(Some(Ok(event)));
-            } else {
-                guard.clear_ready();
-                continue;
-            }
-        }
+#[cfg(feature = "tokio")]
+impl Libinput {
+    pub fn event_stream(&self) -> Result<EventStream, Error> {
+        EventStream::new(self.clone(), self.get_fd())
     }
 }
