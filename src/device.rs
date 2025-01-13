@@ -18,9 +18,20 @@ pub enum DeviceCapability {
     Touch = sys::LIBINPUT_DEVICE_CAP_TOUCH,
 }
 
+pub struct DeviceGroup {
+    #[allow(unused)]
+    raw: *mut sys::libinput_device_group,
+}
+
 impl Device {
     pub unsafe fn from_raw(raw: *mut sys::libinput_device) -> Self {
         Self { raw }
+    }
+
+    pub fn device_group(&self) -> DeviceGroup {
+        DeviceGroup {
+            raw: unsafe { sys::libinput_device_get_device_group(self.raw) },
+        }
     }
 
     pub fn name(&self) -> &CStr {
