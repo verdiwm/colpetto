@@ -20,7 +20,9 @@ pub enum DeviceCapability {
 
 impl Device {
     pub unsafe fn from_raw(raw: *mut sys::libinput_device) -> Self {
-        Self { raw }
+        Self {
+            raw: unsafe { sys::libinput_device_ref(raw) },
+        }
     }
 
     pub fn device_group(&self) -> DeviceGroup {
@@ -63,5 +65,11 @@ impl Device {
 
     pub fn has_capability(&self, capability: DeviceCapability) -> bool {
         unsafe { sys::libinput_device_has_capability(self.raw, capability as u32) != 0 }
+    }
+}
+
+impl Drop for Device {
+    fn drop(&mut self) {
+        unsafe { sys::libinput_device_unref(self.raw) };
     }
 }
