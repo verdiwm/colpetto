@@ -52,11 +52,13 @@ impl KeyboardKeyEvent {
     }
 }
 
-impl super::RawEvent for KeyboardKeyEvent {
+impl super::AsRawEvent for KeyboardKeyEvent {
     fn as_raw_event(&self) -> *mut sys::libinput_event {
         unsafe { sys::libinput_event_keyboard_get_base_event(self.raw) }
     }
+}
 
+impl super::FromRawEvent for KeyboardKeyEvent {
     unsafe fn from_raw_event(event: *mut sys::libinput_event) -> Self {
         Self {
             raw: sys::libinput_event_get_keyboard_event(event),
