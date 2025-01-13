@@ -70,7 +70,13 @@ pub enum Event {
     TabletPad(TabletPadEvent),
     TabletTool(TabletToolEvent),
     Touch(TouchEvent),
-    Unknown,
+    Unknown(Unknown),
+}
+
+#[derive(Debug)]
+pub struct Unknown {
+    #[allow(unused)]
+    raw: *mut sys::libinput_event,
 }
 
 macro_rules! map_raw {
@@ -86,7 +92,6 @@ macro_rules! map_raw {
 impl Event {
     pub(crate) fn from_raw(
         event: *mut sys::libinput_event,
-
         event_type: sys::libinput_event_type::Type,
     ) -> Self {
         use sys::libinput_event_type::*;
@@ -133,7 +138,7 @@ impl Event {
             LIBINPUT_EVENT_TOUCH_CANCEL => map_raw!(Touch(Cancel), event),
             LIBINPUT_EVENT_TOUCH_FRAME => map_raw!(Touch(Frame), event),
 
-            _ => Event::Unknown,
+            _ => Event::Unknown(Unknown { raw: event }),
         };
 
         event
@@ -200,5 +205,6 @@ mod sealed {
         TouchFrameEvent,
         TouchCancelEvent,
         TouchMotionEvent,
+        Unknown,
     }
 }
