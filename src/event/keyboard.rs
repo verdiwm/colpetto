@@ -26,6 +26,10 @@ impl KeyboardKeyEvent {
         KeyState::from_raw(unsafe { sys::libinput_event_keyboard_get_key_state(self.raw) })
     }
 
+    pub fn seat_key_count(&self) -> u32 {
+        unsafe { sys::libinput_event_keyboard_get_seat_key_count(self.raw) }
+    }
+
     pub fn time(&self) -> u32 {
         unsafe { sys::libinput_event_keyboard_get_time(self.raw) }
     }
