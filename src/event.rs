@@ -182,28 +182,44 @@ impl Event {
                 Event::TabletPad(TabletPadEvent::Dial)
             }
             sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN => {
-                Event::Gesture(GestureEvent::SwipeBegin)
+                Event::Gesture(GestureEvent::SwipeBegin(unsafe {
+                    GestureSwipeBeginEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE => {
-                Event::Gesture(GestureEvent::SwipeUpdate)
+                Event::Gesture(GestureEvent::SwipeUpdate(unsafe {
+                    GestureSwipeUpdateEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_SWIPE_END => {
-                Event::Gesture(GestureEvent::SwipeEnd)
+                Event::Gesture(GestureEvent::SwipeEnd(unsafe {
+                    GestureSwipeEndEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_PINCH_BEGIN => {
-                Event::Gesture(GestureEvent::PinchBegin)
+                Event::Gesture(GestureEvent::PinchBegin(unsafe {
+                    GesturePinchBeginEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_PINCH_UPDATE => {
-                Event::Gesture(GestureEvent::PinchUpdate)
+                Event::Gesture(GestureEvent::PinchUpdate(unsafe {
+                    GesturePinchUpdateEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_PINCH_END => {
-                Event::Gesture(GestureEvent::PinchEnd)
+                Event::Gesture(GestureEvent::PinchEnd(unsafe {
+                    GesturePinchEndEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_HOLD_BEGIN => {
-                Event::Gesture(GestureEvent::HoldBegin)
+                Event::Gesture(GestureEvent::HoldBegin(unsafe {
+                    GestureHoldBeginEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_GESTURE_HOLD_END => {
-                Event::Gesture(GestureEvent::HoldEnd)
+                Event::Gesture(GestureEvent::HoldEnd(unsafe {
+                    GestureHoldEndEvent::from_raw_event(event)
+                }))
             }
             sys::libinput_event_type::LIBINPUT_EVENT_SWITCH_TOGGLE => {
                 Event::Switch(SwitchEvent::Toggle)
@@ -247,4 +263,12 @@ mod sealed {
     impl EventSealed for super::PointerScrollWheelEvent {}
     impl EventSealed for super::PointerScrollFingerEvent {}
     impl EventSealed for super::PointerScrollContinuousEvent {}
+    impl EventSealed for super::GestureSwipeBeginEvent {}
+    impl EventSealed for super::GestureSwipeUpdateEvent {}
+    impl EventSealed for super::GestureSwipeEndEvent {}
+    impl EventSealed for super::GesturePinchBeginEvent {}
+    impl EventSealed for super::GesturePinchUpdateEvent {}
+    impl EventSealed for super::GesturePinchEndEvent {}
+    impl EventSealed for super::GestureHoldBeginEvent {}
+    impl EventSealed for super::GestureHoldEndEvent {}
 }
