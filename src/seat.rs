@@ -18,3 +18,11 @@ impl Drop for Seat {
         unsafe { sys::libinput_seat_unref(self.raw) };
     }
 }
+
+impl Clone for Seat {
+    fn clone(&self) -> Self {
+        Self {
+            raw: unsafe { sys::libinput_seat_ref(self.raw) },
+        }
+    }
+}

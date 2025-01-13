@@ -73,3 +73,11 @@ impl Drop for Device {
         unsafe { sys::libinput_device_unref(self.raw) };
     }
 }
+
+impl Clone for Device {
+    fn clone(&self) -> Self {
+        Self {
+            raw: unsafe { sys::libinput_device_ref(self.raw) },
+        }
+    }
+}
