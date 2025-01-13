@@ -112,13 +112,13 @@ macro_rules! map_raw {
 }
 
 impl Event {
-    pub(crate) fn from_raw(
+    pub unsafe fn from_raw(
         event: *mut sys::libinput_event,
         event_type: sys::libinput_event_type::Type,
     ) -> Self {
         use sys::libinput_event_type::*;
 
-        let event = match event_type {
+        match event_type {
             LIBINPUT_EVENT_DEVICE_ADDED => map_raw!(Device(Added), event),
             LIBINPUT_EVENT_DEVICE_REMOVED => map_raw!(Device(Removed), event),
 
@@ -161,9 +161,7 @@ impl Event {
             LIBINPUT_EVENT_TOUCH_FRAME => map_raw!(Touch(Frame), event),
 
             _ => Event::Unknown(Unknown { raw: event }),
-        };
-
-        event
+        }
     }
 }
 

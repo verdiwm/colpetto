@@ -171,7 +171,7 @@ impl Libinput {
             return None;
         }
 
-        Some(Event::from_raw(event, event_type))
+        Some(unsafe { Event::from_raw(event, event_type) })
     }
 
     // FIXME: can we actually retrieve an error?
