@@ -15,7 +15,7 @@ log = ["dep:log"]
 [dependencies]
 devil = "0.0.7"
 futures-core = "0.3.31"
-thiserror = "2.0.10"
+thiserror = "2.0.11"
 tokio = { version = "1.43.0", features = ["net"] }
 
 # Loggers
@@ -24,14 +24,14 @@ tracing = { version = "0.1.41", optional = true }
 
 
 [build-dependencies]
-cc = "1.2.7"
+cc = "1.2.9"
 pkg-config = "0.3.31"
 
 [dev-dependencies]
-anyhow = "1.0.94"
+anyhow = "1.0.95"
 reconciler = "0.0.3"
-zbus = { version = "5.2.0", default-features = false, features = ["tokio"] }
+zbus = { version = "5.3.0", default-features = false, features = ["tokio"] }
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-tokio = { version = "1.42.0", features = ["macros", "rt-multi-thread"] }
-rustix = { version = "0.38.42", default-features = false, features = ["fs"] }
+tokio = { version = "1.43.0", features = ["macros", "rt-multi-thread"] }
+rustix = { version = "0.38.43", default-features = false, features = ["fs"] }
 futures-util = { version = "0.3.31", default-features = false }
