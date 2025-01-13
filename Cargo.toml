@@ -8,6 +8,11 @@ authors = ["Federico Maria Morrone <contact@morrone.dev>"]
 readme = "README.md"
 repository = "https://github.com/verdiwm/colpetto"
 
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+
 [features]
 tracing = ["dep:tracing"]
 log = ["dep:log"]
