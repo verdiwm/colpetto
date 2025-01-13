@@ -399,155 +399,85 @@ pub struct libinput_switch(pub ::core::ffi::c_uint);
 pub struct libinput_event_switch {
     _unused: [u8; 0],
 }
-impl libinput_event_type {
+pub mod libinput_event_type {
+    #[doc = " @ingroup base\n\n Event type for events returned by libinput_get_event()."]
+    pub type Type = ::core::ffi::c_uint;
     #[doc = " This is not a real event type, and is only used to tell the user that\n no new event is available in the queue. See\n libinput_next_event_type()."]
-    pub const LIBINPUT_EVENT_NONE: libinput_event_type = libinput_event_type(0);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_NONE: Type = 0;
     #[doc = " Signals that a device has been added to the context. The device will\n not be read until the next time the user calls libinput_dispatch()\n and data is available.\n\n This allows setting up initial device configuration before any events\n are created."]
-    pub const LIBINPUT_EVENT_DEVICE_ADDED: libinput_event_type = libinput_event_type(1);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_DEVICE_ADDED: Type = 1;
     #[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
-    pub const LIBINPUT_EVENT_DEVICE_REMOVED: libinput_event_type = libinput_event_type(2);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_DEVICE_REMOVED: Type = 2;
     #[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
-    pub const LIBINPUT_EVENT_KEYBOARD_KEY: libinput_event_type = libinput_event_type(300);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_KEYBOARD_KEY: Type = 300;
     #[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
-    pub const LIBINPUT_EVENT_POINTER_MOTION: libinput_event_type = libinput_event_type(400);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_POINTER_MOTION: Type = 400;
     #[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
-    pub const LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE: libinput_event_type =
-        libinput_event_type(401);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE: Type = 401;
     #[doc = " Signals that a device has been removed. No more events from the\n associated device will be in the queue or be queued after this event."]
-    pub const LIBINPUT_EVENT_POINTER_BUTTON: libinput_event_type = libinput_event_type(402);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_POINTER_BUTTON: Type = 402;
     #[doc = " A scroll event from various sources.\n\n This event is deprecated as of libinput 1.19. Use\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS instead.\n\n Use libinput_event_pointer_get_axis_source() to determine the\n source of a scroll event. For libinput versions 1.19 and later,\n the source is encoded in the event type.\n\n This event is sent **in addition** to events of type\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS.\n Do not mix and match, either use the old event or the new events.\n libinput makes no guarantee about the relation between\n @ref LIBINPUT_EVENT_POINTER_AXIS and the new event types\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS. You may receive\n multiple zero, one or more new events per legacy event.\n\n @warning Ignore this event if you are processing\n @ref LIBINPUT_EVENT_POINTER_SCROLL_WHEEL,\n @ref LIBINPUT_EVENT_POINTER_SCROLL_FINGER, and\n @ref LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS."]
-    pub const LIBINPUT_EVENT_POINTER_AXIS: libinput_event_type = libinput_event_type(403);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_POINTER_AXIS: Type = 403;
     #[doc = " A scroll event from a wheel. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_WHEEL. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-    pub const LIBINPUT_EVENT_POINTER_SCROLL_WHEEL: libinput_event_type = libinput_event_type(404);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_POINTER_SCROLL_WHEEL: Type = 404;
     #[doc = " A scroll event caused by the movement of one or more fingers on a\n device. This event is sent is sent **in addition** to the @ref\n LIBINPUT_EVENT_POINTER_AXIS event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_FINGER. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-    pub const LIBINPUT_EVENT_POINTER_SCROLL_FINGER: libinput_event_type = libinput_event_type(405);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_POINTER_SCROLL_FINGER: Type = 405;
     #[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-    pub const LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS: libinput_event_type =
-        libinput_event_type(406);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_POINTER_SCROLL_CONTINUOUS: Type = 406;
     #[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-    pub const LIBINPUT_EVENT_TOUCH_DOWN: libinput_event_type = libinput_event_type(500);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TOUCH_DOWN: Type = 500;
     #[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-    pub const LIBINPUT_EVENT_TOUCH_UP: libinput_event_type = libinput_event_type(501);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TOUCH_UP: Type = 501;
     #[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-    pub const LIBINPUT_EVENT_TOUCH_MOTION: libinput_event_type = libinput_event_type(502);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TOUCH_MOTION: Type = 502;
     #[doc = " A scroll event from a continuous scroll source, e.g. button\n scrolling. This event is sent is sent **in\n addition** to the @ref LIBINPUT_EVENT_POINTER_AXIS\n event for all events with a\n libinput_event_pointer_get_axis_source() of @ref\n LIBINPUT_POINTER_AXIS_SOURCE_CONTINUOUS. Ignore @ref\n LIBINPUT_EVENT_POINTER_AXIS if you are processing this event.\n\n See the libinput documentation for details.\n\n @since 1.19"]
-    pub const LIBINPUT_EVENT_TOUCH_CANCEL: libinput_event_type = libinput_event_type(503);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TOUCH_CANCEL: Type = 503;
     #[doc = " Signals the end of a set of touchpoints at one device sample\n time. This event has no coordinate information attached."]
-    pub const LIBINPUT_EVENT_TOUCH_FRAME: libinput_event_type = libinput_event_type(504);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TOUCH_FRAME: Type = 504;
     #[doc = " One or more axes have changed state on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_TOOL capability. This event is only sent\n when the tool is in proximity, see @ref\n LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY for details.\n\n The proximity event contains the initial state of the axis as the\n tool comes into proximity. An event of type @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS is only sent when an axis value\n changes from this initial state. It is possible for a tool to\n enter and leave proximity without sending an event of type @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS.\n\n An event of type @ref LIBINPUT_EVENT_TABLET_TOOL_AXIS is sent\n when the tip state does not change. See the documentation for\n @ref LIBINPUT_EVENT_TABLET_TOOL_TIP for more details.\n\n @since 1.2"]
-    pub const LIBINPUT_EVENT_TABLET_TOOL_AXIS: libinput_event_type = libinput_event_type(600);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TABLET_TOOL_AXIS: Type = 600;
     #[doc = " Signals that a tool has come in or out of proximity of a device with\n the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n Proximity events contain each of the current values for each axis,\n and these values may be extracted from them in the same way they are\n with @ref LIBINPUT_EVENT_TABLET_TOOL_AXIS events.\n\n Some tools may always be in proximity. For these tools, events of\n type @ref LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_IN are sent only once after @ref\n LIBINPUT_EVENT_DEVICE_ADDED, and events of type @ref\n LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_OUT are sent only once before @ref\n LIBINPUT_EVENT_DEVICE_REMOVED.\n\n If the tool that comes into proximity supports x/y coordinates,\n libinput guarantees that both x and y are set in the proximity\n event.\n\n When a tool goes out of proximity, the value of every axis should be\n assumed to have an undefined state and any buttons that are currently held\n down on the stylus are marked as released. Button release events for\n each button that was held down on the stylus are sent before the\n proximity out event.\n\n @since 1.2"]
-    pub const LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY: libinput_event_type = libinput_event_type(601);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY: Type = 601;
     #[doc = " Signals that a tool has come in contact with the surface of a\n device with the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n On devices without distance proximity detection, the @ref\n LIBINPUT_EVENT_TABLET_TOOL_TIP is sent immediately after @ref\n LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY for the tip down event, and\n immediately before for the tip up event.\n\n The decision when a tip touches the surface is device-dependent\n and may be derived from pressure data or other means. If the tip\n state is changed by axes changing state, the\n @ref LIBINPUT_EVENT_TABLET_TOOL_TIP event includes the changed\n axes and no additional axis event is sent for this state change.\n In other words, a caller must look at both @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS and @ref\n LIBINPUT_EVENT_TABLET_TOOL_TIP events to know the current state\n of the axes.\n\n If a button state change occurs at the same time as a tip state\n change, the order of events is device-dependent.\n\n @since 1.2"]
-    pub const LIBINPUT_EVENT_TABLET_TOOL_TIP: libinput_event_type = libinput_event_type(602);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TABLET_TOOL_TIP: Type = 602;
     #[doc = " Signals that a tool has changed a logical button state on a\n device with the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n Button state changes occur on their own and do not include axis\n state changes. If button and axis state changes occur within the\n same logical hardware event, the order of the @ref\n LIBINPUT_EVENT_TABLET_TOOL_BUTTON and @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS event is device-specific.\n\n This event is not to be confused with the button events emitted\n by the tablet pad. See @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON.\n\n @see LIBINPUT_EVENT_TABLET_PAD_BUTTON\n\n @since 1.2"]
-    pub const LIBINPUT_EVENT_TABLET_TOOL_BUTTON: libinput_event_type = libinput_event_type(603);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TABLET_TOOL_BUTTON: Type = 603;
     #[doc = " A button pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A button differs from @ref LIBINPUT_EVENT_TABLET_PAD_KEY in that\n buttons are sequentially indexed from 0 and do not carry any\n other information.  Keys have a specific functionality assigned\n to them. The key code thus carries a semantic meaning, a button\n number does not.\n\n This event is not to be confused with the button events emitted\n by tools on a tablet (@ref LIBINPUT_EVENT_TABLET_TOOL_BUTTON).\n\n @since 1.3"]
-    pub const LIBINPUT_EVENT_TABLET_PAD_BUTTON: libinput_event_type = libinput_event_type(700);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TABLET_PAD_BUTTON: Type = 700;
     #[doc = " A status change on a tablet ring with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.3"]
-    pub const LIBINPUT_EVENT_TABLET_PAD_RING: libinput_event_type = libinput_event_type(701);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TABLET_PAD_RING: Type = 701;
     #[doc = " A status change on a strip on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.3"]
-    pub const LIBINPUT_EVENT_TABLET_PAD_STRIP: libinput_event_type = libinput_event_type(702);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TABLET_PAD_STRIP: Type = 702;
     #[doc = " A key pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A key differs from @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON in that\n keys have a specific functionality assigned to them (buttons are\n sequentially ordered). The key code thus carries a semantic\n meaning, a button number does not.\n\n @since 1.15"]
-    pub const LIBINPUT_EVENT_TABLET_PAD_KEY: libinput_event_type = libinput_event_type(703);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TABLET_PAD_KEY: Type = 703;
     #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-    pub const LIBINPUT_EVENT_TABLET_PAD_DIAL: libinput_event_type = libinput_event_type(704);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_TABLET_PAD_DIAL: Type = 704;
     #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-    pub const LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN: libinput_event_type = libinput_event_type(800);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN: Type = 800;
     #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-    pub const LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE: libinput_event_type = libinput_event_type(801);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE: Type = 801;
     #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-    pub const LIBINPUT_EVENT_GESTURE_SWIPE_END: libinput_event_type = libinput_event_type(802);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_GESTURE_SWIPE_END: Type = 802;
     #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-    pub const LIBINPUT_EVENT_GESTURE_PINCH_BEGIN: libinput_event_type = libinput_event_type(803);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_GESTURE_PINCH_BEGIN: Type = 803;
     #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-    pub const LIBINPUT_EVENT_GESTURE_PINCH_UPDATE: libinput_event_type = libinput_event_type(804);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_GESTURE_PINCH_UPDATE: Type = 804;
     #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
-    pub const LIBINPUT_EVENT_GESTURE_PINCH_END: libinput_event_type = libinput_event_type(805);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_GESTURE_PINCH_END: Type = 805;
     #[doc = " @since 1.19"]
-    pub const LIBINPUT_EVENT_GESTURE_HOLD_BEGIN: libinput_event_type = libinput_event_type(806);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_GESTURE_HOLD_BEGIN: Type = 806;
     #[doc = " @since 1.19"]
-    pub const LIBINPUT_EVENT_GESTURE_HOLD_END: libinput_event_type = libinput_event_type(807);
-}
-impl libinput_event_type {
+    pub const LIBINPUT_EVENT_GESTURE_HOLD_END: Type = 807;
     #[doc = " @since 1.7"]
-    pub const LIBINPUT_EVENT_SWITCH_TOGGLE: libinput_event_type = libinput_event_type(900);
+    pub const LIBINPUT_EVENT_SWITCH_TOGGLE: Type = 900;
 }
-#[repr(transparent)]
-#[doc = " @ingroup base\n\n Event type for events returned by libinput_get_event()."]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct libinput_event_type(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup event\n\n Destroy the event, freeing all associated resources. Resources obtained\n from this event must be considered invalid after this call.\n\n @warning Unlike other structs events are considered transient and\n <b>not</b> refcounted. Calling libinput_event_destroy() <b>will</b>\n destroy the event.\n\n @param event An event retrieved by libinput_get_event()."]
     pub fn libinput_event_destroy(event: *mut libinput_event);
 }
 unsafe extern "C" {
     #[doc = " @ingroup event\n\n Get the type of the event.\n\n @param event An event retrieved by libinput_get_event()."]
-    pub fn libinput_event_get_type(event: *mut libinput_event) -> libinput_event_type;
+    pub fn libinput_event_get_type(event: *mut libinput_event) -> libinput_event_type::Type;
 }
 unsafe extern "C" {
     #[doc = " @ingroup event\n\n Get the libinput context from the event.\n\n @param event The libinput event\n @return The libinput context for this event."]
@@ -1306,7 +1236,7 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     #[doc = " @ingroup base\n\n Return the type of the next event in the internal queue. This function\n does not pop the event off the queue and the next call to\n libinput_get_event() returns that event.\n\n @param libinput A previously initialized libinput context\n @return The event type of the next available event or @ref\n LIBINPUT_EVENT_NONE if no event is available."]
-    pub fn libinput_next_event_type(libinput: *mut libinput) -> libinput_event_type;
+    pub fn libinput_next_event_type(libinput: *mut libinput) -> libinput_event_type::Type;
 }
 unsafe extern "C" {
     #[doc = " @ingroup base\n\n Set caller-specific data associated with this context. libinput does\n not manage, look at, or modify this data. The caller must ensure the\n data is valid.\n\n @param libinput A previously initialized libinput context\n @param user_data Caller-specific data passed to the various callback\n interfaces."]
