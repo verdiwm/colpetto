@@ -18,3 +18,11 @@ impl Drop for DeviceGroup {
         unsafe { sys::libinput_device_group_unref(self.raw) };
     }
 }
+
+impl Clone for DeviceGroup {
+    fn clone(&self) -> Self {
+        Self {
+            raw: unsafe { sys::libinput_device_group_ref(self.raw) },
+        }
+    }
+}
