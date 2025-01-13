@@ -78,6 +78,20 @@ pub struct Unknown {
     raw: *mut sys::libinput_event,
 }
 
+impl AsRawEvent for Unknown {
+    fn as_raw_event(&self) -> *mut sys::libinput_event {
+        self.raw
+    }
+}
+
+impl Drop for Unknown {
+    fn drop(&mut self) {
+        unsafe {
+            sys::libinput_event_destroy(self.raw);
+        }
+    }
+}
+
 macro_rules! map_raw {
     ($outer:ident($inner:ident), $event:expr) => {
         paste::paste! {
