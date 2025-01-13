@@ -39,3 +39,7 @@ tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 tokio = { version = "1.43.0", features = ["macros", "rt-multi-thread"] }
 rustix = { version = "0.38.43", default-features = false, features = ["fs"] }
 futures-util = { version = "0.3.31", default-features = false }
+
+[[example]]
+name = "print_keys"
+required-features = ["tokio", "tracing"]
