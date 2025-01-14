@@ -94,23 +94,23 @@ pub struct Libinput {
 }
 
 struct Handler {
-    open: Box<dyn Fn(&CStr, c_int) -> Result<RawFd, c_int>>,
-    close: Box<dyn Fn(c_int)>,
+    open: Box<dyn Fn(&CStr, c_int) -> Result<RawFd, c_int> + Send + Sync + 'static>,
+    close: Box<dyn Fn(c_int) + Send + Sync + 'static>,
 }
 
 impl Libinput {
     pub fn new<O, C>(open: O, close: C) -> Result<Self>
     where
-        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static,
-        C: Fn(c_int) + 'static,
+        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + Send + Sync + 'static,
+        C: Fn(c_int) + Send + Sync + 'static,
     {
         Self::with_logger(open, close, None)
     }
 
     pub fn with_logger<O, C>(open: O, close: C, logger: Logger) -> Result<Self>
     where
-        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static,
-        C: Fn(c_int) + 'static,
+        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + Send + Sync + 'static,
+        C: Fn(c_int) + Send + Sync + 'static,
     {
         let udev = Udev::new()?;
 
