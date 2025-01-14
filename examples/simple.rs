@@ -16,7 +16,8 @@ async fn main() -> Result<()> {
         },
         |fd| drop(unsafe { OwnedFd::from_raw_fd(fd) }),
     )?;
-    libinput.assign_seat(c"seat0")?;
+    libinput.udev_assign_seat(c"seat0")?;
+    libinput.udev_assign_seat(c"seat0")?;
 
     let mut stream = libinput.event_stream()?;
     while let Some(event) = stream.try_next().await? {

@@ -23,7 +23,7 @@ async fn main() -> Result<()> {
         |fd| drop(unsafe { OwnedFd::from_raw_fd(fd) }),
         Some(colpetto::tracing_logger),
     )?;
-    libinput.assign_seat(c"seat0")?;
+    libinput.udev_assign_seat(c"seat0")?;
 
     let mut stream = libinput.event_stream()?;
 
