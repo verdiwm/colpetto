@@ -12,7 +12,9 @@
 #![warn(clippy::missing_panics_doc)]
 #![warn(clippy::redundant_clone)]
 
+#[allow(missing_docs)]
 #[allow(nonstandard_style)]
+#[allow(clippy::all)]
 pub mod sys;
 
 use std::{
