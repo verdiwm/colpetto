@@ -194,12 +194,23 @@ impl Libinput {
         Some(unsafe { Event::from_raw(event, event_type) })
     }
 
-    // FIXME: can we actually retrieve an error?
-    pub fn udev_assign_seat(&self, seat_id: &CStr) -> Result<(), ()> {
+    /// Assigns a seat to this libinput context. After assignment, device changes (additions or removals)
+    /// will be reported as events during [`dispatch`](Self::dispatch)
+    ///
+    /// This function succeeds even when:
+    /// - No input devices are currently available on the specified seat
+    /// - Available devices fail to open via the open_restriced callback
+    ///
+    /// Devices that lack minimum capabilities to function as a pointer, keyboard, or touch device
+    /// are ignored until the next call to [`resume()`](Self::resume). The same applies to
+    /// devices that failed to open.
+    ///
+    /// # Errors
+    /// This function may only be called once per context. Subsequent calls will result in an error.
+    pub fn udev_assign_seat(&self, seat_id: &CStr) -> Result<(), Error> {
         match unsafe { sys::libinput_udev_assign_seat(self.as_raw(), seat_id.as_ptr()) } {
             0 => Ok(()),
-            -1 => Err(()),
-            _ => Err(()), // This *should* be a panic but I think it's better to error out
+            _ => Err(Error::Seat),
         }
     }
 }
