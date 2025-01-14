@@ -47,3 +47,8 @@ tokio-stream = { version = "0.1.17", default-features = false }
 [[example]]
 name = "print_keys"
 required-features = ["tokio", "tracing"]
+
+
+[[example]]
+name = "simple"
+required-features = ["tokio"]
