@@ -9,6 +9,7 @@ use tokio::io::unix::AsyncFd;
 
 use crate::{Error, Event, Libinput};
 
+#[derive(Debug)]
 pub struct EventStream {
     libinput: Libinput,
     fd: AsyncFd<i32>,
