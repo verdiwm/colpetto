@@ -35,7 +35,7 @@ macro_rules! define_events {
 
                 impl std::fmt::Debug for [<$main $event Event>] {
                     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        f.debug_struct(stringify!($event)).finish()
+                        write!(f,stringify!($event))
                     }
                 }
 
