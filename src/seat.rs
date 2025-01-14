@@ -8,6 +8,10 @@ pub struct Seat {
 
 impl Seat {
     /// Builds a new seat from a raw libinput one
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure it's passing a valid pointer
     pub unsafe fn from_raw(raw: *mut sys::libinput_seat) -> Self {
         Self {
             raw: sys::libinput_seat_ref(raw),
