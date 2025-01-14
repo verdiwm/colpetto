@@ -146,18 +146,6 @@ impl Libinput {
         unsafe { sys::libinput_get_fd(self.as_raw()) }
     }
 
-    pub fn assign_seat(&mut self, seat: &CStr) -> Result<(), Error> {
-        unsafe {
-            let res = sys::libinput_udev_assign_seat(self.as_raw(), seat.as_ptr());
-
-            if res != 0 {
-                return Err(Error::Seat);
-            }
-        }
-
-        Ok(())
-    }
-
     pub fn dispatch(&self) -> Result<(), Error> {
         unsafe {
             match sys::libinput_dispatch(self.as_raw()) {
