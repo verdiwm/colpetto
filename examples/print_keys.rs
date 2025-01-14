@@ -50,7 +50,6 @@ async fn main() -> AnyResult<()> {
 
                 println!("Found new device: \"{name}\"");
             }
-
             Event::Device(DeviceEvent::Removed(event)) => {
                 let device = event.device();
                 let name = device.name().to_string_lossy();
