@@ -1,17 +1,71 @@
 # Colpetto
 
-Colpetto is an async wrapper for libinput. It leverages the tokio runtime to
-offer a robust stream-based implementation for handling libinput events.
+Colpetto provides async Rust bindings for libinput, enabling seamless handling
+of input device events on Linux systems. By integrating with tokio, Colpetto
+offers a modern stream-based API that naturally fits into async applications
+while ensuring efficient system resource usage and low latency in real time
+applications.
 
-Integrating with the async ecosystem allows for efficient polling of events,
-minimizing CPU consumption and maximizes performance in applications that
-require real-time event handling.
+## Key Features
 
-You can find a simple example usage example [here](examples/print_keys.rs)
+Colpetto transforms libinput's traditional callback-based interface into an
+ergonomic Rust API:
 
-Currently, Colpetto utilizes udev as the backend for device discovery and
-management. Future updates will include support for additional custom backends,
-allowing for greater flexibility.
+- Stream-based event handling through tokio
+- Safe management of libinput resources and contexts
+- Efficient event polling with minimal CPU overhead
+- Comprehensive type safety around libinput's event types
+- Support for custom loggers with basic ones provided
+
+## Exmples
+
+Here's a simple example that uses rustix to open devices:
+
+```rust
+use colpetto::{event::AsRawEvent, Libinput, Result};
+use rustix::{
+    fd::{FromRawFd, IntoRawFd, OwnedFd},
+    fs::{open, Mode, OFlags},
+    io::Errno,
+};
+use tokio_stream::StreamExt;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let mut libinput = Libinput::new(
+        |path, flags| {
+            open(path, OFlags::from_bits_retain(flags as u32), Mode::empty())
+                .map(IntoRawFd::into_raw_fd)
+                .map_err(Errno::raw_os_error)
+        },
+        |fd| drop(unsafe { OwnedFd::from_raw_fd(fd) }),
+    )?;
+    libinput.assign_seat(c"seat0")?;
+
+    let mut stream = libinput.event_stream()?;
+    while let Some(event) = stream.try_next().await? {
+        println!(
+            "Got \"{}\" event from \"{}\"",
+            event.event_type(),
+            event.device().name().to_string_lossy()
+        )
+    }
+
+    Ok(())
+}
+```
+
+You can find more examples in the [examples directory](examples/), including:
+
+- [Simple](examples/simple.rs): The example above, demostrates basic event
+  handling
+- [Print Keys](examples/print_keys.rs): A more complex examples that showcases
+  custom loggers and basic keyboard event handling
+
+<!-- - [Device Management](examples/devices.rs): Shows device detection and
+  configuration
+- [Multi-seat Setup](examples/seats.rs): Illustrates handling multiple seat
+  configurations -->
 
 ## License
 
