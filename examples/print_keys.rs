@@ -16,7 +16,7 @@ use rustix::{
 async fn main() -> AnyResult<()> {
     tracing_subscriber::fmt::init();
 
-    let libinput = Libinput::with_logger(
+    let mut libinput = Libinput::with_logger(
         |path, flags| {
             open(path, OFlags::from_bits_retain(flags as u32), Mode::empty())
                 .map(IntoRawFd::into_raw_fd)
