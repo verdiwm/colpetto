@@ -7,7 +7,7 @@ use std::{
 use futures_core::{ready, Stream};
 use tokio::io::unix::AsyncFd;
 
-use crate::{Error, Event, Libinput};
+use crate::{Error, Event, Libinput, Result};
 
 pub struct EventStream {
     libinput: Libinput,
@@ -16,7 +16,7 @@ pub struct EventStream {
 }
 
 impl EventStream {
-    pub fn new(libinput: Libinput, fd: RawFd) -> Result<Self, Error> {
+    pub fn new(libinput: Libinput, fd: RawFd) -> Result<Self> {
         Ok(Self {
             libinput,
             fd: AsyncFd::new(fd)?,
