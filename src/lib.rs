@@ -1,3 +1,17 @@
+#![warn(missing_docs)]
+#![warn(rustdoc::missing_crate_level_docs)]
+#![warn(clippy::all)]
+#![warn(clippy::unwrap_used)]
+#![warn(clippy::expect_used)]
+#![warn(clippy::unimplemented)]
+#![warn(clippy::todo)]
+#![warn(clippy::dbg_macro)]
+#![warn(clippy::panic)]
+#![warn(clippy::doc_markdown)]
+#![warn(clippy::missing_errors_doc)]
+#![warn(clippy::missing_panics_doc)]
+#![warn(clippy::redundant_clone)]
+
 #[allow(nonstandard_style)]
 pub mod sys;
 
