@@ -7,7 +7,7 @@ Integrating with the async ecosystem allows for efficient polling of events,
 minimizing CPU consumption and maximizes performance in applications that
 require real-time event handling.
 
-You can find a simple example usage example [here](examples/simple.rs)
+You can find a simple example usage example [here](examples/print_keys.rs)
 
 Currently, Colpetto utilizes udev as the backend for device discovery and
 management. Future updates will include support for additional custom backends,
