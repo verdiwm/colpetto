@@ -199,7 +199,7 @@ impl Event {
     ///
     /// # Safety
     ///
-    /// The caller must ensure it's passing a valid pointers.
+    /// The caller must ensure it's passing valid pointers.
     ///
     /// The function assumes that the `event_type` has already been checked against [`LIBINPUT_EVENT_NONE`](sys::libinput_event_type::LIBINPUT_EVENT_NONE)
     pub unsafe fn from_raw(
@@ -266,6 +266,14 @@ pub trait AsRawEvent: sealed::EventSealed {
 
 pub trait FromRawEvent: sealed::EventSealed {
     // unsafe fn from_raw(raw: *mut T) -> Self;
+
+    /// Creates an event from a raw libinput one. This should rarely be needed by users of the library
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure it's passing a valid pointer.
+    ///
+    /// It's the caller responsablity to ensure this function is called for the appropriate event.
     unsafe fn from_raw_event(event: *mut sys::libinput_event) -> Self;
 }
 
