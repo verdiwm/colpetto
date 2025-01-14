@@ -28,6 +28,7 @@ macro_rules! define_events {
                 )+
             }
 
+            impl crate::event::sealed::EventSealed for [<$main Event>] {}
 
             impl crate::event::AsRawEvent for [<$main Event>] {
                 fn as_raw_event(&self) -> *mut crate::sys::libinput_event {
@@ -44,11 +45,14 @@ macro_rules! define_events {
                     raw: *mut $raw,
                 }
 
+
                 impl std::fmt::Debug for [<$main $event Event>] {
                     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                         write!(f,stringify!($event))
                     }
                 }
+
+                impl crate::event::sealed::EventSealed for [<$main $event Event>] {}
 
                 impl crate::event::AsRawEvent for [<$main $event Event>] {
                     fn as_raw_event(&self) -> *mut crate::sys::libinput_event {
@@ -92,6 +96,8 @@ pub enum Event {
     Unknown(Unknown),
 }
 
+impl sealed::EventSealed for Event {}
+
 impl AsRawEvent for Event {
     fn as_raw_event(&self) -> *mut sys::libinput_event {
         match self {
@@ -113,6 +119,8 @@ pub struct Unknown {
     #[allow(unused)]
     raw: *mut sys::libinput_event,
 }
+
+impl sealed::EventSealed for Unknown {}
 
 impl AsRawEvent for Unknown {
     fn as_raw_event(&self) -> *mut sys::libinput_event {
@@ -209,66 +217,4 @@ pub trait FromRawEvent: sealed::EventSealed {
 mod sealed {
 
     pub trait EventSealed {}
-
-    macro_rules! seal {
-        ($($event:ident,)+) => {
-            $(
-                impl EventSealed for super::$event {}
-            )+
-        };
-    }
-
-    seal! {
-        DeviceEvent,
-        DeviceAddedEvent,
-        DeviceRemovedEvent,
-
-        GestureEvent,
-        GestureSwipeBeginEvent,
-        GestureSwipeUpdateEvent,
-        GestureSwipeEndEvent,
-        GesturePinchBeginEvent,
-        GesturePinchUpdateEvent,
-        GesturePinchEndEvent,
-        GestureHoldBeginEvent,
-        GestureHoldEndEvent,
-
-        KeyboardEvent,
-        KeyboardKeyEvent,
-
-        PointerEvent,
-        PointerMotionEvent,
-        PointerMotionAbsoluteEvent,
-        PointerButtonEvent,
-        PointerAxisEvent,
-        PointerScrollWheelEvent,
-        PointerScrollFingerEvent,
-        PointerScrollContinuousEvent,
-
-        SwitchEvent,
-        SwitchToggleEvent,
-
-        TabletPadEvent,
-        TabletPadButtonEvent,
-        TabletPadRingEvent,
-        TabletPadStripEvent,
-        TabletPadKeyEvent,
-        TabletPadDialEvent,
-
-        TabletToolEvent,
-        TabletToolAxisEvent,
-        TabletToolProximityEvent,
-        TabletToolTipEvent,
-        TabletToolButtonEvent,
-
-        TouchEvent,
-        TouchUpEvent,
-        TouchDownEvent,
-        TouchFrameEvent,
-        TouchCancelEvent,
-        TouchMotionEvent,
-
-        Event,
-        Unknown,
-    }
 }
