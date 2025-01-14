@@ -1,0 +1,36 @@
+name: ci
+on: [push, pull_request]
+
+env:
+  RUSTFLAGS: "-Dwarnings"
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup rust
+        run: rustup toolchain install stable --profile minimal
+
+      # - name: Install nextest to run tests
+      #   uses: taiki-e/install-action@nextest
+
+      # - name: Run tests
+      #   run: cargo nextest run --all-features --workspace
+
+      - name: Check clippy
+        run: cargo clippy --all-targets --all-features --workspace
+
+  fmt:
+    name: Check Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup rust
+        run: rustup toolchain install stable --profile minimal
+
+      - name: Run formatter
+        run: cargo fmt --check
