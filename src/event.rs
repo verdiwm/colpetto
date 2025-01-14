@@ -28,6 +28,17 @@ macro_rules! define_events {
                 )+
             }
 
+            impl [<$main Event>] {
+                /// Returns a printable string rappresenting the event type
+                pub const fn event_type(&self) -> &'static str {
+                    match self {
+                        $(
+                            Self::$event(_) => stringify!($main $event),
+                        )+
+                    }
+                }
+            }
+
             impl crate::event::sealed::EventSealed for [<$main Event>] {}
 
             impl crate::event::AsRawEvent for [<$main Event>] {
@@ -96,6 +107,23 @@ pub enum Event {
     Unknown(Unknown),
 }
 
+impl Event {
+    /// Returns a printable string rappresenting the event type
+    pub const fn event_type(&self) -> &'static str {
+        match self {
+            Event::Device(e) => e.event_type(),
+            Event::Gesture(e) => e.event_type(),
+            Event::Keyboard(e) => e.event_type(),
+            Event::Pointer(e) => e.event_type(),
+            Event::Switch(e) => e.event_type(),
+            Event::TabletPad(e) => e.event_type(),
+            Event::TabletTool(e) => e.event_type(),
+            Event::Touch(e) => e.event_type(),
+            Event::Unknown(e) => e.event_type(),
+        }
+    }
+}
+
 impl sealed::EventSealed for Event {}
 
 impl AsRawEvent for Event {
@@ -118,6 +146,13 @@ impl AsRawEvent for Event {
 pub struct Unknown {
     #[allow(unused)]
     raw: *mut sys::libinput_event,
+}
+
+impl Unknown {
+    /// Returns a printable string rappresenting the event type
+    pub const fn event_type(&self) -> &'static str {
+        "unknown"
+    }
 }
 
 impl sealed::EventSealed for Unknown {}
