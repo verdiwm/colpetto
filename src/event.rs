@@ -28,6 +28,17 @@ macro_rules! define_events {
                 )+
             }
 
+
+            impl crate::event::AsRawEvent for [<$main Event>] {
+                fn as_raw_event(&self) -> *mut crate::sys::libinput_event {
+                    match self {
+                        $(
+                            Self::$event(e) => e.as_raw_event(),
+                        )+
+                    }
+                }
+            }
+
             $(
                 pub struct [<$main $event Event>] {
                     raw: *mut $raw,
@@ -79,6 +90,22 @@ pub enum Event {
     TabletTool(TabletToolEvent),
     Touch(TouchEvent),
     Unknown(Unknown),
+}
+
+impl AsRawEvent for Event {
+    fn as_raw_event(&self) -> *mut sys::libinput_event {
+        match self {
+            Event::Device(e) => e.as_raw_event(),
+            Event::Gesture(e) => e.as_raw_event(),
+            Event::Keyboard(e) => e.as_raw_event(),
+            Event::Pointer(e) => e.as_raw_event(),
+            Event::Switch(e) => e.as_raw_event(),
+            Event::TabletPad(e) => e.as_raw_event(),
+            Event::TabletTool(e) => e.as_raw_event(),
+            Event::Touch(e) => e.as_raw_event(),
+            Event::Unknown(e) => e.as_raw_event(),
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -192,8 +219,11 @@ mod sealed {
     }
 
     seal! {
+        DeviceEvent,
         DeviceAddedEvent,
         DeviceRemovedEvent,
+
+        GestureEvent,
         GestureSwipeBeginEvent,
         GestureSwipeUpdateEvent,
         GestureSwipeEndEvent,
@@ -202,7 +232,11 @@ mod sealed {
         GesturePinchEndEvent,
         GestureHoldBeginEvent,
         GestureHoldEndEvent,
+
+        KeyboardEvent,
         KeyboardKeyEvent,
+
+        PointerEvent,
         PointerMotionEvent,
         PointerMotionAbsoluteEvent,
         PointerButtonEvent,
@@ -210,21 +244,31 @@ mod sealed {
         PointerScrollWheelEvent,
         PointerScrollFingerEvent,
         PointerScrollContinuousEvent,
+
+        SwitchEvent,
         SwitchToggleEvent,
+
+        TabletPadEvent,
         TabletPadButtonEvent,
         TabletPadRingEvent,
         TabletPadStripEvent,
         TabletPadKeyEvent,
         TabletPadDialEvent,
+
+        TabletToolEvent,
         TabletToolAxisEvent,
         TabletToolProximityEvent,
         TabletToolTipEvent,
         TabletToolButtonEvent,
+
+        TouchEvent,
         TouchUpEvent,
         TouchDownEvent,
         TouchFrameEvent,
         TouchCancelEvent,
         TouchMotionEvent,
+
+        Event,
         Unknown,
     }
 }
