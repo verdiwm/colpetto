@@ -2,10 +2,12 @@ use std::ffi::CStr;
 
 use crate::{sys, DeviceGroup, Seat};
 
+/// A base handle for accessing libinput devices.
 pub struct Device {
     raw: *mut sys::libinput_device,
 }
 
+/// Capabilities on a device. A device may have one or more capabilities at a time, capabilities remain static for the lifetime of the device.
 #[repr(u32)]
 #[non_exhaustive]
 pub enum DeviceCapability {
@@ -19,6 +21,11 @@ pub enum DeviceCapability {
 }
 
 impl Device {
+    /// Builds a new device from a raw libinput one
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure it's passing a valid pointer
     pub unsafe fn from_raw(raw: *mut sys::libinput_device) -> Self {
         Self {
             raw: unsafe { sys::libinput_device_ref(raw) },

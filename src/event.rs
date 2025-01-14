@@ -195,6 +195,13 @@ macro_rules! map_raw {
 }
 
 impl Event {
+    /// Builds a new event from raw data
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure it's passing a valid pointers.
+    ///
+    /// The function assumes that the `event_type` has already been checked against [`LIBINPUT_EVENT_NONE`](sys::libinput_event_type::LIBINPUT_EVENT_NONE)
     pub unsafe fn from_raw(
         event: *mut sys::libinput_event,
         event_type: sys::libinput_event_type::Type,
