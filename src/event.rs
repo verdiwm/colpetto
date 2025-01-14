@@ -1,13 +1,13 @@
 use crate::{sys, Device};
 
-mod device;
-mod gesture;
-mod keyboard;
-mod pointer;
-mod switch;
-mod table_pad;
-mod tablet_tool;
-mod touch;
+pub mod device;
+pub mod gesture;
+pub mod keyboard;
+pub mod pointer;
+pub mod switch;
+pub mod table_pad;
+pub mod tablet_tool;
+pub mod touch;
 
 pub use device::*;
 pub use gesture::*;
