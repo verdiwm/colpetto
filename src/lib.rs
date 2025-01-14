@@ -195,7 +195,7 @@ impl Libinput {
     ///
     /// # Errors
     /// This function may only be called once per context. Subsequent calls will result in an error.
-    pub fn udev_assign_seat(&self, seat_id: &CStr) -> Result<(), Error> {
+    pub fn udev_assign_seat(&mut self, seat_id: &CStr) -> Result<(), Error> {
         match unsafe { sys::libinput_udev_assign_seat(self.as_raw(), seat_id.as_ptr()) } {
             0 => Ok(()),
             _ => Err(Error::Seat),
