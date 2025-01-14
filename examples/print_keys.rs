@@ -1,19 +1,17 @@
-use std::path::Path;
-
-use anyhow::Result as AnyResult;
 use colpetto::{
     event::{AsRawEvent, DeviceEvent, KeyboardEvent},
-    Event, Libinput,
+    Event, Libinput, Result,
 };
 use rustix::{
     fd::{FromRawFd, IntoRawFd, OwnedFd},
     fs::{open, Mode, OFlags},
     io::Errno,
 };
+use std::path::Path;
 use tokio_stream::StreamExt;
 
 #[tokio::main]
-async fn main() -> AnyResult<()> {
+async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
 
     let mut libinput = Libinput::with_logger(
