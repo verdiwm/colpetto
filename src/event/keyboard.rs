@@ -1,3 +1,5 @@
+//! Key events are generated when a key changes its logical state, usually by being pressed or released.
+
 use crate::sys::{
     self, libinput_event_get_keyboard_event, libinput_event_keyboard,
     libinput_event_keyboard_get_base_event,
