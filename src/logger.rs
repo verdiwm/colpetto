@@ -2,8 +2,10 @@ use std::ffi::c_char;
 
 use crate::sys;
 
+/// The function type to pass as a logger to libinput
 pub type Logger = Option<unsafe extern "C" fn(sys::libinput_log_priority, *const c_char)>;
 
+/// Provides a simple logger that redirects libinput events as tracing events
 #[cfg(feature = "tracing")]
 pub unsafe extern "C" fn tracing_logger(
     priority: sys::libinput_log_priority,
@@ -22,6 +24,7 @@ pub unsafe extern "C" fn tracing_logger(
     }
 }
 
+/// Provides a simple logger that redirects libinput events as log events
 #[cfg(feature = "log")]
 pub unsafe extern "C" fn log_logger(priority: sys::libinput_log_priority, message: *const c_char) {
     use log::{debug, error, info, trace};
