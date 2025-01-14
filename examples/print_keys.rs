@@ -5,12 +5,12 @@ use colpetto::{
     event::{AsRawEvent, DeviceEvent, KeyboardEvent},
     Event, Libinput,
 };
-use futures_util::TryStreamExt;
 use rustix::{
     fd::{FromRawFd, IntoRawFd, OwnedFd},
     fs::{open, Mode, OFlags},
     io::Errno,
 };
+use tokio_stream::StreamExt;
 
 #[tokio::main]
 async fn main() -> AnyResult<()> {
