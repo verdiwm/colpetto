@@ -1,4 +1,4 @@
-use std::{ffi::CString, path::Path};
+use std::path::Path;
 
 use anyhow::Result as AnyResult;
 use colpetto::{
@@ -25,7 +25,7 @@ async fn main() -> AnyResult<()> {
         |fd| drop(unsafe { OwnedFd::from_raw_fd(fd) }),
         Some(colpetto::tracing_logger),
     )?;
-    libinput.assign_seat(CString::new("seat0").unwrap().as_c_str())?;
+    libinput.assign_seat(c"seat0")?;
 
     let mut stream = libinput.event_stream()?;
 
