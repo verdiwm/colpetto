@@ -1,11 +1,13 @@
 use crate::sys;
 
+/// The base handle for accessing libinput seats
 pub struct Seat {
     #[allow(unused)]
     raw: *mut sys::libinput_seat,
 }
 
 impl Seat {
+    /// Builds a new seat from a raw libinput one
     pub unsafe fn from_raw(raw: *mut sys::libinput_seat) -> Self {
         Self {
             raw: sys::libinput_seat_ref(raw),
