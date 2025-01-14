@@ -19,11 +19,23 @@ pub use tablet_tool::*;
 pub use touch::*;
 
 macro_rules! define_events {
-    ($main:ident, $raw:ident, $get:expr, $set:expr, $($event:ident,)+) => {
+    (
+        $(#[$main_meta:meta])*
+        $main:ident,
+        $raw:ident,
+        $get:expr,
+        $set:expr,
+        $(
+            $(#[$event_meta:meta])*
+            $event:ident,
+        )+
+    ) => {
         paste::paste! {
+            $(#[$main_meta])*
             #[derive(Debug)]
             pub enum [<$main Event>] {
                 $(
+                    $(#[$event_meta])*
                     $event([<$main $event Event>]),
                 )+
             }
@@ -52,6 +64,7 @@ macro_rules! define_events {
             }
 
             $(
+                $(#[$event_meta])*
                 pub struct [<$main $event Event>] {
                     raw: *mut $raw,
                 }
