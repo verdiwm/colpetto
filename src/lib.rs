@@ -73,6 +73,9 @@ pub enum Error {
     IoError(#[from] io::Error),
 }
 
+/// Convient alias for colpetto errors
+pub type Result<T, E = Error> = std::result::Result<T, E>;
+
 unsafe extern "C" fn open_restricted(
     path: *const c_char,
     flags: c_int,
@@ -109,7 +112,7 @@ struct Handler {
 }
 
 impl Libinput {
-    pub fn new<O, C>(open: O, close: C) -> Result<Self, Error>
+    pub fn new<O, C>(open: O, close: C) -> Result<Self>
     where
         O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static,
         C: Fn(c_int) + 'static,
@@ -117,7 +120,7 @@ impl Libinput {
         Self::with_logger(open, close, None)
     }
 
-    pub fn with_logger<O, C>(open: O, close: C, logger: Logger) -> Result<Self, Error>
+    pub fn with_logger<O, C>(open: O, close: C, logger: Logger) -> Result<Self>
     where
         O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static,
         C: Fn(c_int) + 'static,
@@ -248,6 +251,9 @@ impl Clone for Libinput {
 
 #[cfg(feature = "tokio")]
 impl Libinput {
+    /// Returns a new `EventStream` that can be used to retrieve events.
+    ///
+    /// See the module level documentation for examples
     pub fn event_stream(&self) -> Result<EventStream, Error> {
         EventStream::new(self.clone(), self.get_fd())
     }
