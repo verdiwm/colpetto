@@ -8,7 +8,13 @@ authors = ["Federico Maria Morrone <contact@morrone.dev>"]
 readme = "README.md"
 repository = "https://github.com/verdiwm/colpetto"
 documentation = "https://docs.rs/colpetto"
-include = ["src/**/*.{rs,c}", "build.rs", "README.md", "LICENSE"]
+include = [
+    "src/**/*.{rs,c}",
+    "examples/**/*.{rs,c}",
+    "build.rs",
+    "README.md",
+    "LICENSE",
+]
 
 [profile.release]
 lto = true
@@ -46,6 +52,7 @@ tokio-stream = { version = "0.1.17", default-features = false }
 
 [package.metadata.docs.rs]
 all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
 
 [lib]
 doctest = false
