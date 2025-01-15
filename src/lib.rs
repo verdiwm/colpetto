@@ -8,8 +8,6 @@
 #![warn(clippy::dbg_macro)]
 #![warn(clippy::panic)]
 #![warn(clippy::doc_markdown)]
-#![warn(clippy::missing_errors_doc)]
-#![warn(clippy::missing_panics_doc)]
 #![warn(clippy::redundant_clone)]
 #![doc = include_str!("../README.md")]
 
@@ -93,12 +91,14 @@ pub struct Libinput {
     raw: AtomicPtr<sys::libinput>,
 }
 
+#[allow(clippy::type_complexity)] // No point in making a type alias no one will use nor see
 struct Handler {
     open: Box<dyn Fn(&CStr, c_int) -> Result<RawFd, c_int> + Send + Sync + 'static>,
     close: Box<dyn Fn(c_int) + Send + Sync + 'static>,
 }
 
 impl Libinput {
+    /// Creates a new libinput context. For more information see [`with_logger`](Self::with_logger).
     pub fn new<O, C>(open: O, close: C) -> Result<Self>
     where
         O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + Send + Sync + 'static,
@@ -107,6 +107,11 @@ impl Libinput {
         Self::with_logger(open, close, None)
     }
 
+    /// Creates a new libinput context with the given logger.
+    ///
+    /// Internally this will create a new libudev instance and create the internal context with it.
+    ///
+    /// This function will return an error if either udev or libinput fail to create a context.
     pub fn with_logger<O, C>(open: O, close: C, logger: Logger) -> Result<Self>
     where
         O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + Send + Sync + 'static,
@@ -138,14 +143,21 @@ impl Libinput {
         })
     }
 
+    /// Returns the raw underlying pointer
     pub fn as_raw(&self) -> *mut sys::libinput {
         self.raw.load(Ordering::SeqCst)
     }
 
+    /// libinput keeps a single file descriptor for all events, [`dispatch`](Self::dispatch) should be called only when events are avaiable on this fd
     pub fn get_fd(&self) -> i32 {
         unsafe { sys::libinput_get_fd(self.as_raw()) }
     }
 
+    /// Main event dispatchment function. Reads events of the file descriptors and processes them internally.
+    /// Use [`get_event`](Self::get_event) to retrieve the events.
+    ///
+    /// Dispatching does not necessarily queue libinput events. This function should be called immediately once data is available on the file descriptor returned by [`get_fd`](Self::get_fd).
+    /// libinput has a number of timing-sensitive features (e.g. tap-to-click), any delay in calling [`dispatch`](Self::dispatch) may prevent these features from working correctly.
     pub fn dispatch(&self) -> Result<(), Error> {
         unsafe {
             match sys::libinput_dispatch(self.as_raw()) {
@@ -155,10 +167,13 @@ impl Libinput {
         }
     }
 
+    /// Suspend monitoring for new devices and close existing devices.
+    /// This all but terminates libinput but does keep the context valid to be resumed with [`resume`](Self::resume).
     pub fn suspend(&self) {
         unsafe { sys::libinput_suspend(self.as_raw()) }
     }
 
+    /// Resume a suspended libinput context. This re-enables device monitoring and adds existing devices
     pub fn resume(&self) -> Result<(), Error> {
         match unsafe { sys::libinput_resume(self.as_raw()) } {
             0 => Ok(()),
@@ -166,6 +181,7 @@ impl Libinput {
         }
     }
 
+    /// Retrieve the next event from libinput's internal event queue.
     pub fn get_event(&self) -> Option<Event> {
         let event = unsafe { sys::libinput_get_event(self.as_raw()) };
 
@@ -187,7 +203,7 @@ impl Libinput {
     ///
     /// This function succeeds even when:
     /// - No input devices are currently available on the specified seat
-    /// - Available devices fail to open via the open_restriced callback
+    /// - Available devices fail to open via [`OpenCallback`]
     ///
     /// Devices that lack minimum capabilities to function as a pointer, keyboard, or touch device
     /// are ignored until the next call to [`resume()`](Self::resume). The same applies to
@@ -239,7 +255,9 @@ impl Clone for Libinput {
 impl Libinput {
     /// Returns a new `EventStream` that can be used to retrieve events.
     ///
-    /// See the module level documentation for examples
+    /// # Panics
+    ///
+    /// Panics if called outside of a tokio context
     pub fn event_stream(&self) -> Result<EventStream, Error> {
         EventStream::new(self.clone(), self.get_fd())
     }
