@@ -48,10 +48,23 @@ impl Device {
         unsafe { sys::libinput_device_get_id_vendor(self.raw) }
     }
 
+    /// The descriptive device name as advertised by the kernel and/or the hardware itself.
+    /// To get the sysname for this device, use [`sysname`](Self::sysname).
     pub fn name(&self) -> &CStr {
         unsafe { CStr::from_ptr(sys::libinput_device_get_name(self.raw)) }
     }
 
+    /// A device may be mapped to a single output, or all available outputs.
+    /// If a device is mapped to a single output only, a relative device may not move beyond the boundaries of this output.
+    /// An absolute device has its input coordinates mapped to the extents of this output.
+    ///
+    /// # Note
+    ///
+    /// Use of this function is discouraged.
+    /// Its return value is not precisely defined and may not be understood by the caller or may be insufficient to map the device.
+    /// Instead, the system configuration could set a udev property the caller understands and interprets correctly.
+    /// The caller could then obtain device with [`udev_device`](Self::udev_device) and query it for this property.
+    /// For more complex cases, the caller must implement monitor-to-device association heuristics.
     pub fn output_name(&self) -> Option<&CStr> {
         let name = unsafe { sys::libinput_device_get_output_name(self.raw) };
 
@@ -62,10 +75,18 @@ impl Device {
         Some(unsafe { CStr::from_ptr(name) })
     }
 
+    /// Get the seat associated with this input device.
+    /// A seat can be uniquely identified by the physical and logical seat name.
+    /// There will ever be only one seat instance with a given physical and logical seat name pair at any given time,
+    /// but if no external reference is kept, it may be destroyed if no device belonging to it is left.
     pub fn seat(&self) -> Seat {
         unsafe { Seat::from_raw(sys::libinput_device_get_seat(self.raw)) }
     }
 
+    /// Return a udev handle to the device that is this libinput device, if any
+    ///
+    /// Some devices may not have a udev device, or the udev device may be unobtainable.
+    /// Calling this function multiple times for the same device may not return the same udev handle each time.
     pub fn udev_device(&self) -> Option<devil::Device> {
         let device = unsafe { sys::libinput_device_get_udev_device(self.raw) };
 
