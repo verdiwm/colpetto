@@ -7,20 +7,30 @@ use rustix::{
     fs::{open, Mode, OFlags},
     io::Errno,
 };
-use std::path::Path;
+use std::{
+    ffi::{c_int, CStr},
+    os::fd::RawFd,
+    path::Path,
+};
 use tokio_stream::StreamExt;
+
+fn open_restricted(path: &CStr, flags: c_int) -> Result<RawFd, c_int> {
+    open(path, OFlags::from_bits_retain(flags as u32), Mode::empty())
+        .map(IntoRawFd::into_raw_fd)
+        .map_err(Errno::raw_os_error)
+}
+
+fn close_restricted(fd: RawFd) {
+    drop(unsafe { OwnedFd::from_raw_fd(fd) });
+}
 
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
 
     let mut libinput = Libinput::with_logger(
-        |path, flags| {
-            open(path, OFlags::from_bits_retain(flags as u32), Mode::empty())
-                .map(IntoRawFd::into_raw_fd)
-                .map_err(Errno::raw_os_error)
-        },
-        |fd| drop(unsafe { OwnedFd::from_raw_fd(fd) }),
+        open_restricted,
+        close_restricted,
         Some(colpetto::tracing_logger),
     )?;
     libinput.udev_assign_seat(c"seat0")?;
