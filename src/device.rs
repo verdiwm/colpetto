@@ -66,10 +66,17 @@ impl Device {
         unsafe { Seat::from_raw(sys::libinput_device_get_seat(self.raw)) }
     }
 
-    pub fn udev_device(&self) -> devil::Device {
-        unsafe { devil::Device::from_raw(sys::libinput_device_get_udev_device(self.raw).cast()) }
+    pub fn udev_device(&self) -> Option<devil::Device> {
+        let device = unsafe { sys::libinput_device_get_udev_device(self.raw) };
+
+        if device.is_null() {
+            return None;
+        }
+
+        Some(unsafe { devil::Device::from_raw(device.cast()) })
     }
 
+    /// Check if the given device has the specified capability
     pub fn has_capability(&self, capability: DeviceCapability) -> bool {
         unsafe { sys::libinput_device_has_capability(self.raw, capability as u32) != 0 }
     }
