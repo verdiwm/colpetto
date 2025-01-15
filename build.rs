@@ -1,5 +1,8 @@
-#[cfg(not(docsrs))]
 fn main() {
+    if std::env::var("DOCS_RS").is_ok() {
+        return;
+    }
+
     pkg_config::Config::new()
         .atleast_version("1.27")
         .probe("libinput")
@@ -12,6 +15,3 @@ fn main() {
         .flag_if_supported("-Wno-unused-parameter") // This gets a false positive because of libinput_log_handler
         .compile("logger");
 }
-
-#[cfg(docsrs)]
-fn main() {}
