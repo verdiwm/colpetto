@@ -54,6 +54,12 @@ impl Device {
         unsafe { CStr::from_ptr(sys::libinput_device_get_name(self.raw)) }
     }
 
+    /// Get the system name of the device.
+    /// To get the descriptive device name, use [`name`](Self::name).
+    pub fn sysname(&self) -> &CStr {
+        unsafe { CStr::from_ptr(sys::libinput_device_get_sysname(self.raw)) }
+    }
+
     /// A device may be mapped to a single output, or all available outputs.
     /// If a device is mapped to a single output only, a relative device may not move beyond the boundaries of this output.
     /// An absolute device has its input coordinates mapped to the extents of this output.
