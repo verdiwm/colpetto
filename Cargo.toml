@@ -42,10 +42,12 @@ tokio = { version = "1.43.0", features = ["macros", "rt-multi-thread"] }
 rustix = { version = "0.38.43", default-features = false, features = ["fs"] }
 tokio-stream = { version = "0.1.17", default-features = false }
 
+[lib]
+doctest = false
+
 [[example]]
 name = "print_keys"
 required-features = ["tokio", "tracing"]
-
 
 [[example]]
 name = "simple"
