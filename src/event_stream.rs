@@ -16,7 +16,7 @@ pub struct EventStream {
 }
 
 impl EventStream {
-    pub fn new(libinput: Libinput, fd: RawFd) -> Result<Self> {
+    pub(crate) fn new(libinput: Libinput, fd: RawFd) -> Result<Self> {
         Ok(Self {
             libinput,
             fd: AsyncFd::new(fd)?,
