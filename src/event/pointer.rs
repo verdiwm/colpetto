@@ -1,3 +1,7 @@
+#![allow(missing_docs)] // FIXME: pointer events dont seem to be properly documented by libinput
+
+//! Pointer events reflect motion, button and scroll events, as well as events from other axes.
+
 use crate::sys::{
     self, libinput_event_get_pointer_event, libinput_event_pointer,
     libinput_event_pointer_get_base_event,
@@ -9,11 +13,8 @@ super::define_events!(
     libinput_event_pointer,
     libinput_event_pointer_get_base_event,
     libinput_event_get_pointer_event,
-    /// Signals that a device has been removed. No more events from the associated device will be in the queue or be queued after this event.
     Motion,
-    /// Signals that a device has been removed. No more events from the associated device will be in the queue or be queued after this event.
     MotionAbsolute,
-    /// Signals that a device has been removed. No more events from the associated device will be in the queue or be queued after this event.
     Button,
     Axis,
     ScrollWheel,
