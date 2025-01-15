@@ -1,3 +1,5 @@
+//! This module contains wrappers for all possible libinput events
+
 use crate::{sys, Device};
 
 pub mod device;
@@ -107,6 +109,10 @@ macro_rules! define_events {
 
 pub(crate) use define_events;
 
+/// Rappresents a generic libinput event
+///
+/// For more information see each event module
+#[allow(missing_docs)] // FIXME: prob document variants even tho it's annoying
 #[derive(Debug)]
 pub enum Event {
     Device(DeviceEvent),
@@ -155,6 +161,7 @@ impl AsRawEvent for Event {
     }
 }
 
+/// A special event that's not actually part of libinput but allows for graceful handling of newer versions
 #[derive(Debug)]
 pub struct Unknown {
     #[allow(unused)]
@@ -255,15 +262,20 @@ impl Event {
     }
 }
 
+/// Helper trait to get raw libinput events
 pub trait AsRawEvent: sealed::EventSealed {
     // fn as_raw(&self) -> *mut T;
+
+    /// Returns the raw libinput event. You probably dont wanna use this
     fn as_raw_event(&self) -> *mut sys::libinput_event;
 
+    /// Gets the device associated with this event
     fn device(&self) -> Device {
         unsafe { Device::from_raw(sys::libinput_event_get_device(self.as_raw_event())) }
     }
 }
 
+/// Helper trait to get an event from a raw one
 pub trait FromRawEvent: sealed::EventSealed {
     // unsafe fn from_raw(raw: *mut T) -> Self;
 
