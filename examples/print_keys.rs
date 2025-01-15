@@ -32,7 +32,7 @@ async fn main() -> Result<()> {
             Event::Keyboard(KeyboardEvent::Key(event_key)) => {
                 let device = event_key.device();
                 let device_name = device.name().to_string_lossy();
-                let udev_device = device.udev_device();
+                let udev_device = device.udev_device().unwrap();
                 let device_path = udev_device.devnode().unwrap_or(Path::new("Unknown"));
                 let state = event_key.key_state();
                 let key = event_key.key();
