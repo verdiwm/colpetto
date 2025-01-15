@@ -46,6 +46,8 @@ mod event_stream;
 #[cfg(feature = "tokio")]
 pub use event_stream::EventStream;
 
+/// Generic error type for libinput
+#[allow(missing_docs)]
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("Failed to resume libinput Context")]
@@ -87,6 +89,8 @@ const INTERFACE: sys::libinput_interface = sys::libinput_interface {
     close_restricted: Some(close_restricted),
 };
 
+/// The main libinput context
+// FIXME: proper docs
 pub struct Libinput {
     raw: AtomicPtr<sys::libinput>,
 }
