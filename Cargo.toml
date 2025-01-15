@@ -7,6 +7,8 @@ description = "Async libinput wrapper"
 authors = ["Federico Maria Morrone <contact@morrone.dev>"]
 readme = "README.md"
 repository = "https://github.com/verdiwm/colpetto"
+documentation = "https://docs.rs/colpetto"
+include = ["src/**/*.{rs,c}", "build.rs", "README.md", "LICENSE"]
 
 [profile.release]
 lto = true
