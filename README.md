@@ -17,7 +17,7 @@ ergonomic Rust API:
 - Comprehensive type safety around libinput's event types
 - Support for custom loggers with basic ones provided
 
-## Exmples
+## Examples
 
 Here's a simple example that uses rustix to open devices:
 
@@ -59,7 +59,7 @@ You can find more examples in the [examples directory](examples/), including:
 
 - [Simple](examples/simple.rs): The example above, demostrates basic event
   handling
-- [Print Keys](examples/print_keys.rs): A more complex examples that showcases
+- [Print Keys](examples/print_keys.rs): A more complex example that showcases
   custom loggers and basic keyboard event handling
 
 <!-- - [Device Management](examples/devices.rs): Shows device detection and
