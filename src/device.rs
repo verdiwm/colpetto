@@ -11,12 +11,19 @@ pub struct Device {
 #[repr(u32)]
 #[non_exhaustive]
 pub enum DeviceCapability {
+    /// Device has gesture capability
     Gesture = sys::LIBINPUT_DEVICE_CAP_GESTURE,
+    /// Device has keyboard capability
     Keyboard = sys::LIBINPUT_DEVICE_CAP_KEYBOARD,
+    /// Device has pointer capability
     Pointer = sys::LIBINPUT_DEVICE_CAP_POINTER,
+    /// Device has switch capability
     Switch = sys::LIBINPUT_DEVICE_CAP_SWITCH,
+    /// Device has tablet pad capability
     TabletPad = sys::LIBINPUT_DEVICE_CAP_TABLET_PAD,
+    /// Device has table tool capability
     TabletTool = sys::LIBINPUT_DEVICE_CAP_TABLET_TOOL,
+    /// Device has touch capability
     Touch = sys::LIBINPUT_DEVICE_CAP_TOUCH,
 }
 
@@ -32,18 +39,53 @@ impl Device {
         }
     }
 
+    /// Returns the device group this device is assigned to.
+    ///
+    /// Some physical devices like graphics tablets are represented by multiple kernel
+    /// devices and thus by multiple libinput devices.
+    ///
+    /// libinput assigns these devices to the same device group, allowing the caller to
+    /// identify such devices and adjust configuration settings accordingly. For example,
+    /// setting a tablet to left-handed often means turning it upside down. A touch device
+    /// on the same tablet would need to be turned upside down too to work correctly.
+    ///
+    /// All devices are part of a device group though for most devices the group will be
+    /// a singleton. A device is assigned to a device group on [`DeviceAdded`](crate::event::DeviceAddedEvent)
+    /// and removed from that group on [`DeviceRemoved`](crate::event::DeviceRemovedEvent). It is up to the
+    /// caller to track how many devices are in each device group.
+    ///
+    /// # Example Device Group Structure
+    /// ```text
+    /// mouse       -> group1
+    /// keyboard    -> group2
+    /// tablet pen  -> group3
+    /// tablet touch-> group3
+    /// tablet pad  -> group3
+    /// ```
+    ///
+    /// Device groups do not get re-used once the last device in the group was removed,
+    /// i.e. unplugging and re-plugging a physical device with grouped devices will
+    /// return a different device group after every unplug.
+    ///
+    /// # Note
+    ///
+    /// Device groups are assigned based on the `LIBINPUT_DEVICE_GROUP` udev property.
+    /// See the libinput documentation for more details.
     pub fn device_group(&self) -> DeviceGroup {
         unsafe { DeviceGroup::from_raw(sys::libinput_device_get_device_group(self.raw)) }
     }
 
+    /// Get the bus type ID for this device.
     pub fn bustype_id(&self) -> u32 {
         unsafe { sys::libinput_device_get_id_bustype(self.raw) }
     }
 
+    /// Get the product ID for this device.
     pub fn product_id(&self) -> u32 {
         unsafe { sys::libinput_device_get_id_product(self.raw) }
     }
 
+    /// Get the vendor ID for this device.
     pub fn vendor_id(&self) -> u32 {
         unsafe { sys::libinput_device_get_id_vendor(self.raw) }
     }
