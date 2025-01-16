@@ -51,6 +51,7 @@ impl KeyboardKeyEvent {
 }
 
 /// Logical state of a key. Note that the logical state may not represent the physical state of the key.
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum KeyState {
     /// Logical released state
     Released,

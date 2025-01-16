@@ -1,4 +1,4 @@
-use crate::sys;
+use crate::{macros, sys};
 
 /// A base handle for accessing libinput device groups.
 pub struct DeviceGroup {
@@ -31,3 +31,5 @@ impl Clone for DeviceGroup {
         }
     }
 }
+
+macros::impl_debug!(DeviceGroup);

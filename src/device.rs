@@ -1,6 +1,6 @@
 use std::ffi::CStr;
 
-use crate::{sys, DeviceGroup, Seat};
+use crate::{macros, sys, DeviceGroup, Seat};
 
 /// A base handle for accessing libinput devices.
 pub struct Device {
@@ -164,3 +164,5 @@ impl Clone for Device {
         }
     }
 }
+
+macros::impl_debug!(Device, DeviceCapability);
