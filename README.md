@@ -1,25 +1,23 @@
 # Colpetto
 
-Colpetto provides async Rust bindings for libinput, enabling seamless handling
-of input device events on Linux systems. By integrating with tokio, Colpetto
-offers a modern stream-based API that naturally fits into async applications
-while ensuring efficient system resource usage and low latency in real time
-applications.
+Colpetto is a modern Rust library that provides asynchronous bindings for
+libinput, enabling efficient handling of input device events on Linux systems.
+Built on tokio, it offers a stream-based API that seamlessly integrates with
+async applications while maintaining low latency and efficient resource usage
+for real-time operations.
 
 ## Key Features
 
 Colpetto transforms libinput's traditional callback-based interface into an
-ergonomic Rust API:
+ergonomic Rust API with:
 
-- Stream-based event handling through tokio
-- Safe management of libinput resources and contexts
-- Efficient event polling with minimal CPU overhead
-- Comprehensive type safety around libinput's event types
-- Support for custom loggers with basic ones provided
+- Stream-based event handling powered by tokio
+- Low-overhead event polling optimized for performance
+- Flexible logging system with built-in basic loggers
 
 ## Examples
 
-Here's a simple example that uses rustix to open devices:
+Here's a basic example demonstrating event handling using rustix:
 
 ```rust
 use colpetto::{event::AsRawEvent, Libinput, Result};
@@ -40,9 +38,10 @@ async fn main() -> Result<()> {
         },
         |fd| drop(unsafe { OwnedFd::from_raw_fd(fd) }),
     )?;
+    
     libinput.assign_seat(c"seat0")?;
-
     let mut stream = libinput.event_stream()?;
+
     while let Some(event) = stream.try_next().await? {
         println!(
             "Got \"{}\" event from \"{}\"",
@@ -55,17 +54,64 @@ async fn main() -> Result<()> {
 }
 ```
 
-You can find more examples in the [examples directory](examples/), including:
+For more examples, check out the [examples directory](examples/):
 
-- [Simple](examples/simple.rs): The example above, demostrates basic event
-  handling
-- [Print Keys](examples/print_keys.rs): A more complex example that showcases
-  custom loggers and basic keyboard event handling
+- [Simple](examples/simple.rs): Basic event handling demonstration
+- [Print Keys](examples/print_keys.rs): Advanced example with custom logging and
+  keyboard event handling
 
-<!-- - [Device Management](examples/devices.rs): Shows device detection and
-  configuration
-- [Multi-seat Setup](examples/seats.rs): Illustrates handling multiple seat
-  configurations -->
+<!-- - [Device Management](examples/devices.rs): Device detection and configuration example
+- [Multi-seat Setup](examples/seats.rs): Multiple seat configuration handling -->
+
+## Comparison with input-rs
+
+While [input-rs](https://github.com/Smithay/input.rs) is an established
+alternative, Colpetto takes a different approach in several key areas:
+
+### Interface Design
+
+Colpetto uses direct function passing for device management, while input-rs
+employs a trait-based approach:
+
+```rust
+// Colpetto: Function-based approach with closure support
+let mut libinput = Libinput::new(
+    |path, flags| {  // Open function
+        open(path, OFlags::from_bits_retain(flags as u32), Mode::empty())
+            .map(IntoRawFd::into_raw_fd)
+            .map_err(Errno::raw_os_error)
+    },
+    |fd| drop(unsafe { OwnedFd::from_raw_fd(fd) })  // Close function
+)?;
+
+// input-rs: Trait-based approach
+struct Interface;
+
+impl LibinputInterface for Interface {
+    fn open_restricted(&mut self, path: &Path, flags: i32) -> Result<OwnedFd, i32> {
+        open(path, OFlags::from_bits_retain(flags as u32), Mode::empty())
+            .map_err(Errno::raw_os_error)
+    }
+    fn close_restricted(&mut self, fd: OwnedFd) {
+        drop(fd);
+    }
+}
+let mut input = Libinput::new_with_udev(Interface);
+```
+
+### Some key Advantages
+
+#### Asynchronous First
+
+- Native tokio integration for async/await support
+- Stream-based event handling via `event_stream()`
+- Seamless integration with async applications
+
+#### Enhanced Safety
+
+- Safe handling of non-UTF8 strings using `CStr` instead of implicit panics
+- Comprehensive event type safety through more exhaustive enum matching
+- More robust context lifetime management
 
 ## License
 
