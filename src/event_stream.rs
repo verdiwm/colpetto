@@ -48,6 +48,7 @@ use crate::{Error, Event, Libinput, Result};
 /// The stream internally manages an [`AsyncFd`] wrapper around the libinput file descriptor,
 /// ensuring efficient integration with tokio's event loop. It will only wake up when new
 /// events are available to be read from the libinput context.
+#[derive(Debug)]
 pub struct EventStream {
     libinput: Libinput,
     fd: AsyncFd<i32>,

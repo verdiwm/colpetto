@@ -1,4 +1,4 @@
-use crate::sys;
+use crate::{macros, sys};
 
 /// The base handle for accessing libinput seats
 pub struct Seat {
@@ -32,3 +32,5 @@ impl Clone for Seat {
         }
     }
 }
+
+macros::impl_debug!(Seat);
