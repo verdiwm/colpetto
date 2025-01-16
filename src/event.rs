@@ -71,12 +71,7 @@ macro_rules! define_events {
                     raw: *mut $raw,
                 }
 
-
-                impl std::fmt::Debug for [<$main $event Event>] {
-                    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                        write!(f,stringify!($event))
-                    }
-                }
+                crate::macros::impl_debug!([<$main $event Event>]);
 
                 impl crate::event::sealed::EventSealed for [<$main $event Event>] {}
 

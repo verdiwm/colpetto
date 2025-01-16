@@ -267,3 +267,23 @@ impl Libinput {
         EventStream::new(self.clone(), self.get_fd())
     }
 }
+
+mod macros {
+    /// Implements `std::fmt::Debug` on each provided type,
+    /// writing `Name(<ptr>)` to obfuscate the pointer field.
+    macro_rules! impl_debug {
+        ($($name:ident),+) => {
+            $(
+                impl std::fmt::Debug for $name {
+                    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                        write!(f, "{}(<ptr>)", stringify!($name))
+                    }
+                }
+            )+
+        }
+    }
+
+    pub(crate) use impl_debug;
+}
+
+macros::impl_debug!(Libinput);
