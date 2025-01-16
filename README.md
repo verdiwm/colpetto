@@ -101,14 +101,8 @@ let mut input = Libinput::new_with_udev(Interface);
 
 ### Some key Advantages
 
-#### Asynchronous First
-
 - Native tokio integration for async/await support
 - Stream-based event handling via `event_stream()`
-- Seamless integration with async applications
-
-#### Enhanced Safety
-
 - Safe handling of non-UTF8 strings using `CStr` instead of implicit panics
 - Comprehensive event type safety through more exhaustive enum matching
 - More robust context lifetime management
