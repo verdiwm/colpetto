@@ -6,19 +6,43 @@ env:
 
 jobs:
   test:
-    name: Build and test
+    name: Build and test (${{ matrix.version }})
+    runs-on: ubuntu-latest
+    container: ghcr.io/verdiwm/ci-image:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - "1_22"
+          - "1_23"
+          - "1_24"
+          - "1_25"
+          - "1_26"
+          - "1_27"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check clippy
+        run: cargo clippy --features ${{ matrix.version }},tokio,log,tracing --all-targets --workspace
+
+      - name: Run tests
+        run: cargo test --features ${{ matrix.version }},tokio,log,tracing --all-targets --workspace
+
+  test-multiple-versions:
+    name: Test multiple versions fail
     runs-on: ubuntu-latest
     container: ghcr.io/verdiwm/ci-image:latest
     steps:
       - uses: actions/checkout@v4
-      # - name: Install nextest to run tests
-      #   uses: taiki-e/install-action@nextest
 
-      # - name: Run tests
-      #   run: cargo nextest run --all-features --workspace
-
-      - name: Check clippy
-        run: cargo clippy --all-targets --all-features --workspace
+      - name: Verify multiple versions error
+        run: |
+          set +e
+          cargo check --all-features
+          if [ $? -eq 0 ]; then
+            echo "Build succeeded when it should have failed"
+            exit 1
+          fi
 
   fmt:
     name: Check Formatting
