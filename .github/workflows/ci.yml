@@ -44,6 +44,25 @@ jobs:
             exit 1
           fi
 
+  test-debian-stable:
+    name: Build on Debian stable
+    runs-on: ubuntu-latest
+    container: debian:stable-slim
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y curl build-essential pkg-config libinput-dev
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+      - name: Add cargo to PATH
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Build
+        run: cargo build --features 1_22,tokio,log,tracing
+
   fmt:
     name: Check Formatting
     runs-on: ubuntu-latest
