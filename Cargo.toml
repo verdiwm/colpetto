@@ -25,10 +25,14 @@ codegen-units = 1
 strip = true
 
 [features]
-default = ["tokio"]
+default = ["tokio", "1_26"]
 tracing = ["dep:tracing"]
 log = ["dep:log"]
 tokio = ["dep:tokio"]
+
+# Versions
+1_26 = []
+1_27 = []
 
 [dependencies]
 devil = "0.0.7"
