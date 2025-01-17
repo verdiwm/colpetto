@@ -25,7 +25,7 @@ codegen-units = 1
 strip = true
 
 [features]
-default = ["tokio", "1_22"]
+default = ["tokio"]
 tracing = ["dep:tracing"]
 log = ["dep:log"]
 tokio = ["dep:tokio"]
