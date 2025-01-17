@@ -239,6 +239,7 @@ impl Event {
             LIBINPUT_EVENT_TABLET_PAD_RING => map_raw!(TabletPad(Ring), event),
             LIBINPUT_EVENT_TABLET_PAD_STRIP => map_raw!(TabletPad(Strip), event),
             LIBINPUT_EVENT_TABLET_PAD_KEY => map_raw!(TabletPad(Key), event),
+            #[cfg(feature = "1_26")]
             LIBINPUT_EVENT_TABLET_PAD_DIAL => map_raw!(TabletPad(Dial), event),
 
             LIBINPUT_EVENT_TABLET_TOOL_AXIS => map_raw!(TabletTool(Axis), event),
