@@ -47,18 +47,14 @@ jobs:
   test-debian-stable:
     name: Build on Debian stable
     runs-on: ubuntu-latest
-    container: debian:stable-slim
+    container: rust:slim
     steps:
       - uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y curl build-essential pkg-config libinput-dev
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-
-      - name: Add cargo to PATH
-        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          apt-get install -y pkg-config libinput-dev
 
       - name: Build
         run: cargo build --features 1_22,tokio,log,tracing
