@@ -48,7 +48,7 @@ log = { version = "0.4.25", optional = true }
 tracing = { version = "0.1.41", optional = true }
 
 [build-dependencies]
-cc = "1.2.9"
+cc = "1.2.10"
 pkg-config = "0.3.31"
 
 [dev-dependencies]
