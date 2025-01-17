@@ -25,12 +25,15 @@ codegen-units = 1
 strip = true
 
 [features]
-default = ["tokio", "1_26"]
+default = ["tokio", "1_23"]
 tracing = ["dep:tracing"]
 log = ["dep:log"]
 tokio = ["dep:tokio"]
 
 # Versions
+1_23 = []
+1_24 = []
+1_25 = []
 1_26 = []
 1_27 = []
 

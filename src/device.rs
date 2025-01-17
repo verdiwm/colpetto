@@ -76,6 +76,7 @@ impl Device {
     }
 
     /// Get the bus type ID for this device.
+    #[cfg(feature = "1_26")]
     pub fn bustype_id(&self) -> u32 {
         unsafe { sys::libinput_device_get_id_bustype(self.raw) }
     }
