@@ -1,3 +1,6 @@
+[workspace]
+exclude = ["gen"]
+
 [package]
 name = "colpetto"
 version = "0.1.5"
