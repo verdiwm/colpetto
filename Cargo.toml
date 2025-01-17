@@ -62,7 +62,8 @@ rustix = { version = "0.38.43", default-features = false, features = ["fs"] }
 tokio-stream = { version = "0.1.17", default-features = false }
 
 [package.metadata.docs.rs]
-all-features = true
+no-default-features = true
+features = ["tokio", "tracing", "log", "1_27"]
 
 [lib]
 doctest = false
