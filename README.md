@@ -63,6 +63,19 @@ For more examples, check out the [examples directory](examples/):
 <!-- - [Device Management](examples/devices.rs): Device detection and configuration example
 - [Multi-seat Setup](examples/seats.rs): Multiple seat configuration handling -->
 
+## Supported libinput Versions
+
+Colpetto requires libinput 1.22 or higher (current version in Debian stable).
+
+Contributions to support older versions are welcome provided they:
+
+- Don't compromise the existing async functionality
+- Maintain API consistency
+- Include appropriate version-specific tests if applicable
+
+If you're using an older version of libinput, you may need to upgrade your
+system packages or consider using input-rs which supports earlier versions.
+
 ## Comparison with input-rs
 
 While [input-rs](https://github.com/Smithay/input.rs) is an established
@@ -99,10 +112,16 @@ impl LibinputInterface for Interface {
 let mut input = Libinput::new_with_udev(Interface);
 ```
 
-### Some key Advantages
+### Version Support
 
-- Native tokio integration for async/await support
-- Stream-based event handling via `event_stream()`
+While input-rs supports a wider range of libinput versions (1.9+), Colpetto
+focuses on modern versions (1.22+) to provide comprehensive bindings for newer
+libinput features and async capabilities.
+
+### Some other differences
+
+- Native tokio integration for async/await support with stream-based event
+  handling via `event_stream()`
 - Safe handling of non-UTF8 strings using `CStr` instead of implicit panics
 - Comprehensive event type safety through more exhaustive enum matching
 - More robust context lifetime management
