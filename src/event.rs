@@ -35,6 +35,7 @@ macro_rules! define_events {
         paste::paste! {
             $(#[$main_meta])*
             #[derive(Debug)]
+            #[non_exhaustive]
             pub enum [<$main Event>] {
                 $(
                     $(#[$event_meta])*
