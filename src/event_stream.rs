@@ -1,11 +1,13 @@
 use std::{
+    future::Future,
     os::fd::RawFd,
     pin::Pin,
+    sync::Arc,
     task::{self, Poll},
 };
 
 use futures_core::{ready, Stream};
-use tokio::io::unix::AsyncFd;
+use tokio::{io::unix::AsyncFd, sync::RwLock};
 
 use crate::{Error, Event, Libinput, Result};
 
@@ -50,15 +52,18 @@ use crate::{Error, Event, Libinput, Result};
 /// events are available to be read from the libinput context.
 #[derive(Debug)]
 pub struct EventStream {
-    libinput: Libinput,
+    libinput: Arc<RwLock<Libinput>>,
     fd: AsyncFd<i32>,
     is_first: bool,
 }
 
+unsafe impl Send for EventStream {}
+unsafe impl Sync for EventStream {}
+
 impl EventStream {
     pub(crate) fn new(libinput: Libinput, fd: RawFd) -> Result<Self> {
         Ok(Self {
-            libinput,
+            libinput: Arc::new(RwLock::new(libinput)),
             fd: AsyncFd::new(fd)?,
             is_first: true,
         })
@@ -72,20 +77,26 @@ impl Stream for EventStream {
         loop {
             // The first time we poll there is already device created events available
             if self.is_first {
-                self.libinput.dispatch()?;
+                let mut libinput_guard = ready!(Box::pin(self.libinput.write()).as_mut().poll(cx));
 
-                if let Some(event) = self.libinput.get_event() {
+                libinput_guard.dispatch()?;
+
+                if let Some(event) = libinput_guard.get_event() {
                     return Poll::Ready(Some(Ok(event)));
                 } else {
+                    drop(libinput_guard);
                     self.is_first = false;
                     continue;
                 }
             }
 
             let mut guard = ready!(self.fd.poll_read_ready(cx))?;
-            self.libinput.dispatch()?;
 
-            if let Some(event) = self.libinput.get_event() {
+            let mut libinput_guard = ready!(Box::pin(self.libinput.write()).as_mut().poll(cx));
+
+            libinput_guard.dispatch()?;
+
+            if let Some(event) = libinput_guard.get_event() {
                 return Poll::Ready(Some(Ok(event)));
             } else {
                 guard.clear_ready();

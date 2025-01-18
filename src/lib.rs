@@ -21,10 +21,8 @@ use std::{
     ffi::{c_char, c_int, c_void, CStr},
     io, mem,
     os::fd::RawFd,
-    sync::{
-        atomic::{AtomicPtr, Ordering},
-        Arc,
-    },
+    ptr::NonNull,
+    sync::Arc,
 };
 
 use devil::Udev;
@@ -93,7 +91,7 @@ const INTERFACE: sys::libinput_interface = sys::libinput_interface {
 /// The main libinput context
 // FIXME: proper docs
 pub struct Libinput {
-    raw: AtomicPtr<sys::libinput>,
+    raw: NonNull<sys::libinput>,
 }
 
 #[allow(clippy::type_complexity)] // No point in making a type alias no one will use nor see
@@ -144,13 +142,13 @@ impl Libinput {
         logger::setup_logger(libinput, logger);
 
         Ok(Self {
-            raw: AtomicPtr::new(libinput),
+            raw: unsafe { NonNull::new_unchecked(libinput) },
         })
     }
 
     /// Returns the raw underlying pointer
     pub fn as_raw(&self) -> *mut sys::libinput {
-        self.raw.load(Ordering::SeqCst)
+        self.raw.as_ptr()
     }
 
     /// libinput keeps a single file descriptor for all events, [`dispatch`](Self::dispatch) should be called only when events are avaiable on this fd
@@ -163,7 +161,7 @@ impl Libinput {
     ///
     /// Dispatching does not necessarily queue libinput events. This function should be called immediately once data is available on the file descriptor returned by [`get_fd`](Self::get_fd).
     /// libinput has a number of timing-sensitive features (e.g. tap-to-click), any delay in calling [`dispatch`](Self::dispatch) may prevent these features from working correctly.
-    pub fn dispatch(&self) -> Result<(), Error> {
+    pub fn dispatch(&mut self) -> Result<(), Error> {
         unsafe {
             match sys::libinput_dispatch(self.as_raw()) {
                 0 => Ok(()),
@@ -187,7 +185,7 @@ impl Libinput {
     }
 
     /// Retrieve the next event from libinput's internal event queue.
-    pub fn get_event(&self) -> Option<Event> {
+    pub fn get_event(&mut self) -> Option<Event> {
         let event = unsafe { sys::libinput_get_event(self.as_raw()) };
 
         if event.is_null() {
@@ -251,7 +249,7 @@ impl Clone for Libinput {
         };
 
         Self {
-            raw: AtomicPtr::new(raw),
+            raw: unsafe { NonNull::new_unchecked(raw) },
         }
     }
 }
