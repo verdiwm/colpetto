@@ -2,7 +2,7 @@ use std::{
     future::Future,
     os::fd::RawFd,
     pin::Pin,
-    sync::Arc,
+    sync::atomic::{AtomicBool, Ordering},
     task::{self, Poll},
 };
 
@@ -52,9 +52,9 @@ use crate::{Error, Event, Libinput, Result};
 /// events are available to be read from the libinput context.
 #[derive(Debug)]
 pub struct EventStream {
-    libinput: Arc<RwLock<Libinput>>,
+    libinput: RwLock<Libinput>,
     fd: AsyncFd<i32>,
-    is_first: bool,
+    is_first: AtomicBool,
 }
 
 unsafe impl Send for EventStream {}
@@ -63,9 +63,9 @@ unsafe impl Sync for EventStream {}
 impl EventStream {
     pub(crate) fn new(libinput: Libinput, fd: RawFd) -> Result<Self> {
         Ok(Self {
-            libinput: Arc::new(RwLock::new(libinput)),
+            libinput: RwLock::new(libinput),
             fd: AsyncFd::new(fd)?,
-            is_first: true,
+            is_first: AtomicBool::new(true),
         })
     }
 }
@@ -73,10 +73,10 @@ impl EventStream {
 impl Stream for EventStream {
     type Item = Result<Event, Error>;
 
-    fn poll_next(mut self: Pin<&mut Self>, cx: &mut task::Context<'_>) -> Poll<Option<Self::Item>> {
+    fn poll_next(self: Pin<&mut Self>, cx: &mut task::Context<'_>) -> Poll<Option<Self::Item>> {
         loop {
             // The first time we poll there is already device created events available
-            if self.is_first {
+            if self.is_first.load(Ordering::Relaxed) {
                 let mut libinput_guard = ready!(Box::pin(self.libinput.write()).as_mut().poll(cx));
 
                 libinput_guard.dispatch()?;
@@ -85,7 +85,7 @@ impl Stream for EventStream {
                     return Poll::Ready(Some(Ok(event)));
                 } else {
                     drop(libinput_guard);
-                    self.is_first = false;
+                    self.is_first.store(false, Ordering::Relaxed);
                     continue;
                 }
             }
