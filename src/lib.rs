@@ -96,16 +96,16 @@ pub struct Libinput {
 
 #[allow(clippy::type_complexity)] // No point in making a type alias no one will use nor see
 struct Handler {
-    open: Box<dyn Fn(&CStr, c_int) -> Result<RawFd, c_int> + Send + Sync + 'static>,
-    close: Box<dyn Fn(c_int) + Send + Sync + 'static>,
+    open: Box<dyn Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static>,
+    close: Box<dyn Fn(c_int) + 'static>,
 }
 
 impl Libinput {
     /// Creates a new libinput context. For more information see [`with_logger`](Self::with_logger).
     pub fn new<O, C>(open: O, close: C) -> Result<Self>
     where
-        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + Send + Sync + 'static,
-        C: Fn(c_int) + Send + Sync + 'static,
+        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static,
+        C: Fn(c_int) + 'static,
     {
         Self::with_logger(open, close, None)
     }
@@ -117,8 +117,8 @@ impl Libinput {
     /// This function will return an error if either udev or libinput fail to create a context.
     pub fn with_logger<O, C>(open: O, close: C, logger: Logger) -> Result<Self>
     where
-        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + Send + Sync + 'static,
-        C: Fn(c_int) + Send + Sync + 'static,
+        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static,
+        C: Fn(c_int) + 'static,
     {
         let udev = Udev::new()?;
 
@@ -161,7 +161,7 @@ impl Libinput {
     ///
     /// Dispatching does not necessarily queue libinput events. This function should be called immediately once data is available on the file descriptor returned by [`get_fd`](Self::get_fd).
     /// libinput has a number of timing-sensitive features (e.g. tap-to-click), any delay in calling [`dispatch`](Self::dispatch) may prevent these features from working correctly.
-    pub fn dispatch(&mut self) -> Result<(), Error> {
+    pub fn dispatch(&self) -> Result<(), Error> {
         unsafe {
             match sys::libinput_dispatch(self.as_raw()) {
                 0 => Ok(()),
@@ -185,7 +185,7 @@ impl Libinput {
     }
 
     /// Retrieve the next event from libinput's internal event queue.
-    pub fn get_event(&mut self) -> Option<Event> {
+    pub fn get_event(&self) -> Option<Event> {
         let event = unsafe { sys::libinput_get_event(self.as_raw()) };
 
         if event.is_null() {
