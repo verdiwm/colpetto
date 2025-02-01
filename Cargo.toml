@@ -83,3 +83,7 @@ required-features = ["tokio", "tracing"]
 [[example]]
 name = "simple"
 required-features = ["tokio"]
+
+[[example]]
+name = "task"
+required-features = ["tokio"]
