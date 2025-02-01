@@ -59,7 +59,9 @@ pkg-config = "0.3.31"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 tokio = { version = "1.43.0", features = ["macros", "rt-multi-thread"] }
 rustix = { version = "0.38.44", default-features = false, features = ["fs"] }
-tokio-stream = { version = "0.1.17", default-features = false, features = ["sync"] }
+tokio-stream = { version = "0.1.17", default-features = false, features = [
+    "sync",
+] }
 anyhow = "1.0.95"
 
 [package.metadata.docs.rs]
