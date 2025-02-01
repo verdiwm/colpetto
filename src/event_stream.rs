@@ -1,13 +1,11 @@
 use std::{
-    future::Future,
     os::fd::RawFd,
     pin::Pin,
-    sync::atomic::{AtomicBool, Ordering},
     task::{self, Poll},
 };
 
 use futures_core::{ready, Stream};
-use tokio::{io::unix::AsyncFd, sync::RwLock};
+use tokio::io::unix::AsyncFd;
 
 use crate::{Error, Event, Libinput, Result};
 
@@ -52,20 +50,17 @@ use crate::{Error, Event, Libinput, Result};
 /// events are available to be read from the libinput context.
 #[derive(Debug)]
 pub struct EventStream {
-    libinput: RwLock<Libinput>,
-    fd: AsyncFd<i32>,
-    is_first: AtomicBool,
+    libinput: Libinput,
+    fd: AsyncFd<RawFd>,
+    is_first: bool,
 }
-
-unsafe impl Send for EventStream {}
-unsafe impl Sync for EventStream {}
 
 impl EventStream {
     pub(crate) fn new(libinput: Libinput, fd: RawFd) -> Result<Self> {
         Ok(Self {
-            libinput: RwLock::new(libinput),
+            libinput,
             fd: AsyncFd::new(fd)?,
-            is_first: AtomicBool::new(true),
+            is_first: true,
         })
     }
 }
@@ -73,30 +68,24 @@ impl EventStream {
 impl Stream for EventStream {
     type Item = Result<Event, Error>;
 
-    fn poll_next(self: Pin<&mut Self>, cx: &mut task::Context<'_>) -> Poll<Option<Self::Item>> {
+    fn poll_next(mut self: Pin<&mut Self>, cx: &mut task::Context<'_>) -> Poll<Option<Self::Item>> {
         loop {
             // The first time we poll there is already device created events available
-            if self.is_first.load(Ordering::Relaxed) {
-                let mut libinput_guard = ready!(Box::pin(self.libinput.write()).as_mut().poll(cx));
+            if self.is_first {
+                self.libinput.dispatch()?;
 
-                libinput_guard.dispatch()?;
-
-                if let Some(event) = libinput_guard.get_event() {
+                if let Some(event) = self.libinput.get_event() {
                     return Poll::Ready(Some(Ok(event)));
                 } else {
-                    drop(libinput_guard);
-                    self.is_first.store(false, Ordering::Relaxed);
+                    self.is_first = false;
                     continue;
                 }
             }
 
             let mut guard = ready!(self.fd.poll_read_ready(cx))?;
+            self.libinput.dispatch()?;
 
-            let mut libinput_guard = ready!(Box::pin(self.libinput.write()).as_mut().poll(cx));
-
-            libinput_guard.dispatch()?;
-
-            if let Some(event) = libinput_guard.get_event() {
+            if let Some(event) = self.libinput.get_event() {
                 return Poll::Ready(Some(Ok(event)));
             } else {
                 guard.clear_ready();
