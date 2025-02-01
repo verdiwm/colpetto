@@ -59,6 +59,8 @@ For more examples, check out the [examples directory](examples/):
 - [Simple](examples/simple.rs): Basic event handling demonstration
 - [Print Keys](examples/print_keys.rs): Advanced example with custom logging and
   keyboard event handling
+- [Task](examples/task.rs): Showcases how to work around libinput's thread
+  safety limitations in tokio tasks
 
 <!-- - [Device Management](examples/devices.rs): Device detection and configuration example
 - [Multi-seat Setup](examples/seats.rs): Multiple seat configuration handling -->
