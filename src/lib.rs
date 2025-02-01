@@ -22,7 +22,7 @@ use std::{
     io, mem,
     os::fd::RawFd,
     ptr::NonNull,
-    sync::Arc,
+    rc::Rc,
 };
 
 use devil::Udev;
@@ -122,7 +122,7 @@ impl Libinput {
     {
         let udev = Udev::new()?;
 
-        let handler = Arc::new(Handler {
+        let handler = Rc::new(Handler {
             open: Box::new(open),
             close: Box::new(close),
         });
@@ -130,7 +130,7 @@ impl Libinput {
         let libinput = unsafe {
             sys::libinput_udev_create_context(
                 &INTERFACE,
-                Arc::into_raw(handler) as *const _ as _,
+                Rc::into_raw(handler) as *const _ as _,
                 udev.as_raw().cast(),
             )
         };
@@ -228,15 +228,15 @@ impl Drop for Libinput {
 
         unsafe {
             sys::libinput_unref(self.as_raw());
-            drop(Arc::<Handler>::from_raw(user_data.cast()));
+            drop(Rc::<Handler>::from_raw(user_data.cast()));
         }
     }
 }
 
 impl Clone for Libinput {
     fn clone(&self) -> Self {
-        let handler: Arc<Handler> =
-            unsafe { Arc::from_raw(sys::libinput_get_user_data(self.as_raw()).cast()) };
+        let handler: Rc<Handler> =
+            unsafe { Rc::from_raw(sys::libinput_get_user_data(self.as_raw()).cast()) };
 
         let user_data = handler.clone();
 
@@ -245,7 +245,7 @@ impl Clone for Libinput {
         let raw = unsafe { sys::libinput_ref(self.as_raw()) };
 
         unsafe {
-            sys::libinput_set_user_data(raw, Arc::into_raw(user_data) as *const _ as _);
+            sys::libinput_set_user_data(raw, Rc::into_raw(user_data) as *const _ as _);
         };
 
         Self {
