@@ -44,6 +44,8 @@ pub use seat::*;
 mod event_stream;
 #[cfg(feature = "tokio")]
 pub use event_stream::EventStream;
+#[cfg(feature = "helper")]
+pub mod helper;
 
 /// Generic error type for libinput
 #[allow(missing_docs)]
