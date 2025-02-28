@@ -164,7 +164,13 @@ fn spawn_libinput_task(
                         match signal {
                             LibinputSignal::Shutdown => break,
                             LibinputSignal::Suspend => libinput.suspend(),
-                            LibinputSignal::Resume => libinput.resume().expect("Failed to resume libinput context"), // FIXME: error handling
+                            LibinputSignal::Resume => {
+                                if let Err(err) = libinput.resume() {
+                                    if event_sx.send(Err(err)).is_err() {
+                                        break
+                                    }
+                                }
+                            }
                         }
                     }
                     Some(res) = stream.next() => {
