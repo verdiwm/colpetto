@@ -33,20 +33,20 @@ impl Handle {
         C: Fn(RawFd) -> CFut + Send + 'static,
         CFut: Future + Send,
     {
-        let (ask_sx, respond_rx, close_sx) = {
-            let (ask_sx, ask_rx) = tokio_mpsc::unbounded_channel::<CString>();
+        let (open_request_sx, open_response_rx, close_sx) = {
+            let (open_request_sx, open_request_rx) = tokio_mpsc::unbounded_channel::<CString>();
+            let (open_response_sx, open_response_rx) = mpsc::channel::<c_int>();
+
             let (close_sx, close_rx) = tokio_mpsc::unbounded_channel::<c_int>();
 
-            let (respond_sx, respond_rx) = mpsc::channel::<c_int>();
-
             let mut close_rx = UnboundedReceiverStream::new(close_rx);
-            let mut ask_rx = UnboundedReceiverStream::new(ask_rx);
+            let mut open_request_rx = UnboundedReceiverStream::new(open_request_rx);
 
             tokio::spawn(async move {
                 loop {
                     tokio::select! {
-                        Some(path) = ask_rx.next() => {
-                            if respond_sx.send(open(path).await).is_err() {
+                        Some(path) = open_request_rx.next() => {
+                            if open_response_sx.send(open(path).await).is_err() {
                                 break;
                             }
                         }
@@ -58,10 +58,11 @@ impl Handle {
                 }
             });
 
-            (ask_sx, respond_rx, close_sx)
+            (open_request_sx, open_response_rx, close_sx)
         };
 
-        let (rx, signal_sender) = spawn_libinput_task(seat_name, ask_sx, close_sx, respond_rx)?;
+        let (rx, signal_sender) =
+            spawn_libinput_task(seat_name, open_request_sx, close_sx, open_response_rx)?;
 
         let stream = UnboundedReceiverStream::new(rx);
 
@@ -120,9 +121,9 @@ enum LibinputSignal {
 
 fn spawn_libinput_task(
     seat_name: CString,
-    ask_sx: tokio_mpsc::UnboundedSender<CString>,
+    open_request_sx: tokio_mpsc::UnboundedSender<CString>,
     close_sx: tokio_mpsc::UnboundedSender<i32>,
-    respond_rx: mpsc::Receiver<i32>,
+    open_response_rx: mpsc::Receiver<i32>,
 ) -> Result<(
     tokio_mpsc::UnboundedReceiver<Result<Event>>,
     tokio_mpsc::UnboundedSender<LibinputSignal>,
@@ -143,8 +144,8 @@ fn spawn_libinput_task(
             let mut libinput = Libinput::new(
                 move |path, _| {
                     debug!("Opening fd at path {}", path.to_string_lossy());
-                    ask_sx.send(path.to_owned()).unwrap();
-                    let res = respond_rx.recv().unwrap();
+                    open_request_sx.send(path.to_owned()).unwrap();
+                    let res = open_response_rx.recv().unwrap();
 
                     Ok(res)
                 },
