@@ -17,7 +17,7 @@ use crate::event::AsRawEvent;
 use crate::{Error, Libinput, Result};
 
 pub mod event;
-pub use event::Event;
+use event::Event;
 
 #[derive(Debug, Clone)]
 pub struct Handle {
