@@ -29,9 +29,9 @@ impl Handle {
     ) -> Result<(Self, UnboundedReceiverStream<Result<Event, crate::Error>>)>
     where
         O: Fn(CString) -> OFut + Send + 'static,
-        OFut: Future<Output = RawFd> + Send + 'static,
+        OFut: Future<Output = RawFd> + Send,
         C: Fn(RawFd) -> CFut + Send + 'static,
-        CFut: Future + Send + 'static,
+        CFut: Future + Send,
     {
         let (ask_sx, respond_rx, close_sx) = {
             let (ask_sx, ask_rx) = tokio_mpsc::unbounded_channel::<CString>();
