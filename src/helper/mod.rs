@@ -11,7 +11,6 @@ use std::{
 
 use tokio::{sync::mpsc as tokio_mpsc, task::LocalSet};
 use tokio_stream::{wrappers::UnboundedReceiverStream, StreamExt};
-use tracing::{debug, info};
 
 use crate::event::AsRawEvent;
 use crate::{Error, Libinput, Result};
@@ -117,16 +116,12 @@ fn spawn_libinput_task(
         let local = LocalSet::new();
 
         local.spawn_local(async move {
-            info!("Creating libinput object");
-
             let mut libinput = Libinput::new(
                 move |path, _| {
-                    debug!("Opening fd at path {}", path.to_string_lossy());
                     open_request_sx.send(path.to_owned()).map_err(|_| -1)?;
                     open_response_rx.recv().map_err(|_| -1)
                 },
                 move |fd| {
-                    debug!("Closing fd: {fd}");
                     let _ = close_sx.send(fd); // Libinput doesn't care about closing errors
                 },
             )?;
