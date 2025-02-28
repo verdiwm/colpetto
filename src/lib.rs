@@ -74,6 +74,7 @@ unsafe extern "C" fn open_restricted(
 
     match (handler.open)(CStr::from_ptr(path), flags) {
         Ok(fd) => fd,
+        Err(errno) if errno.is_positive() => errno.wrapping_neg(),
         Err(errno) => errno,
     }
 }
