@@ -144,10 +144,8 @@ fn spawn_libinput_task(
             let mut libinput = Libinput::new(
                 move |path, _| {
                     debug!("Opening fd at path {}", path.to_string_lossy());
-                    open_request_sx.send(path.to_owned()).unwrap();
-                    let res = open_response_rx.recv().unwrap();
-
-                    Ok(res)
+                    open_request_sx.send(path.to_owned()).map_err(|_| -1)?;
+                    open_response_rx.recv().map_err(|_| -1)
                 },
                 move |fd| {
                     debug!("Closing fd: {fd}");
