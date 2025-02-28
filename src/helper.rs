@@ -33,33 +33,32 @@ impl Handle {
         C: Fn(RawFd) -> CFut + Send + 'static,
         CFut: Future + Send + 'static,
     {
-        let (ask_sx, respond_rx) = {
+        let (ask_sx, respond_rx, close_sx) = {
             let (ask_sx, ask_rx) = tokio_mpsc::unbounded_channel::<CString>();
+            let (close_sx, close_rx) = tokio_mpsc::unbounded_channel::<c_int>();
+
             let (respond_sx, respond_rx) = mpsc::channel::<c_int>();
 
+            let mut close_rx = UnboundedReceiverStream::new(close_rx);
             let mut ask_rx = UnboundedReceiverStream::new(ask_rx);
 
             tokio::spawn(async move {
-                while let Some(path) = ask_rx.next().await {
-                    let _ = respond_sx.send(open(path).await);
+                loop {
+                    tokio::select! {
+                        Some(path) = ask_rx.next() => {
+                            if respond_sx.send(open(path).await).is_err() {
+                                break;
+                            }
+                        }
+                        Some(fd) = close_rx.next() => {
+                            close(fd).await;
+                        }
+                        else => break
+                    }
                 }
             });
 
-            (ask_sx, respond_rx)
-        };
-
-        let close_sx = {
-            let (close_sx, close_rx) = tokio_mpsc::unbounded_channel::<c_int>();
-
-            let mut close_rx = UnboundedReceiverStream::new(close_rx);
-
-            tokio::spawn(async move {
-                while let Some(fd) = close_rx.next().await {
-                    close(fd).await;
-                }
-            });
-
-            close_sx
+            (ask_sx, respond_rx, close_sx)
         };
 
         let (rx, signal_sender) = spawn_libinput_task(seat_name, ask_sx, close_sx, respond_rx)?;
