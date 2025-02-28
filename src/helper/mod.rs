@@ -13,8 +13,11 @@ use tokio::{sync::mpsc as tokio_mpsc, task::LocalSet};
 use tokio_stream::{wrappers::UnboundedReceiverStream, StreamExt};
 use tracing::{debug, info};
 
-use crate::event::{AsRawEvent, KeyState, KeyboardEvent};
+use crate::event::AsRawEvent;
 use crate::{Error, Libinput, Result};
+
+pub mod event;
+pub use event::Event;
 
 #[derive(Debug, Clone)]
 pub struct Handle {
@@ -85,31 +88,6 @@ impl Handle {
         }
 
         Ok(())
-    }
-}
-
-#[derive(Debug)]
-pub struct Event {
-    pub name: &'static str,
-    pub event_type: EventType,
-    pub device_name: String,
-}
-
-#[derive(Debug)]
-pub enum EventType {
-    Keyboard { key: u32, state: KeyState },
-    Unknown,
-}
-
-impl From<&crate::Event> for EventType {
-    fn from(value: &crate::Event) -> Self {
-        match value {
-            crate::Event::Keyboard(KeyboardEvent::Key(event)) => EventType::Keyboard {
-                key: event.key(),
-                state: event.key_state(),
-            },
-            _ => EventType::Unknown,
-        }
     }
 }
 
