@@ -69,20 +69,20 @@ impl Handle {
         Ok((Self { signal_sender }, stream))
     }
 
-    pub fn shutdown(&self) -> Result<()> {
-        self.signal_sender.send(LibinputSignal::Shutdown).unwrap(); // FIXME: handle errors
-
-        Ok(())
+    pub fn shutdown(&self) {
+        let _ = self.signal_sender.send(LibinputSignal::Shutdown);
     }
 
     pub fn suspend(&self) -> Result<()> {
-        self.signal_sender.send(LibinputSignal::Suspend).unwrap(); // FIXME: handle errors
+        let _ = self.signal_sender.send(LibinputSignal::Suspend);
 
         Ok(())
     }
 
     pub fn resume(&self) -> Result<()> {
-        self.signal_sender.send(LibinputSignal::Resume).unwrap(); // FIXME: handle errors
+        if self.signal_sender.send(LibinputSignal::Resume).is_err() {
+            return Err(Error::Resume);
+        }
 
         Ok(())
     }
