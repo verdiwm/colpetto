@@ -116,7 +116,7 @@ fn spawn_libinput_task(
         let local = LocalSet::new();
 
         local.spawn_local(async move {
-            let mut libinput = Libinput::new(
+            let mut libinput = Libinput::with_logger(
                 move |path, _| {
                     open_request_sx.send(path.to_owned()).map_err(|_| -1)?;
                     open_response_rx.recv().map_err(|_| -1)
@@ -124,6 +124,10 @@ fn spawn_libinput_task(
                 move |fd| {
                     let _ = close_sx.send(fd); // Libinput doesn't care about closing errors
                 },
+                #[cfg(feature = "tracing")]
+                Some(crate::tracing_logger),
+                #[cfg(not(feature = "tracing"))]
+                None,
             )?;
 
             libinput.udev_assign_seat(&seat_name)?;
