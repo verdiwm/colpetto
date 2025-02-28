@@ -74,7 +74,7 @@ anyhow = "1.0.96"
 
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["tokio", "tracing", "log", "1_27"]
+features = ["tokio", "helper", "tracing", "log", "1_27"]
 
 [lib]
 doctest = false
