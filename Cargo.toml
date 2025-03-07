@@ -42,7 +42,7 @@ helper = ["dep:tokio-stream", "tokio", "tokio/sync", "tokio/rt", "tokio/macros"]
 [dependencies]
 devil = "0.0.7"
 futures-core = "0.3.31"
-thiserror = "2.0.11"
+thiserror = "2.0.12"
 paste = "1.0.15"
 
 tokio-stream = { version = "0.1.17", default-features = false, optional = true }
@@ -56,7 +56,7 @@ tracing = { version = "0.1.41", optional = true }
 
 [build-dependencies]
 cc = "1.2.16"
-pkg-config = "0.3.31"
+pkg-config = "0.3.32"
 
 [dev-dependencies]
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
@@ -66,11 +66,11 @@ tokio = { version = "1.43.0", features = [
     "signal",
     "sync",
 ] }
-rustix = { version = "0.38.44", default-features = false, features = ["fs"] }
+rustix = { version = "1.0.0", default-features = false, features = ["fs"] }
 tokio-stream = { version = "0.1.17", default-features = false, features = [
     "sync",
 ] }
-anyhow = "1.0.96"
+anyhow = "1.0.97"
 
 [package.metadata.docs.rs]
 no-default-features = true
