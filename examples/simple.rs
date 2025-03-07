@@ -22,7 +22,7 @@ fn close_restricted(fd: RawFd) {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let mut libinput = Libinput::new(open_restricted, close_restricted)?;
+    let mut libinput = Libinput::with_tracing(open_restricted, close_restricted)?;
 
     libinput.udev_assign_seat(c"seat0")?;
 

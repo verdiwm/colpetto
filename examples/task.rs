@@ -84,7 +84,7 @@ fn spawn_libinput_task() -> Result<(
         let local = LocalSet::new();
 
         local.spawn_local(async move {
-            let mut libinput = Libinput::new(open_restricted, close_restricted)?;
+            let mut libinput = Libinput::with_tracing(open_restricted, close_restricted)?;
 
             libinput.udev_assign_seat(c"seat0")?;
 

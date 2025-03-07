@@ -27,11 +27,7 @@ fn close_restricted(fd: RawFd) {
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
 
-    let mut libinput = Libinput::with_logger(
-        open_restricted,
-        close_restricted,
-        Some(colpetto::tracing_logger),
-    )?;
+    let mut libinput = Libinput::with_tracing(open_restricted, close_restricted)?;
     libinput.udev_assign_seat(c"seat0")?;
 
     let mut stream = libinput.event_stream()?;

@@ -37,7 +37,7 @@ pub mod event;
 pub use device::*;
 pub use device_group::*;
 pub use event::Event;
-pub use logger::*;
+pub use logger::Logger;
 pub use seat::*;
 
 #[cfg(feature = "tokio")]
@@ -111,6 +111,32 @@ impl Libinput {
         C: Fn(c_int) + 'static,
     {
         Self::with_logger(open, close, None)
+    }
+
+    /// Creates a new libinput context with tracing pre-configured. For more information see [`with_logger`](Self::with_logger).
+    #[cfg(feature = "tracing")]
+    pub fn with_tracing<O, C>(open: O, close: C) -> Result<Self>
+    where
+        O: Fn(&CStr, c_int) -> Result<RawFd, c_int> + 'static,
+        C: Fn(c_int) + 'static,
+    {
+        unsafe extern "C" fn tracing_logger(
+            priority: sys::libinput_log_priority,
+            message: *const c_char,
+        ) {
+            use tracing::{debug, error, info, trace};
+
+            let message = CStr::from_ptr(message).to_string_lossy();
+
+            match priority {
+                sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_INFO => info!("{message}"),
+                sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_DEBUG => debug!("{message}"),
+                sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_ERROR => error!("{message}"),
+                _ => trace!("{message}"),
+            }
+        }
+
+        Self::with_logger(open, close, Some(tracing_logger))
     }
 
     /// Creates a new libinput context with the given logger.
