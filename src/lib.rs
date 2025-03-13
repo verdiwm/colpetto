@@ -69,15 +69,14 @@ unsafe extern "C" fn open_restricted(
     flags: c_int,
     user_data: *mut c_void,
 ) -> c_int {
-    unsafe {
-        let handler = user_data as *const Handler;
-        let handler = unsafe { &*handler };
+    let handler = user_data as *const Handler;
+    let handler = unsafe { &*handler }; // Safe because we manage the user_data pointer
 
-        match (handler.open)(CStr::from_ptr(path), flags) {
-            Ok(fd) => fd,
-            Err(errno) if errno.is_positive() => errno.wrapping_neg(),
-            Err(errno) => errno,
-        }
+    // Safety is guaranteed by libinput
+    match (handler.open)(unsafe { CStr::from_ptr(path) }, flags) {
+        Ok(fd) => fd,
+        Err(errno) if errno.is_positive() => errno.wrapping_neg(),
+        Err(errno) => errno,
     }
 }
 
@@ -128,7 +127,8 @@ impl Libinput {
         ) {
             use tracing::{debug, error, info, trace};
 
-            let message = CStr::from_ptr(message).to_string_lossy();
+            // Safety guaranted by libinput
+            let message = unsafe { CStr::from_ptr(message) }.to_string_lossy();
 
             match priority {
                 sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_INFO => info!("{message}"),
