@@ -50,7 +50,7 @@ paste = "1.0.15"
 
 # Optional stuff
 tokio-stream = { version = "0.1.17", default-features = false, optional = true }
-tokio = { version = "1.43.0", features = ["net"], optional = true }
+tokio = { version = "1.44.1", features = ["net"], optional = true }
 tracing = { version = "0.1.41", optional = true }
 
 [build-dependencies]
@@ -59,13 +59,13 @@ pkg-config = "0.3.32"
 
 [dev-dependencies]
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-tokio = { version = "1.43.0", features = [
+tokio = { version = "1.44.1", features = [
     "macros",
     "rt-multi-thread",
     "signal",
     "sync",
 ] }
-rustix = { version = "1.0.0", default-features = false, features = ["fs"] }
+rustix = { version = "1.0.2", default-features = false, features = ["fs"] }
 tokio-stream = { version = "0.1.17", default-features = false, features = [
     "sync",
 ] }
