@@ -12,8 +12,10 @@ impl DeviceGroup {
     ///
     /// The caller must ensure it's passing a valid pointer
     pub unsafe fn from_raw(raw: *mut sys::libinput_device_group) -> Self {
-        Self {
-            raw: sys::libinput_device_group_ref(raw),
+        unsafe {
+            Self {
+                raw: sys::libinput_device_group_ref(raw),
+            }
         }
     }
 }

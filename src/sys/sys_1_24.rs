@@ -875,12 +875,12 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet\n\n Returns the current size in mm along the major axis of the touching\n ellipse. This axis is not necessarily aligned with either x or y, the\n rotation must be taken into account.\n\n Where no rotation is available on a tool, or where rotation is zero, the\n major axis aligns with the y axis and the minor axis with the x axis.\n\n If this axis does not exist on the current tool, this function returns 0.\n\n @param event The libinput tablet tool event\n @return The current value of the axis major in mm"]
     pub fn libinput_event_tablet_tool_get_size_major(event: *mut libinput_event_tablet_tool)
-        -> f64;
+    -> f64;
 }
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet\n\n Returns the current size in mm along the minor axis of the touching\n ellipse. This axis is not necessarily aligned with either x or y, the\n rotation must be taken into account.\n\n Where no rotation is available on a tool, or where rotation is zero, the\n minor axis aligns with the y axis and the minor axis with the x axis.\n\n If this axis does not exist on the current tool, this function returns 0.\n\n @param event The libinput tablet tool event\n @return The current value of the axis minor in mm"]
     pub fn libinput_event_tablet_tool_get_size_minor(event: *mut libinput_event_tablet_tool)
-        -> f64;
+    -> f64;
 }
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet\n\n Return the delta for the wheel in degrees.\n\n @param event The libinput tablet tool event\n @return The delta of the wheel, in degrees, compared to the last event\n\n @see libinput_event_tablet_tool_get_wheel_delta_discrete"]
@@ -967,17 +967,17 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet\n\n Decrement the reference count of the tool by one. When the reference\n count of the tool reaches 0, the memory allocated for the tool will be\n freed.\n\n @param tool The tool to decrement the ref count of\n @return NULL if the tool was destroyed otherwise the passed tool\n\n @see libinput_tablet_tool_ref\n\n @since 1.2"]
     pub fn libinput_tablet_tool_unref(tool: *mut libinput_tablet_tool)
-        -> *mut libinput_tablet_tool;
+    -> *mut libinput_tablet_tool;
 }
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet\n\n Return whether the tablet tool supports pressure.\n\n @param tool The tool to check the axis capabilities of\n @return Nonzero if the axis is available, zero otherwise.\n\n @since 1.2"]
     pub fn libinput_tablet_tool_has_pressure(tool: *mut libinput_tablet_tool)
-        -> ::core::ffi::c_int;
+    -> ::core::ffi::c_int;
 }
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet\n\n Return whether the tablet tool supports distance.\n\n @param tool The tool to check the axis capabilities of\n @return Nonzero if the axis is available, zero otherwise.\n\n @since 1.2"]
     pub fn libinput_tablet_tool_has_distance(tool: *mut libinput_tablet_tool)
-        -> ::core::ffi::c_int;
+    -> ::core::ffi::c_int;
 }
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet\n\n Return whether the tablet tool supports tilt.\n\n @param tool The tool to check the axis capabilities of\n @return Nonzero if the axis is available, zero otherwise.\n\n @since 1.2"]
@@ -986,7 +986,7 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet\n\n Return whether the tablet tool supports z-rotation.\n\n @param tool The tool to check the axis capabilities of\n @return Nonzero if the axis is available, zero otherwise.\n\n @since 1.2"]
     pub fn libinput_tablet_tool_has_rotation(tool: *mut libinput_tablet_tool)
-        -> ::core::ffi::c_int;
+    -> ::core::ffi::c_int;
 }
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet\n\n Return whether the tablet tool has a slider axis.\n\n @param tool The tool to check the axis capabilities of\n @return Nonzero if the axis is available, zero otherwise.\n\n @since 1.2"]
@@ -1673,7 +1673,7 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Get the default send-event mode for this device. The mode defines when\n the device processes and sends events to the caller.\n\n @param device The device to configure\n @return The bitmask of the send-event mode for this device.\n\n @see libinput_device_config_send_events_get_modes\n @see libinput_device_config_send_events_set_mode\n @see libinput_device_config_send_events_get_mode"]
     pub fn libinput_device_config_send_events_get_default_mode(device: *mut libinput_device)
-        -> u32;
+    -> u32;
 }
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Check if a device uses libinput-internal pointer-acceleration.\n\n @param device The device to configure\n\n @return 0 if the device is not accelerated, nonzero if it is accelerated\n\n @see libinput_device_config_accel_set_speed\n @see libinput_device_config_accel_get_speed\n @see libinput_device_config_accel_get_default_speed"]

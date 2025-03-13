@@ -1,13 +1,13 @@
 use colpetto::{
-    event::{AsRawEvent, DeviceEvent, KeyboardEvent},
     Event, Libinput, Result,
+    event::{AsRawEvent, DeviceEvent, KeyboardEvent},
 };
 use rustix::{
     fd::{FromRawFd, IntoRawFd, OwnedFd},
-    fs::{open, Mode, OFlags},
+    fs::{Mode, OFlags, open},
 };
 use std::{
-    ffi::{c_int, CStr},
+    ffi::{CStr, c_int},
     os::fd::RawFd,
     path::Path,
 };

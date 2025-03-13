@@ -1,16 +1,19 @@
+//! # WARNING
+//! This module does not follow semver and might break between minors
+//!
 //! Helper module to facilitate integration with tokio
 
 #![allow(missing_docs)]
 
 use std::{
-    ffi::{c_int, CString},
+    ffi::{CString, c_int},
     future::Future,
     os::fd::RawFd,
     sync::mpsc,
 };
 
 use tokio::{sync::mpsc as tokio_mpsc, task::LocalSet};
-use tokio_stream::{wrappers::UnboundedReceiverStream, StreamExt};
+use tokio_stream::{StreamExt, wrappers::UnboundedReceiverStream};
 
 use crate::event::AsRawEvent;
 use crate::{Error, Libinput, Result};

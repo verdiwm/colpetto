@@ -1,6 +1,6 @@
 //! This module contains wrappers for all possible libinput events
 
-use crate::{sys, Device};
+use crate::{Device, sys};
 
 pub mod device;
 pub mod gesture;
@@ -25,8 +25,8 @@ macro_rules! define_events {
         $(#[$main_meta:meta])*
         $main:ident,
         $raw:ident,
-        $get:expr,
-        $set:expr,
+        $get:expr_2021,
+        $set:expr_2021,
         $(
             $(#[$event_meta:meta])*
             $event:ident,
@@ -83,11 +83,11 @@ macro_rules! define_events {
                 }
 
                 impl crate::event::FromRawEvent for [<$main $event Event>] {
-                    unsafe fn from_raw_event(event: *mut crate::sys::libinput_event) -> Self {
+                    unsafe fn from_raw_event(event: *mut crate::sys::libinput_event) -> Self { unsafe {
                         Self {
                             raw: $set(event),
                         }
-                    }
+                    }}
                 }
 
                 impl Drop for [<$main $event Event>] {
@@ -188,7 +188,7 @@ impl Drop for Unknown {
 }
 
 macro_rules! map_raw {
-    ($outer:ident($inner:ident), $event:expr) => {
+    ($outer:ident($inner:ident), $event:expr_2021) => {
         paste::paste! {
             crate::Event::$outer(crate::event::[<$outer Event>]::$inner(unsafe {
                 crate::event::[<$outer $inner Event>]::from_raw_event($event)

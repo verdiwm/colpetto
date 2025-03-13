@@ -1,9 +1,9 @@
 [package]
 name = "colpetto-gen"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 publish = false
 
 [dependencies]
-anyhow = "1.0.95"
+anyhow = "1.0.97"
 bindgen = "0.71.1"

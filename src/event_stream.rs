@@ -4,7 +4,7 @@ use std::{
     task::{self, Poll},
 };
 
-use futures_core::{ready, Stream};
+use futures_core::{Stream, ready};
 use tokio::io::unix::AsyncFd;
 
 use crate::{Error, Event, Libinput, Result};

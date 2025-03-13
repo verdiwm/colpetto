@@ -7,7 +7,7 @@ use crate::sys;
 /// The function type to pass as a logger to libinput
 pub type Logger = Option<unsafe extern "C" fn(sys::libinput_log_priority, *const c_char)>;
 
-extern "C" {
+unsafe extern "C" {
     fn set_log_callback(callback: Logger);
     fn get_log_handler() -> sys::libinput_log_handler;
 }

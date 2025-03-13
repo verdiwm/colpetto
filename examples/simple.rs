@@ -1,12 +1,12 @@
 use std::{
-    ffi::{c_int, CStr},
+    ffi::{CStr, c_int},
     os::fd::RawFd,
 };
 
-use colpetto::{event::AsRawEvent, Libinput, Result};
+use colpetto::{Libinput, Result, event::AsRawEvent};
 use rustix::{
     fd::{FromRawFd, IntoRawFd, OwnedFd},
-    fs::{open, Mode, OFlags},
+    fs::{Mode, OFlags, open},
 };
 use tokio_stream::StreamExt;
 

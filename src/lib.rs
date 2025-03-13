@@ -18,7 +18,7 @@
 pub mod sys;
 
 use std::{
-    ffi::{c_char, c_int, c_void, CStr},
+    ffi::{CStr, c_char, c_int, c_void},
     io, mem,
     os::fd::RawFd,
     ptr::NonNull,
@@ -69,13 +69,15 @@ unsafe extern "C" fn open_restricted(
     flags: c_int,
     user_data: *mut c_void,
 ) -> c_int {
-    let handler = user_data as *const Handler;
-    let handler = unsafe { &*handler };
+    unsafe {
+        let handler = user_data as *const Handler;
+        let handler = unsafe { &*handler };
 
-    match (handler.open)(CStr::from_ptr(path), flags) {
-        Ok(fd) => fd,
-        Err(errno) if errno.is_positive() => errno.wrapping_neg(),
-        Err(errno) => errno,
+        match (handler.open)(CStr::from_ptr(path), flags) {
+            Ok(fd) => fd,
+            Err(errno) if errno.is_positive() => errno.wrapping_neg(),
+            Err(errno) => errno,
+        }
     }
 }
 

@@ -13,8 +13,10 @@ impl Seat {
     ///
     /// The caller must ensure it's passing a valid pointer
     pub unsafe fn from_raw(raw: *mut sys::libinput_seat) -> Self {
-        Self {
-            raw: sys::libinput_seat_ref(raw),
+        unsafe {
+            Self {
+                raw: sys::libinput_seat_ref(raw),
+            }
         }
     }
 }
