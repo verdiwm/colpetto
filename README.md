@@ -120,6 +120,9 @@ While input-rs supports a wider range of libinput versions (1.9+), Colpetto
 focuses on modern versions (1.22+) to provide comprehensive bindings for newer
 libinput features and async capabilities.
 
+Colpetto also requires a modern rust version since it depends on edition 2024
+which was introduced on rust 1.85
+
 ### Some other differences
 
 - Native tokio integration for async/await support with stream-based event
