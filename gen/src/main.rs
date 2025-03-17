@@ -1,8 +1,8 @@
-use std::{fs, path::Path};
+use std::{fs, iter, path::Path};
 
 use anyhow::{Context, Result};
 
-const VERSIONS: &[&str] = &["1.22", "1.23", "1.24", "1.25", "1.26", "1.27"];
+const VERSIONS: &[&str] = &["1.27", "1.26", "1.25", "1.24", "1.23", "1.22"];
 
 fn main() -> Result<()> {
     let base_builder = bindgen::builder()
@@ -26,7 +26,11 @@ fn main() -> Result<()> {
 
     let mut module = String::new();
 
-    for version in VERSIONS {
+    for (version, next) in VERSIONS
+        .into_iter()
+        .zip(iter::once(None).chain(VERSIONS.into_iter().map(Some)))
+    {
+        dbg!(&version, &next);
         let bindings = base_builder
             .clone()
             .header(format!("src/headers/libinput-{version}.h"))
@@ -34,18 +38,25 @@ fn main() -> Result<()> {
             .context("Failed to generate bindings")?;
 
         let version = version.replace(".", "_");
+        let next = next.map(|next| next.replace(".", "_"));
 
         bindings
             .write_to_file(format!("../src/sys/sys_{version}.rs"))
             .context("Couldn't write bindings")?;
 
+        let cfg = if let Some(next) = next {
+            format!(r#"all(feature = "{version}", not(feature = "{next}"))"#)
+        } else {
+            format!(r#"feature = "{version}""#)
+        };
+
         module.push_str(&format!(
-            r#"
-        #[cfg(feature = "{version}")]
-        mod sys_{version};
-        #[cfg(feature = "{version}")]
-        pub use sys_{version}::*;
-        "#
+            r#"#[cfg({cfg})]
+mod sys_{version};
+#[cfg({cfg})]
+pub use sys_{version}::*;
+
+"#
         ));
     }
 
