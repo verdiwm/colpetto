@@ -129,6 +129,7 @@ impl Libinput {
 
             // Safety guaranted by libinput
             let message = unsafe { CStr::from_ptr(message) }.to_string_lossy();
+            let message = message.trim_ascii_end();
 
             match priority {
                 sys::libinput_log_priority::LIBINPUT_LOG_PRIORITY_INFO => info!("{message}"),
