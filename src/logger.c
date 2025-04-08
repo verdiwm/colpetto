@@ -10,8 +10,9 @@ static LogCallback global_callback = NULL;
 // This is our main handler function that libinput will call.
 // It receives the variable arguments (va_list) from libinput and converts them
 // into a simple string that we can pass to Rust.
-void colpetto_inner_log_handler(struct libinput *libinput, enum libinput_log_priority priority,
-                 const char *format, va_list args) {
+void colpetto_inner_log_handler(struct libinput *libinput,
+                                enum libinput_log_priority priority,
+                                const char *format, va_list args) {
 
   // If no callback is set, we can't do anything
   if (!global_callback)
@@ -39,6 +40,10 @@ void colpetto_inner_log_handler(struct libinput *libinput, enum libinput_log_pri
   free(buffer);
 }
 
-void colpetto_inner_set_log_callback(LogCallback callback) { global_callback = callback; }
+extern void colpetto_inner_set_log_callback(LogCallback callback) {
+  global_callback = callback;
+}
 
-libinput_log_handler colpetto_inner_get_log_handler() { return colpetto_inner_log_handler; }
+extern libinput_log_handler colpetto_inner_get_log_handler() {
+  return colpetto_inner_log_handler;
+}
