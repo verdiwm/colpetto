@@ -1,4 +1,4 @@
-const FEATURES: &[&str] = &["1_22", "1_23", "1_24", "1_25", "1_26", "1_27"];
+const FEATURES: &[&str] = &["1_27", "1_26", "1_25", "1_24", "1_23", "1_22"];
 
 fn main() {
     let enabled_version = FEATURES
@@ -14,18 +14,6 @@ fn main() {
         }
         Some(v) => v,
     };
-
-    let enabled_count = FEATURES
-        .iter()
-        .filter(|f| std::env::var(format!("CARGO_FEATURE_{}", f.to_uppercase())).is_ok())
-        .count();
-
-    if enabled_count > 1 {
-        panic!(
-            "Multiple libinput versions selected. You must enable exactly one of these features: {}",
-            FEATURES.join(", ")
-        );
-    }
 
     if std::env::var("DOCS_RS").is_ok() {
         return;

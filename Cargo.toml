@@ -34,11 +34,11 @@ helper = ["dep:tokio-stream", "tokio", "tokio/sync", "tokio/rt", "tokio/macros"]
 
 # Versions
 1_22 = []
-1_23 = []
-1_24 = []
-1_25 = []
-1_26 = []
-1_27 = []
+1_23 = ["1_22"]
+1_24 = ["1_23"]
+1_25 = ["1_24"]
+1_26 = ["1_25"]
+1_27 = ["1_26"]
 
 [dependencies]
 # Core
