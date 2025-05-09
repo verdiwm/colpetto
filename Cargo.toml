@@ -39,6 +39,7 @@ helper = ["dep:tokio-stream", "tokio", "tokio/sync", "tokio/rt", "tokio/macros"]
 1_25 = []
 1_26 = []
 1_27 = []
+1_28 = []
 
 [dependencies]
 # Core

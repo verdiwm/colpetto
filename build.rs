@@ -1,4 +1,4 @@
-const FEATURES: &[&str] = &["1_22", "1_23", "1_24", "1_25", "1_26", "1_27"];
+const FEATURES: &[&str] = &["1_22", "1_23", "1_24", "1_25", "1_26", "1_27", "1_28"];
 
 fn main() {
     let enabled_version = FEATURES
