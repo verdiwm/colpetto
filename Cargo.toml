@@ -26,11 +26,13 @@ strip = true
 
 [features]
 default = ["1_22"]
+
 tracing = ["dep:tracing"]
 tracing-log = ["tracing", "tracing/log"]
 tracing-log-always = ["tracing", "tracing/log-always"]
+
 tokio = ["dep:tokio"]
-helper = ["dep:tokio-stream", "tokio", "tokio/sync", "tokio/rt", "tokio/macros"]
+
 
 # Versions
 1_22 = []
@@ -48,9 +50,7 @@ futures-core = "0.3.31"
 thiserror = "2.0.12"
 paste = "1.0.15"
 
-
 # Optional stuff
-tokio-stream = { version = "0.1.17", default-features = false, optional = true }
 tokio = { version = "1.44.1", features = ["net"], optional = true }
 tracing = { version = "0.1.41", optional = true }
 
@@ -74,7 +74,7 @@ anyhow = "1.0.97"
 
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["tokio", "helper", "tracing", "1_27"]
+features = ["tokio", "tracing", "1_27"]
 
 [lib]
 doctest = false
