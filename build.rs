@@ -1,28 +1,14 @@
 const FEATURES: &[&str] = &["1_22", "1_23", "1_24", "1_25", "1_26", "1_27", "1_28"];
 
 fn main() {
-    let enabled_version = FEATURES
-        .iter()
-        .find(|f| std::env::var(format!("CARGO_FEATURE_{}", f.to_uppercase())).is_ok());
-
-    let version = match enabled_version {
-        None => {
-            panic!(
-                "No libinput version selected. You must enable exactly one of these features: {}",
-                FEATURES.join(", ")
-            );
-        }
-        Some(v) => v,
-    };
-
     let enabled_count = FEATURES
         .iter()
         .filter(|f| std::env::var(format!("CARGO_FEATURE_{}", f.to_uppercase())).is_ok())
         .count();
 
-    if enabled_count > 1 {
+    if enabled_count != 1 {
         panic!(
-            "Multiple libinput versions selected. You must enable exactly one of these features: {}",
+            "You must enable exactly one libinput version feature: {}",
             FEATURES.join(", ")
         );
     }
@@ -31,17 +17,10 @@ fn main() {
         return;
     }
 
-    let pkg_version = version.replace('_', ".");
-
-    pkg_config::Config::new()
-        .atleast_version(&pkg_version)
-        .probe("libinput")
-        .unwrap_or_else(|_| {
-            panic!(
-                "Failed to link to libinput version {}. Make sure it's installed on your system.",
-                pkg_version
-            )
-        });
+    // The required libinput version is declared in `[package.metadata.system-deps]`,
+    // gated on the selected version feature. system-deps probes the matching module,
+    // and the same table is exposed via `cargo metadata` for build-less discovery.
+    system_deps::Config::new().probe().unwrap();
 
     println!("cargo:rerun-if-changed=src/logger.c");
 

@@ -56,7 +56,19 @@ tracing = { version = "0.1.41", optional = true }
 
 [build-dependencies]
 cc = "1.2.16"
-pkg-config = "0.3.32"
+system-deps = "7.0"
+
+# libinput requirement, gated per version feature. Consumed by `system-deps` at
+# build time and exposed through `cargo metadata`, so the pkg-config module (and
+# the system package providing it) can be discovered without building.
+[package.metadata.system-deps]
+libinput_1_22 = { name = "libinput", version = "1.22", feature = "1_22" }
+libinput_1_23 = { name = "libinput", version = "1.23", feature = "1_23" }
+libinput_1_24 = { name = "libinput", version = "1.24", feature = "1_24" }
+libinput_1_25 = { name = "libinput", version = "1.25", feature = "1_25" }
+libinput_1_26 = { name = "libinput", version = "1.26", feature = "1_26" }
+libinput_1_27 = { name = "libinput", version = "1.27", feature = "1_27" }
+libinput_1_28 = { name = "libinput", version = "1.28", feature = "1_28" }
 
 [dev-dependencies]
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
