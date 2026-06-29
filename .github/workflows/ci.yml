@@ -20,6 +20,9 @@ jobs:
           - "1_26"
           - "1_27"
           - "1_28"
+          - "1_29"
+          - "1_30"
+          - "1_31"
     steps:
       - uses: actions/checkout@v4
 

@@ -33,7 +33,6 @@ tracing-log-always = ["tracing", "tracing/log-always"]
 
 tokio = ["dep:tokio"]
 
-
 # Versions
 1_22 = []
 1_23 = []
@@ -42,6 +41,9 @@ tokio = ["dep:tokio"]
 1_26 = []
 1_27 = []
 1_28 = []
+1_29 = []
+1_30 = []
+1_31 = []
 
 [dependencies]
 # Core

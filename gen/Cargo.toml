@@ -5,5 +5,5 @@ edition = "2024"
 publish = false
 
 [dependencies]
-anyhow = "1.0.97"
-bindgen = "0.71.1"
+anyhow = "1.0.103"
+bindgen = "0.72.1"

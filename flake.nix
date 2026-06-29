@@ -26,6 +26,7 @@
         in
         {
           default = pkgs.mkShell {
+            LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
             buildInputs = with pkgs; [
               cargo-nextest
               cargo-edit
@@ -35,6 +36,7 @@
               clang
               libinput
               pkg-config
+              libclang
               (rust-bin.stable.latest.default.override {
                 extensions = [
                   "rust-src"

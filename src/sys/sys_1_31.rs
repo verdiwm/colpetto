@@ -71,13 +71,19 @@ pub struct libinput_event_pointer {
 pub struct libinput_event_touch {
     _unused: [u8; 0],
 }
-#[doc = " @ingroup event_tablet\n @struct libinput_event_tablet_tool\n\n Tablet tool event representing an axis update, button press, or tool\n update. Valid event types for this event are @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS, @ref\n LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY and @ref\n LIBINPUT_EVENT_TABLET_TOOL_BUTTON.\n\n @since 1.2"]
+#[doc = " @ingroup event_gesture\n @struct libinput_event_gesture\n\n A gesture event representing a swipe, pinch or hold gesture. Valid event\n types for this event are @ref LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN, @ref\n LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE, @ref LIBINPUT_EVENT_GESTURE_SWIPE_END,\n @ref LIBINPUT_EVENT_GESTURE_PINCH_BEGIN, @ref\n LIBINPUT_EVENT_GESTURE_PINCH_UPDATE, @ref LIBINPUT_EVENT_GESTURE_PINCH_END,\n @ref LIBINPUT_EVENT_GESTURE_HOLD_BEGIN and @ref\n LIBINPUT_EVENT_GESTURE_HOLD_END."]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct libinput_event_gesture {
+    _unused: [u8; 0],
+}
+#[doc = " @ingroup event_tablet\n @struct libinput_event_tablet_tool\n\n Tablet tool event representing an axis update, button press, or tool\n update. Valid event types for this event are @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS, @ref LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY,\n @ref LIBINPUT_EVENT_TABLET_TOOL_TIP, and @ref\n LIBINPUT_EVENT_TABLET_TOOL_BUTTON.\n\n @since 1.2"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct libinput_event_tablet_tool {
     _unused: [u8; 0],
 }
-#[doc = " @ingroup event_tablet_pad\n @struct libinput_event_tablet_pad\n\n Tablet pad event representing a button press, or ring/strip update on\n the tablet pad itself. Valid event types for this event are @ref\n LIBINPUT_EVENT_TABLET_PAD_BUTTON, @ref LIBINPUT_EVENT_TABLET_PAD_RING and\n @ref LIBINPUT_EVENT_TABLET_PAD_STRIP.\n\n @since 1.3"]
+#[doc = " @ingroup event_tablet_pad\n @struct libinput_event_tablet_pad\n\n Tablet pad event representing a button press, or ring/strip update on\n the tablet pad itself. Valid event types for this event are @ref\n LIBINPUT_EVENT_TABLET_PAD_BUTTON, @ref LIBINPUT_EVENT_TABLET_PAD_RING,\n @ref LIBINPUT_EVENT_TABLET_PAD_STRIP, @ref LIBINPUT_EVENT_TABLET_PAD_KEY\n and @ref LIBINPUT_EVENT_TABLET_PAD_DIAL.\n\n @since 1.3"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct libinput_event_tablet_pad {
@@ -113,6 +119,8 @@ impl libinput_led {
     pub const LIBINPUT_LED_NUM_LOCK: libinput_led = libinput_led(1);
     pub const LIBINPUT_LED_CAPS_LOCK: libinput_led = libinput_led(2);
     pub const LIBINPUT_LED_SCROLL_LOCK: libinput_led = libinput_led(4);
+    pub const LIBINPUT_LED_COMPOSE: libinput_led = libinput_led(8);
+    pub const LIBINPUT_LED_KANA: libinput_led = libinput_led(16);
 }
 #[repr(transparent)]
 #[doc = " @ingroup device\n\n Mask reflecting LEDs on a device."]
@@ -233,7 +241,7 @@ pub struct libinput_tablet_pad_mode_group {
     _unused: [u8; 0],
 }
 unsafe extern "C" {
-    #[doc = " @ingroup tablet_pad_modes\n\n Most devices only provide a single mode group, however devices such as\n the Wacom Cintiq 22HD provide two mode groups. If multiple mode groups\n are available, a caller should use\n libinput_tablet_pad_mode_group_has_button(),\n libinput_tablet_pad_mode_group_has_ring() and\n libinput_tablet_pad_mode_group_has_strip() to associate each button,\n ring and strip with the correct mode group.\n\n @return the number of mode groups available on this device\n\n @since 1.4"]
+    #[doc = " @ingroup tablet_pad_modes\n\n Most devices only provide a single mode group, however devices such as\n the Wacom Cintiq 22HD provide two mode groups. If multiple mode groups\n are available, a caller should use\n libinput_tablet_pad_mode_group_has_button(),\n libinput_tablet_pad_mode_group_has_ring(),\n libinput_tablet_pad_mode_group_has_dial() and\n libinput_tablet_pad_mode_group_has_strip() to associate each button,\n ring and strip with the correct mode group.\n\n @return the number of mode groups available on this device\n\n @since 1.4"]
     pub fn libinput_device_tablet_pad_get_num_mode_groups(
         device: *mut libinput_device,
     ) -> ::core::ffi::c_int;
@@ -268,6 +276,13 @@ unsafe extern "C" {
     pub fn libinput_tablet_pad_mode_group_has_button(
         group: *mut libinput_tablet_pad_mode_group,
         button: ::core::ffi::c_uint,
+    ) -> ::core::ffi::c_int;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup tablet_pad_modes\n\n Devices without mode switching capabilities return true for every dial.\n\n @param group A previously obtained mode group\n @param dial A dial index, starting at 0\n @return true if the given dial index is part of this mode group or\n false otherwise\n\n @since 1.26"]
+    pub fn libinput_tablet_pad_mode_group_has_dial(
+        group: *mut libinput_tablet_pad_mode_group,
+        dial: ::core::ffi::c_uint,
     ) -> ::core::ffi::c_int;
 }
 unsafe extern "C" {
@@ -329,6 +344,8 @@ impl libinput_switch {
     pub const LIBINPUT_SWITCH_LID: libinput_switch = libinput_switch(1);
     #[doc = " This switch indicates whether the device is in normal laptop mode\n or behaves like a tablet-like device where the primary\n interaction is usually a touch screen. When in tablet mode, the\n keyboard and touchpad are usually inaccessible.\n\n If the switch is in state @ref LIBINPUT_SWITCH_STATE_OFF, the\n device is in laptop mode. If the switch is in state @ref\n LIBINPUT_SWITCH_STATE_ON, the device is in tablet mode and the\n keyboard or touchpad may not be  accessible.\n\n It is up to the caller to identify which devices are inaccessible\n in tablet mode."]
     pub const LIBINPUT_SWITCH_TABLET_MODE: libinput_switch = libinput_switch(2);
+    #[doc = " This switch indicates if the device keypad is exposed or not.\n\n If the switch is in state @ref LIBINPUT_SWITCH_STATE_OFF, the\n keypad is hidden. If the state is @ref LIBINPUT_SWITCH_STATE_ON,\n the keypad is exposed.\n\n All devices will remain accessible regardless of the state of this\n switch.\n\n @since 1.31"]
+    pub const LIBINPUT_SWITCH_KEYPAD_SLIDE: libinput_switch = libinput_switch(3);
 }
 #[repr(transparent)]
 #[doc = " @ingroup device\n\n The type of a switch.\n\n @since 1.7"]
@@ -377,7 +394,7 @@ pub mod libinput_event_type {
     pub const LIBINPUT_EVENT_TOUCH_FRAME: Type = 504;
     #[doc = " One or more axes have changed state on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_TOOL capability. This event is only sent\n when the tool is in proximity, see @ref\n LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY for details.\n\n The proximity event contains the initial state of the axis as the\n tool comes into proximity. An event of type @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS is only sent when an axis value\n changes from this initial state. It is possible for a tool to\n enter and leave proximity without sending an event of type @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS.\n\n An event of type @ref LIBINPUT_EVENT_TABLET_TOOL_AXIS is sent\n when the tip state does not change. See the documentation for\n @ref LIBINPUT_EVENT_TABLET_TOOL_TIP for more details.\n\n @since 1.2"]
     pub const LIBINPUT_EVENT_TABLET_TOOL_AXIS: Type = 600;
-    #[doc = " Signals that a tool has come in or out of proximity of a device with\n the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n Proximity events contain each of the current values for each axis,\n and these values may be extracted from them in the same way they are\n with @ref LIBINPUT_EVENT_TABLET_TOOL_AXIS events.\n\n Some tools may always be in proximity. For these tools, events of\n type @ref LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_IN are sent only once after @ref\n LIBINPUT_EVENT_DEVICE_ADDED, and events of type @ref\n LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_OUT are sent only once before @ref\n LIBINPUT_EVENT_DEVICE_REMOVED.\n\n If the tool that comes into proximity supports x/y coordinates,\n libinput guarantees that both x and y are set in the proximity\n event.\n\n When a tool goes out of proximity, the value of every axis should be\n assumed to have an undefined state and any buttons that are currently held\n down on the stylus are marked as released. Button release events for\n each button that was held down on the stylus are sent before the\n proximity out event.\n\n @since 1.2"]
+    #[doc = " Signals that a tool has come in or out of proximity of a device with\n the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n Proximity events contain each of the current values for each axis,\n and these values may be extracted from them in the same way they are\n with @ref LIBINPUT_EVENT_TABLET_TOOL_AXIS events.\n\n Some tools may always be in proximity. For these tools, events of\n type @ref LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_IN are sent only once after\n @ref LIBINPUT_EVENT_DEVICE_ADDED, and events of type @ref\n LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_OUT are sent only once before @ref\n LIBINPUT_EVENT_DEVICE_REMOVED.\n\n If the tool that comes into proximity supports x/y coordinates,\n libinput guarantees that both x and y are set in the proximity\n event.\n\n When a tool goes out of proximity, the value of every axis should be\n assumed to have an undefined state and any buttons that are currently held\n down on the stylus are marked as released. Button release events for\n each button that was held down on the stylus are sent before the\n proximity out event.\n\n @since 1.2"]
     pub const LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY: Type = 601;
     #[doc = " Signals that a tool has come in contact with the surface of a\n device with the @ref LIBINPUT_DEVICE_CAP_TABLET_TOOL capability.\n\n On devices without distance proximity detection, the @ref\n LIBINPUT_EVENT_TABLET_TOOL_TIP is sent immediately after @ref\n LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY for the tip down event, and\n immediately before for the tip up event.\n\n The decision when a tip touches the surface is device-dependent\n and may be derived from pressure data or other means. If the tip\n state is changed by axes changing state, the\n @ref LIBINPUT_EVENT_TABLET_TOOL_TIP event includes the changed\n axes and no additional axis event is sent for this state change.\n In other words, a caller must look at both @ref\n LIBINPUT_EVENT_TABLET_TOOL_AXIS and @ref\n LIBINPUT_EVENT_TABLET_TOOL_TIP events to know the current state\n of the axes.\n\n If a button state change occurs at the same time as a tip state\n change, the order of events is device-dependent.\n\n @since 1.2"]
     pub const LIBINPUT_EVENT_TABLET_TOOL_TIP: Type = 602;
@@ -391,17 +408,19 @@ pub mod libinput_event_type {
     pub const LIBINPUT_EVENT_TABLET_PAD_STRIP: Type = 702;
     #[doc = " A key pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A key differs from @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON in that\n keys have a specific functionality assigned to them (buttons are\n sequentially ordered). The key code thus carries a semantic\n meaning, a button number does not.\n\n @since 1.15"]
     pub const LIBINPUT_EVENT_TABLET_PAD_KEY: Type = 703;
-    #[doc = " A key pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A key differs from @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON in that\n keys have a specific functionality assigned to them (buttons are\n sequentially ordered). The key code thus carries a semantic\n meaning, a button number does not.\n\n @since 1.15"]
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
+    pub const LIBINPUT_EVENT_TABLET_PAD_DIAL: Type = 704;
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
     pub const LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN: Type = 800;
-    #[doc = " A key pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A key differs from @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON in that\n keys have a specific functionality assigned to them (buttons are\n sequentially ordered). The key code thus carries a semantic\n meaning, a button number does not.\n\n @since 1.15"]
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
     pub const LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE: Type = 801;
-    #[doc = " A key pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A key differs from @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON in that\n keys have a specific functionality assigned to them (buttons are\n sequentially ordered). The key code thus carries a semantic\n meaning, a button number does not.\n\n @since 1.15"]
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
     pub const LIBINPUT_EVENT_GESTURE_SWIPE_END: Type = 802;
-    #[doc = " A key pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A key differs from @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON in that\n keys have a specific functionality assigned to them (buttons are\n sequentially ordered). The key code thus carries a semantic\n meaning, a button number does not.\n\n @since 1.15"]
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
     pub const LIBINPUT_EVENT_GESTURE_PINCH_BEGIN: Type = 803;
-    #[doc = " A key pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A key differs from @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON in that\n keys have a specific functionality assigned to them (buttons are\n sequentially ordered). The key code thus carries a semantic\n meaning, a button number does not.\n\n @since 1.15"]
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
     pub const LIBINPUT_EVENT_GESTURE_PINCH_UPDATE: Type = 804;
-    #[doc = " A key pressed on a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n A key differs from @ref LIBINPUT_EVENT_TABLET_PAD_BUTTON in that\n keys have a specific functionality assigned to them (buttons are\n sequentially ordered). The key code thus carries a semantic\n meaning, a button number does not.\n\n @since 1.15"]
+    #[doc = " A status change on a tablet dial with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n\n @since 1.26"]
     pub const LIBINPUT_EVENT_GESTURE_PINCH_END: Type = 805;
     #[doc = " @since 1.19"]
     pub const LIBINPUT_EVENT_GESTURE_HOLD_BEGIN: Type = 806;
@@ -441,11 +460,6 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[doc = " @ingroup event\n\n Return the touch event that is this input event. If the event type does\n not match the touch event types, this function returns NULL.\n\n The inverse of this function is libinput_event_touch_get_base_event().\n\n @return A touch event, or NULL for other events"]
     pub fn libinput_event_get_touch_event(event: *mut libinput_event) -> *mut libinput_event_touch;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct libinput_event_gesture {
-    _unused: [u8; 0],
 }
 unsafe extern "C" {
     #[doc = " @ingroup event\n\n Return the gesture event that is this input event. If the event type does\n not match the gesture event types, this function returns NULL.\n\n A gesture's lifetime has three distinct stages: begin, update and end, each\n with their own event types. Begin is sent when the fingers are first set\n down or libinput decides that the gesture begins. For @ref\n LIBINPUT_EVENT_GESTURE_PINCH_BEGIN this sets the initial scale. Any\n events changing properties of the gesture are sent as update events. On\n termination of the gesture, an end event is sent.\n\n The inverse of this function is libinput_event_gesture_get_base_event().\n\n @return A gesture event, or NULL for other events"]
@@ -785,11 +799,11 @@ unsafe extern "C" {
     ) -> ::core::ffi::c_int;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup event_tablet\n\n Returns the X coordinate of the tablet tool, in mm from the top left\n corner of the tablet in its current logical orientation. Use\n libinput_event_tablet_tool_get_x_transformed() for transforming the axis\n value into a different coordinate space.\n\n @note On some devices, returned value may be negative or larger than the\n width of the device. See the libinput documentation for more details.\n\n @param event The libinput tablet tool event\n @return The current value of the the axis\n\n @since 1.2"]
+    #[doc = " @ingroup event_tablet\n\n Returns the X coordinate of the tablet tool, in mm from the top left\n corner of the tablet in its current logical orientation. Use\n libinput_event_tablet_tool_get_x_transformed() for transforming the axis\n value into a different coordinate space.\n\n If an area is defined for this device, the coordinate is in mm from\n the top left corner of the area. See\n libinput_device_config_area_set_rectangle() for details.\n\n @note On some devices, returned value may be negative or larger than the\n width of the device. See the libinput documentation for more details.\n\n @param event The libinput tablet tool event\n @return The current value of the the axis\n\n @since 1.2"]
     pub fn libinput_event_tablet_tool_get_x(event: *mut libinput_event_tablet_tool) -> f64;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup event_tablet\n\n Returns the Y coordinate of the tablet tool, in mm from the top left\n corner of the tablet in its current logical orientation. Use\n libinput_event_tablet_tool_get_y_transformed() for transforming the axis\n value into a different coordinate space.\n\n @note On some devices, returned value may be negative or larger than the\n width of the device. See the libinput documentation for more details.\n\n @param event The libinput tablet tool event\n @return The current value of the the axis\n\n @since 1.2"]
+    #[doc = " @ingroup event_tablet\n\n Returns the Y coordinate of the tablet tool, in mm from the top left\n corner of the tablet in its current logical orientation. Use\n libinput_event_tablet_tool_get_y_transformed() for transforming the axis\n value into a different coordinate space.\n\n If an area is defined for this device, the coordinate is in mm from\n the top left corner of the area. See\n libinput_device_config_area_set_rectangle() for details.\n\n @note On some devices, returned value may be negative or larger than the\n width of the device. See the libinput documentation for more details.\n\n @param event The libinput tablet tool event\n @return The current value of the the axis\n\n @since 1.2"]
     pub fn libinput_event_tablet_tool_get_y(event: *mut libinput_event_tablet_tool) -> f64;
 }
 unsafe extern "C" {
@@ -905,14 +919,20 @@ unsafe extern "C" {
     pub fn libinput_event_tablet_tool_get_time_usec(event: *mut libinput_event_tablet_tool) -> u64;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup event_tablet\n\n Return the high-level tool type for a tool object.\n\n The high level tool describes general interaction expected with the tool.\n For example, a user would expect a tool of type @ref\n LIBINPUT_TABLET_TOOL_TYPE_PEN to interact with a graphics application\n taking pressure and tilt into account. The default virtual tool assigned\n should be a drawing tool, e.g. a virtual pen or brush.\n A tool of type @ref LIBINPUT_TABLET_TOOL_TYPE_ERASER would normally be\n mapped to an eraser-like virtual tool.\n\n If supported by the hardware, a more specific tool id is always\n available, see libinput_tablet_tool_get_tool_id().\n\n @param tool The libinput tool\n @return The tool type for this tool object\n\n @see libinput_tablet_tool_get_tool_id\n\n @since 1.2"]
+    #[doc = " @ingroup event_tablet\n\n Return the high-level tool type for a tool object.\n\n The high level tool describes general interaction expected with the tool.\n For example, a user would expect a tool of type @ref\n LIBINPUT_TABLET_TOOL_TYPE_PEN to interact with a graphics application\n taking pressure and tilt into account. The default virtual tool assigned\n should be a drawing tool, e.g. a virtual pen or brush.\n A tool of type @ref LIBINPUT_TABLET_TOOL_TYPE_ERASER would normally be\n mapped to an eraser-like virtual tool.\n\n If supported by the hardware, a more specific tool id is always\n available, see libinput_tablet_tool_get_tool_id().\n\n @param tool The libinput tool\n @return The tool type for this tool object\n\n @see libinput_tablet_tool_get_tool_id\n @see libinput_tablet_tool_get_name\n\n @since 1.2"]
     pub fn libinput_tablet_tool_get_type(
         tool: *mut libinput_tablet_tool,
     ) -> libinput_tablet_tool_type;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup event_tablet\n\n Return the tool ID for a tool object. If nonzero, this number identifies\n the specific type of the tool with more precision than the type returned in\n libinput_tablet_tool_get_type(). Not all tablets support a tool ID.\n\n Tablets known to support tool IDs include the Wacom Intuos 3, 4, 5, Wacom\n Cintiq and Wacom Intuos Pro series. The tool ID can be used to\n distinguish between e.g. a Wacom Classic Pen or a Wacom Pro Pen.  It is\n the caller's responsibility to interpret the tool ID.\n\n @param tool The libinput tool\n @return The tool ID for this tool object or 0 if none is provided\n\n @see libinput_tablet_tool_get_type\n\n @since 1.2"]
+    #[doc = " @ingroup event_tablet\n\n Return the tool ID for a tool object. If nonzero, this number identifies\n the specific type of the tool with more precision than the type returned in\n libinput_tablet_tool_get_type(). Not all tablets support a tool ID.\n\n Tablets known to support tool IDs include the Wacom Intuos 3, 4, 5, Wacom\n Cintiq and Wacom Intuos Pro series. The tool ID can be used to\n distinguish between e.g. a Wacom Classic Pen or a Wacom Pro Pen.  It is\n the caller's responsibility to interpret the tool ID.\n\n @param tool The libinput tool\n @return The tool ID for this tool object or 0 if none is provided\n\n @see libinput_tablet_tool_get_type\n @see libinput_tablet_tool_get_name\n\n @since 1.2"]
     pub fn libinput_tablet_tool_get_tool_id(tool: *mut libinput_tablet_tool) -> u64;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup event_tablet\n\n Return the tool name for a tool object, if any.\n\n The tool name is a human-readable string that identifies the specific tool,\n for example \"Pro Pen 2\" or \"Airbrush\" and may be presented to the user.\n\n The lifetime of the returned string is tied to the lifetime of the\n libinput_tablet_tool. The string may be NULL.\n\n @note This function requires libwacom support. If libwacom is not available\n at compile time or the tool is not known to libwacom, this function returns\n NULL.\n\n @param tool The libinput tool\n @return The tool name for this tool object or NULL if no name is available\n\n @see libinput_tablet_tool_get_tool_id\n @see libinput_tablet_tool_get_type\n\n @since 1.31"]
+    pub fn libinput_tablet_tool_get_name(
+        tool: *mut libinput_tablet_tool,
+    ) -> *const ::core::ffi::c_char;
 }
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet\n\n Increment the reference count of the tool by one. A tool is destroyed\n whenever the reference count reaches 0. See libinput_tablet_tool_unref().\n\n @param tool The tool to increment the ref count of\n @return The passed tool\n\n @see libinput_tablet_tool_unref\n\n @since 1.2"]
@@ -989,7 +1009,7 @@ unsafe extern "C" {
     ) -> *mut libinput_event;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup event_tablet_pad\n\n Returns the current position of the ring, in degrees counterclockwise\n from the northern-most point of the ring in the tablet's current logical\n orientation.\n\n If the source is @ref LIBINPUT_TABLET_PAD_RING_SOURCE_FINGER,\n libinput sends a terminating event with a ring value of -1 when the\n finger is lifted from the ring. A caller may use this information to e.g.\n determine if kinetic scrolling should be triggered.\n\n @note It is an application bug to call this function for events other than\n @ref LIBINPUT_EVENT_TABLET_PAD_RING.  For other events, this function\n returns 0.\n\n @param event The libinput tablet pad event\n @return The current value of the the axis\n @retval -1 The finger was lifted\n\n @since 1.3"]
+    #[doc = " @ingroup event_tablet_pad\n\n Returns the current position of the ring, in degrees clockwise\n from the northern-most point of the ring in the tablet's current logical\n orientation.\n\n If the source is @ref LIBINPUT_TABLET_PAD_RING_SOURCE_FINGER,\n libinput sends a terminating event with a ring value of -1 when the\n finger is lifted from the ring. A caller may use this information to e.g.\n determine if kinetic scrolling should be triggered.\n\n @note It is an application bug to call this function for events other than\n @ref LIBINPUT_EVENT_TABLET_PAD_RING.  For other events, this function\n returns 0.\n\n @param event The libinput tablet pad event\n @return The current value of the the axis\n @retval -1 The finger was lifted\n\n @since 1.3"]
     pub fn libinput_event_tablet_pad_get_ring_position(
         event: *mut libinput_event_tablet_pad,
     ) -> f64;
@@ -1045,6 +1065,18 @@ unsafe extern "C" {
     pub fn libinput_event_tablet_pad_get_key_state(
         event: *mut libinput_event_tablet_pad,
     ) -> libinput_key_state;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup event_tablet_pad\n\n Returns the delta change of the dial, in multiples or fractions of 120, with\n each multiple of 120 indicating one logical wheel event.\n See libinput_event_pointer_get_scroll_value_v120() for more details.\n\n @note It is an application bug to call this function for events other than\n @ref LIBINPUT_EVENT_TABLET_PAD_DIAL.  For other events, this function\n returns 0.\n\n @param event The libinput tablet pad event\n @return The delta of the the axis\n\n @since 1.26"]
+    pub fn libinput_event_tablet_pad_get_dial_delta_v120(
+        event: *mut libinput_event_tablet_pad,
+    ) -> f64;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup event_tablet_pad\n\n Returns the number of the dial that has changed state, with 0 being the\n first dial. On tablets with only one dial, this function always returns\n 0.\n\n @note It is an application bug to call this function for events other than\n @ref LIBINPUT_EVENT_TABLET_PAD_DIAL.  For other events, this function\n returns 0.\n\n @param event The libinput tablet pad event\n @return The index of the dial that changed state\n\n @since 1.26"]
+    pub fn libinput_event_tablet_pad_get_dial_number(
+        event: *mut libinput_event_tablet_pad,
+    ) -> ::core::ffi::c_uint;
 }
 unsafe extern "C" {
     #[doc = " @ingroup event_tablet_pad\n\n Returns the mode the button, ring, or strip that triggered this event is\n in, at the time of the event.\n\n The mode is a virtual grouping of functionality, usually based on some\n visual feedback like LEDs on the pad. Mode indices start at 0, a device\n that does not support modes always returns 0.\n\n @note Pad keys are not part of a mode group. It is an application bug to\n call this function for @ref LIBINPUT_EVENT_TABLET_PAD_KEY.\n\n Mode switching is controlled by libinput and more than one mode may exist\n on the tablet. This function returns the mode that this event's button,\n ring or strip is logically in. If the button is a mode toggle button\n and the button event caused a new mode to be toggled, the mode returned\n is the new mode the button is in.\n\n Note that the returned mode is the mode valid as of the time of the\n event. The returned mode may thus be different to the mode returned by\n libinput_tablet_pad_mode_group_get_mode(). See\n libinput_tablet_pad_mode_group_get_mode() for details.\n\n @param event The libinput tablet pad event\n @return the 0-indexed mode of this button, ring or strip at the time of\n the event\n\n @see libinput_tablet_pad_mode_group_get_mode\n\n @since 1.4"]
@@ -1148,6 +1180,31 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[doc = " @ingroup base\n\n Remove a device from a libinput context initialized with\n libinput_path_create_context() or added to such a context with\n libinput_path_add_device().\n\n Events already processed from this input device are kept in the queue,\n the @ref LIBINPUT_EVENT_DEVICE_REMOVED event marks the end of events for\n this device.\n\n If no matching device exists, this function does nothing.\n\n @param device A libinput device\n\n @note It is an application bug to call this function on a libinput\n context initialized with libinput_udev_create_context()."]
     pub fn libinput_path_remove_device(device: *mut libinput_device);
+}
+unsafe extern "C" {
+    #[doc = " @ingroup base\n\n Appends the given directory path to the libinput plugin lookup path.\n If the path is already in the lookup paths, this function does nothing.\n\n A path's priority is determined by its position in the list; the first\n path in the list has the highest priority.\n\n Plugin lookup is performed across all paths in lexical order. If\n a plugin exists in multiple paths, the one in the highest priority\n path (i.e. front of the list) is used.\n\n Paths are not traversed recursively.\n\n Plugins that have a 0 byte size shadow any plugins with the same name\n but do not provide any fuctionality. This allows disabling a plugin\n by simply dropping an empty file in a higher-priority directory.\n\n This function must be called before libinput_plugin_system_load_plugins().\n\n @see libinput_plugin_system_append_default_paths\n\n @since 1.30"]
+    pub fn libinput_plugin_system_append_path(
+        libinput: *mut libinput,
+        path: *const ::core::ffi::c_char,
+    );
+}
+unsafe extern "C" {
+    #[doc = " @ingroup base\n\n Add the default plugin lookup paths, typically:\n - /etc/libinput/plugins/\n - /usr/lib{64}/libinput/plugins/\n\n @warning More paths may be added to the default lookup paths in future releases.\n A caller relying on a specific set of default paths should add those individually\n using libinput_plugin_system_append_path().\n\n These paths are inserted at the current priority - to add\n paths with a higher priority than these, call\n libinput_plugin_system_append_path() prior to this function.\n\n See libinput_plugin_system_append_path() for more details.\n\n The exact value of these paths depend on the libdir and sysconfigdir\n variables, defined at compile time.\n\n This function must be called before\n libinput_plugin_system_load_plugins().\n\n @see libinput_plugin_system_append_path\n\n @since 1.30"]
+    pub fn libinput_plugin_system_append_default_paths(libinput: *mut libinput);
+}
+impl libinput_plugin_system_flags {
+    pub const LIBINPUT_PLUGIN_SYSTEM_FLAG_NONE: libinput_plugin_system_flags =
+        libinput_plugin_system_flags(0);
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_plugin_system_flags(pub ::core::ffi::c_uint);
+unsafe extern "C" {
+    #[doc = " @ingroup base\n\n Load the plugins from the set of lookup paths. This function does nothing\n if no plugin paths have been configured, see\n libinput_plugin_system_append_default_paths() and\n libinput_plugin_system_append_path().\n\n The typical use of this function is:\n ```\n struct libinput *li = libinput_udev_create_context(...);\n libinput_plugin_system_append_default_paths(li);\n libinput_plugin_system_load_plugins(li, flags);\n ```\n @warning The default lookup paths may change over time. See\n libinput_plugin_system_append_default_paths().\n\n This function must be called before libinput iterates through the\n devices, i.e. before libinput_udev_assign_seat() or the first\n call to libinput_path_add_device().\n\n @return 0 or a negative errno on failure\n @retval -ENOSYS libinput was compiled without plugin support\n\n @since 1.30"]
+    pub fn libinput_plugin_system_load_plugins(
+        libinput: *mut libinput,
+        flags: libinput_plugin_system_flags,
+    ) -> ::core::ffi::c_int;
 }
 unsafe extern "C" {
     #[doc = " @ingroup base\n\n libinput keeps a single file descriptor for all events. Call into\n libinput_dispatch() if any events become available on this fd.\n\n @return The file descriptor used to notify of pending events."]
@@ -1279,6 +1336,10 @@ unsafe extern "C" {
     pub fn libinput_device_get_name(device: *mut libinput_device) -> *const ::core::ffi::c_char;
 }
 unsafe extern "C" {
+    #[doc = " @ingroup device\n\n Get the bus type ID for this device.\n\n @param device A previously obtained device\n @return The bus type ID of this device (see BUS_* in linux/input.h)\n\n @since 1.26"]
+    pub fn libinput_device_get_id_bustype(device: *mut libinput_device) -> ::core::ffi::c_uint;
+}
+unsafe extern "C" {
     #[doc = " @ingroup device\n\n Get the product ID for this device.\n\n @param device A previously obtained device\n @return The product ID of this device"]
     pub fn libinput_device_get_id_product(device: *mut libinput_device) -> ::core::ffi::c_uint;
 }
@@ -1356,6 +1417,12 @@ unsafe extern "C" {
 unsafe extern "C" {
     #[doc = " @ingroup device\n\n Return the number of buttons on a device with the\n @ref LIBINPUT_DEVICE_CAP_TABLET_PAD capability.\n Buttons on a pad device are numbered sequentially, see the\n libinput documentation for details.\n\n @param device A current input device\n\n @return The number of buttons supported by the device. -1 on error.\n\n @since 1.3"]
     pub fn libinput_device_tablet_pad_get_num_buttons(
+        device: *mut libinput_device,
+    ) -> ::core::ffi::c_int;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup device\n\n Return the number of dials a device with the @ref\n LIBINPUT_DEVICE_CAP_TABLET_PAD capability provides.\n\n @param device A current input device\n\n @return The number of dials or 0 if the device has no dials. -1 on error.\n\n @see libinput_event_tablet_pad_get_dial_number\n\n @since 1.26"]
+    pub fn libinput_device_tablet_pad_get_num_dials(
         device: *mut libinput_device,
     ) -> ::core::ffi::c_int;
 }
@@ -1470,6 +1537,18 @@ impl libinput_config_tap_button_map {
 #[doc = " @ingroup config\n\n @since 1.5"]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct libinput_config_tap_button_map(pub ::core::ffi::c_uint);
+impl libinput_config_clickfinger_button_map {
+    #[doc = " 1/2/3 finger click maps to left/right/middle"]
+    pub const LIBINPUT_CONFIG_CLICKFINGER_MAP_LRM: libinput_config_clickfinger_button_map =
+        libinput_config_clickfinger_button_map(0);
+    #[doc = " 1/2/3 finger click maps to left/middle/right"]
+    pub const LIBINPUT_CONFIG_CLICKFINGER_MAP_LMR: libinput_config_clickfinger_button_map =
+        libinput_config_clickfinger_button_map(1);
+}
+#[repr(transparent)]
+#[doc = " @ingroup config"]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_clickfinger_button_map(pub ::core::ffi::c_uint);
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Set the finger number to button number mapping for tap-to-click. The\n default mapping on most devices is to have a 1, 2 and 3 finger tap to map\n to the left, right and middle button, respectively.\n A device may permit changing the button mapping but disallow specific\n maps. In this case @ref LIBINPUT_CONFIG_STATUS_UNSUPPORTED is returned,\n the caller is expected to handle this case correctly.\n\n Changing the button mapping may not take effect immediately,\n the device may wait until it is in a neutral state before applying any\n changes.\n\n The mapping may be changed when tap-to-click is disabled. The new mapping\n takes effect when tap-to-click is enabled in the future.\n\n @note It is an application bug to call this function for devices where\n libinput_device_config_tap_get_finger_count() returns 0.\n\n @param device The device to configure\n @param map The new finger-to-button number mapping\n @return A config status code. Changing the order on a device that does not\n support tapping always fails with @ref LIBINPUT_CONFIG_STATUS_UNSUPPORTED.\n\n @see libinput_device_config_tap_get_button_map\n @see libinput_device_config_tap_get_default_button_map\n\n @since 1.5"]
     pub fn libinput_device_config_tap_set_button_map(
@@ -1502,20 +1581,20 @@ impl libinput_config_drag_state {
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct libinput_config_drag_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Enable or disable tap-and-drag on this device. When enabled, a\n tap immediately followed by a finger down results in a button down event,\n subsequent finger motion thus triggers a drag. The button is released\n on finger up. See the libinput documentation for more details.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DRAG_ENABLED to enable, @ref\n LIBINPUT_CONFIG_DRAG_DISABLED to disable tap-and-drag\n\n @see libinput_device_config_tap_drag_get_enabled\n @see libinput_device_config_tap_drag_get_default_enabled\n\n @since 1.2"]
+    #[doc = " @ingroup config\n\n Enable or disable tap-and-drag on this device. When enabled, a\n tap immediately followed by a finger down results in a button down event,\n subsequent finger motion thus triggers a drag. The button is released\n on finger up. See the libinput documentation for more details.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DRAG_ENABLED to enable, @ref\n LIBINPUT_CONFIG_DRAG_DISABLED to disable tap-and-drag\n\n @see libinput_device_config_tap_get_drag_enabled\n @see libinput_device_config_tap_get_default_drag_enabled\n\n @since 1.2"]
     pub fn libinput_device_config_tap_set_drag_enabled(
         device: *mut libinput_device,
         enable: libinput_config_drag_state,
     ) -> libinput_config_status;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Return whether tap-and-drag is enabled or disabled on this device.\n\n @param device The device to check\n @retval LIBINPUT_CONFIG_DRAG_ENABLED if tap-and-drag is enabled\n @retval LIBINPUT_CONFIG_DRAG_DISABLED if tap-and-drag is\n disabled\n\n @see libinput_device_config_tap_drag_set_enabled\n @see libinput_device_config_tap_drag_get_default_enabled\n\n @since 1.2"]
+    #[doc = " @ingroup config\n\n Return whether tap-and-drag is enabled or disabled on this device.\n\n @param device The device to check\n @retval LIBINPUT_CONFIG_DRAG_ENABLED if tap-and-drag is enabled\n @retval LIBINPUT_CONFIG_DRAG_DISABLED if tap-and-drag is\n disabled\n\n @see libinput_device_config_tap_set_drag_enabled\n @see libinput_device_config_tap_get_default_default_enabled\n\n @since 1.2"]
     pub fn libinput_device_config_tap_get_drag_enabled(
         device: *mut libinput_device,
     ) -> libinput_config_drag_state;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Return whether tap-and-drag is enabled or disabled by default on this\n device.\n\n @param device The device to check\n @retval LIBINPUT_CONFIG_DRAG_ENABLED if tap-and-drag is enabled by\n default\n @retval LIBINPUT_CONFIG_DRAG_DISABLED if tap-and-drag is\n disabled by default\n\n @see libinput_device_config_tap_drag_set_enabled\n @see libinput_device_config_tap_drag_get_enabled\n\n @since 1.2"]
+    #[doc = " @ingroup config\n\n Return whether tap-and-drag is enabled or disabled by default on this\n device.\n\n @param device The device to check\n @retval LIBINPUT_CONFIG_DRAG_ENABLED if tap-and-drag is enabled by\n default\n @retval LIBINPUT_CONFIG_DRAG_DISABLED if tap-and-drag is\n disabled by default\n\n @see libinput_device_config_tap_set_drag_enabled\n @see libinput_device_config_tap_get_drag_enabled\n\n @since 1.2"]
     pub fn libinput_device_config_tap_get_default_drag_enabled(
         device: *mut libinput_device,
     ) -> libinput_config_drag_state;
@@ -1524,32 +1603,78 @@ impl libinput_config_drag_lock_state {
     #[doc = " Drag lock is to be disabled, or is currently disabled"]
     pub const LIBINPUT_CONFIG_DRAG_LOCK_DISABLED: libinput_config_drag_lock_state =
         libinput_config_drag_lock_state(0);
-    #[doc = " Drag lock is to be enabled, or is currently disabled"]
+    #[doc = " Drag lock is to be enabled in timeout mode,\n  or is currently enabled in timeout mode"]
+    pub const LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_TIMEOUT: libinput_config_drag_lock_state =
+        libinput_config_drag_lock_state(1);
+    #[doc = " legacy spelling for LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_TIMEOUT"]
     pub const LIBINPUT_CONFIG_DRAG_LOCK_ENABLED: libinput_config_drag_lock_state =
         libinput_config_drag_lock_state(1);
+    #[doc = " Drag lock is to be enabled in sticky mode,\n  or is currently enabled in sticky mode"]
+    pub const LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_STICKY: libinput_config_drag_lock_state =
+        libinput_config_drag_lock_state(2);
 }
 #[repr(transparent)]
 #[doc = " @ingroup config"]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct libinput_config_drag_lock_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Enable or disable drag-lock during tapping on this device. When enabled,\n a finger may be lifted and put back on the touchpad within a timeout and\n the drag process continues. When disabled, lifting the finger during a\n tap-and-drag will immediately stop the drag. See the libinput\n documentation for more details.\n\n Enabling drag lock on a device that has tapping disabled is permitted,\n but has no effect until tapping is enabled.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DRAG_LOCK_ENABLED to enable drag lock\n or @ref LIBINPUT_CONFIG_DRAG_LOCK_DISABLED to disable drag lock\n\n @return A config status code. Disabling drag lock on a device that does not\n support tapping always succeeds.\n\n @see libinput_device_config_tap_get_drag_lock_enabled\n @see libinput_device_config_tap_get_default_drag_lock_enabled"]
+    #[doc = " @ingroup config\n\n Enable or disable drag-lock during tapping on this device. When enabled,\n a finger may be lifted and put back on the touchpad and the drag process\n continues. A timeout for lifting the finger is optional. When disabled,\n lifting the finger during a tap-and-drag will immediately stop the drag.\n See the libinput documentation for more details.\n\n Enabling drag lock on a device that has tapping or tap-and-drag disabled is\n permitted, but has no effect until tapping and tap-and-drag are enabled.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_STICKY to enable drag\n lock in sticky mode,\n @ref LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_TIMEOUT to enable drag lock in timeout\n mode,\n or @ref LIBINPUT_CONFIG_DRAG_LOCK_DISABLED to disable drag lock\n\n @return A config status code. Disabling drag lock on a device that does not\n support tapping always succeeds.\n\n @see libinput_device_config_tap_get_drag_lock_enabled\n @see libinput_device_config_tap_get_default_drag_lock_enabled"]
     pub fn libinput_device_config_tap_set_drag_lock_enabled(
         device: *mut libinput_device,
         enable: libinput_config_drag_lock_state,
     ) -> libinput_config_status;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Check if drag-lock during tapping is enabled on this device. If the\n device does not support tapping, this function always returns\n @ref LIBINPUT_CONFIG_DRAG_LOCK_DISABLED.\n\n Drag lock may be enabled even when tapping is disabled.\n\n @param device The device to configure\n\n @retval LIBINPUT_CONFIG_DRAG_LOCK_ENABLED If drag lock is currently enabled\n @retval LIBINPUT_CONFIG_DRAG_LOCK_DISABLED If drag lock is currently disabled\n\n @see libinput_device_config_tap_set_drag_lock_enabled\n @see libinput_device_config_tap_get_default_drag_lock_enabled"]
+    #[doc = " @ingroup config\n\n Check if drag-lock during tapping is enabled on this device. If the\n device does not support tapping, this function always returns\n @ref LIBINPUT_CONFIG_DRAG_LOCK_DISABLED.\n\n Drag lock may be enabled even when tapping or tap-and-drag is disabled.\n\n @param device The device to configure\n\n @retval LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_STICKY If drag lock is currently\n enabled in sticky mode\n @retval LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_TIMEOUT If drag lock is currently\n enabled in timeout mode\n @retval LIBINPUT_CONFIG_DRAG_LOCK_DISABLED If drag lock is currently disabled\n\n @see libinput_device_config_tap_set_drag_lock_enabled\n @see libinput_device_config_tap_get_default_drag_lock_enabled"]
     pub fn libinput_device_config_tap_get_drag_lock_enabled(
         device: *mut libinput_device,
     ) -> libinput_config_drag_lock_state;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Check if drag-lock during tapping is enabled by default on this device.\n If the device does not support tapping, this function always returns\n @ref LIBINPUT_CONFIG_DRAG_LOCK_DISABLED.\n\n Drag lock may be enabled by default even when tapping is disabled by\n default.\n\n @param device The device to configure\n\n @retval LIBINPUT_CONFIG_DRAG_LOCK_ENABLED If drag lock is enabled by\n default\n @retval LIBINPUT_CONFIG_DRAG_LOCK_DISABLED If drag lock is disabled by\n default\n\n @see libinput_device_config_tap_set_drag_lock_enabled\n @see libinput_device_config_tap_get_drag_lock_enabled"]
+    #[doc = " @ingroup config\n\n Check if drag-lock during tapping is enabled by default on this device.\n If the device does not support tapping, this function always returns\n @ref LIBINPUT_CONFIG_DRAG_LOCK_DISABLED.\n\n Drag lock may be enabled by default even when tapping or tap-and-drag is\n disabled by default.\n\n @param device The device to configure\n\n @retval LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_STICKY If drag lock is enabled in\n sticky mode by default\n @retval LIBINPUT_CONFIG_DRAG_LOCK_ENABLED_TIMEOUT If drag lock is enabled in\n timeout mode by default\n @retval LIBINPUT_CONFIG_DRAG_LOCK_DISABLED If drag lock is disabled by\n default\n\n @see libinput_device_config_tap_set_drag_lock_enabled\n @see libinput_device_config_tap_get_drag_lock_enabled"]
     pub fn libinput_device_config_tap_get_default_drag_lock_enabled(
         device: *mut libinput_device,
     ) -> libinput_config_drag_lock_state;
+}
+impl libinput_config_3fg_drag_state {
+    #[doc = " Drag is to be disabled, or is\n currently disabled."]
+    pub const LIBINPUT_CONFIG_3FG_DRAG_DISABLED: libinput_config_3fg_drag_state =
+        libinput_config_3fg_drag_state(0);
+    #[doc = " Drag is to be enabled for 3 fingers, or is\n currently enabled"]
+    pub const LIBINPUT_CONFIG_3FG_DRAG_ENABLED_3FG: libinput_config_3fg_drag_state =
+        libinput_config_3fg_drag_state(1);
+    #[doc = " Drag is to be enabled for 4 fingers, or is\n currently enabled"]
+    pub const LIBINPUT_CONFIG_3FG_DRAG_ENABLED_4FG: libinput_config_3fg_drag_state =
+        libinput_config_3fg_drag_state(2);
+}
+#[repr(transparent)]
+#[doc = " @ingroup config\n\n A config status to distinguish or set 3-finger dragging on a device.\n\n @since 1.27"]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_3fg_drag_state(pub ::core::ffi::c_uint);
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Returns the maximum number of fingers available for 3-finger dragging.\n\n @param device The device to check\n\n @see libinput_device_config_3fg_drag_set_enabled\n @see libinput_device_config_3fg_drag_get_enabled\n @see libinput_device_config_3fg_drag_get_default_enabled\n\n @since 1.27"]
+    pub fn libinput_device_config_3fg_drag_get_finger_count(
+        device: *mut libinput_device,
+    ) -> ::core::ffi::c_int;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Enable or disable 3-finger drag on this device. When enabled, three fingers\n down will result in a button down event, subsequent finger motion triggers\n a drag. The button is released shortly after all fingers are logically up.\n See the libinput documentation for more details.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DRAG_ENABLED to enable, @ref\n LIBINPUT_CONFIG_DRAG_DISABLED to disable 3-finger drag\n\n @see libinput_device_config_3fg_drag_is_available\n @see libinput_device_config_3fg_drag_get_enabled\n @see libinput_device_config_3fg_drag_get_default_enabled\n\n @since 1.27"]
+    pub fn libinput_device_config_3fg_drag_set_enabled(
+        device: *mut libinput_device,
+        enable: libinput_config_3fg_drag_state,
+    ) -> libinput_config_status;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Return whether 3-finger drag is enabled or disabled on this device.\n\n @param device The device to check\n @retval LIBINPUT_CONFIG_DRAG_ENABLED if 3-finger drag is enabled\n @retval LIBINPUT_CONFIG_DRAG_DISABLED if 3-finger drag is\n disabled\n\n @see libinput_device_config_3fg_drag_is_available\n @see libinput_device_config_3fg_drag_set_enabled\n @see libinput_device_config_3fg_drag_get_default_enabled\n\n @since 1.27"]
+    pub fn libinput_device_config_3fg_drag_get_enabled(
+        device: *mut libinput_device,
+    ) -> libinput_config_3fg_drag_state;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Return whether 3-finger drag is enabled or disabled by default on this device.\n\n @param device The device to check\n @retval LIBINPUT_CONFIG_DRAG_ENABLED if 3-finger drag is enabled\n @retval LIBINPUT_CONFIG_DRAG_DISABLED if 3-finger drag is\n disabled\n\n @see libinput_device_config_3fg_drag_is_available\n @see libinput_device_config_3fg_drag_set_enabled\n @see libinput_device_config_3fg_drag_get_enabled\n\n @since 1.27"]
+    pub fn libinput_device_config_3fg_drag_get_default_enabled(
+        device: *mut libinput_device,
+    ) -> libinput_config_3fg_drag_state;
 }
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Check if the device can be calibrated via a calibration matrix.\n\n @param device The device to check\n @return Non-zero if the device can be calibrated, zero otherwise.\n\n @see libinput_device_config_calibration_set_matrix\n @see libinput_device_config_calibration_get_matrix\n @see libinput_device_config_calibration_get_default_matrix"]
@@ -1577,6 +1702,55 @@ unsafe extern "C" {
         device: *mut libinput_device,
         matrix: *mut f32,
     ) -> ::core::ffi::c_int;
+}
+#[doc = " @ingroup config\n\n Describes a rectangle to configure a device's area, see\n libinput_device_config_area_set_rectangle().\n\n This struct describes a rectangle via the upper left points (x1, y1)\n and the lower right point (x2, y2).\n\n All arguments are normalized to the range [0.0, 1.0] to represent the\n corresponding proportion of the device's width and height, respectively.\n A rectangle covering the whole device thus comprises of the points\n (0.0, 0.0) and (1.0, 1.0).\n\n The conditions x1 < x2 and y1 < y2 must be true."]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct libinput_config_area_rectangle {
+    pub x1: f64,
+    pub y1: f64,
+    pub x2: f64,
+    pub y2: f64,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of libinput_config_area_rectangle"]
+        [::core::mem::size_of::<libinput_config_area_rectangle>() - 32usize];
+    ["Alignment of libinput_config_area_rectangle"]
+        [::core::mem::align_of::<libinput_config_area_rectangle>() - 8usize];
+    ["Offset of field: libinput_config_area_rectangle::x1"]
+        [::core::mem::offset_of!(libinput_config_area_rectangle, x1) - 0usize];
+    ["Offset of field: libinput_config_area_rectangle::y1"]
+        [::core::mem::offset_of!(libinput_config_area_rectangle, y1) - 8usize];
+    ["Offset of field: libinput_config_area_rectangle::x2"]
+        [::core::mem::offset_of!(libinput_config_area_rectangle, x2) - 16usize];
+    ["Offset of field: libinput_config_area_rectangle::y2"]
+        [::core::mem::offset_of!(libinput_config_area_rectangle, y2) - 24usize];
+};
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Check if the device can change its logical input area via a rectangle.\n\n @param device The device to check\n @return Non-zero if the device can be calibrated, zero otherwise.\n\n @see libinput_device_config_area_set_rectangle\n @see libinput_device_config_area_get_rectangle\n @see libinput_device_config_area_get_default_rectangle"]
+    pub fn libinput_device_config_area_has_rectangle(
+        device: *mut libinput_device,
+    ) -> ::core::ffi::c_int;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Set the given rectangle as the logical input area of this device.\n Future interactions by a tablet tool on this devices are scaled\n to only consider events within this logical input area - as if the\n logical input area were the available physical area.\n\n The coordinates of the rectangle represent the proportion of the\n available maximum physical area, normalized to the range [0.0, 1.0].\n For example, a rectangle with the two points 0.25, 0.5, 0.75, 1.0\n adds a 25% dead zone to the left and right and a 50% dead zone on\n the top:\n\n @code\n +----------------------------------+\n |                                  |\n |                50%               |\n |                                  |\n |        +-----------------+       |\n |        |                 |       |\n |   25%  |                 |  25%  |\n |        |                 |       |\n +--------+-----------------+-------+\n @endcode\n\n The area applies in the tablet's current logical rotation, i.e. the above\n example is always at the bottom of the tablet.\n\n Once applied, the logical area's top-left coordinate (in the current logical\n rotation) becomes the new offset (0/0) and the return values of\n libinput_event_tablet_tool_get_x() and libinput_event_tablet_tool_get_y()\n are in relation to this new offset.\n\n Likewise, libinput_event_tablet_tool_get_x_transformed() and\n libinput_event_tablet_tool_get_y_transformed() represent the value scaled\n into the configured logical area.\n\n The return value of libinput_device_get_size() is not affected by the\n configured area.\n\n Changing the area may not take effect immediately, the device may wait until\n it is in a neutral state before applying any changes.\n\n @param device The device to check\n @param rect The intended rectangle\n @return A config status code. Setting the area on a device that does not\n support area rectangles always fails with @ref LIBINPUT_CONFIG_STATUS_UNSUPPORTED.\n\n @see libinput_device_config_area_has_rectangle\n @see libinput_device_config_area_get_rectangle\n @see libinput_device_config_area_get_default_rectangle"]
+    pub fn libinput_device_config_area_set_rectangle(
+        device: *mut libinput_device,
+        rect: *const libinput_config_area_rectangle,
+    ) -> libinput_config_status;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Return the current area rectangle for this device.\n\n The return value for a device that does not support area rectangles is a\n rectangle with the points 0/0  and 1/1.\n\n @note It is an application bug to call this function for devices where\n libinput_device_config_area_has_rectangle() returns 0.\n\n @param device The device to check\n @return The current area rectangle\n\n @see libinput_device_config_area_has_rectangle\n @see libinput_device_config_area_set_rectangle\n @see libinput_device_config_area_get_default_rectangle"]
+    pub fn libinput_device_config_area_get_rectangle(
+        device: *mut libinput_device,
+    ) -> libinput_config_area_rectangle;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Return the default area rectangle for this device.\n\n The return value for a device that does not support area rectangles is a\n rectangle with the points 0/0  and 1/1.\n\n @note It is an application bug to call this function for devices where\n libinput_device_config_area_has_rectangle() returns 0.\n\n @param device The device to check\n @return The default area rectangle\n\n @see libinput_device_config_area_has_rectangle\n @see libinput_device_config_area_set_rectangle\n @see libinput_device_config_area_get_rectangle"]
+    pub fn libinput_device_config_area_get_default_rectangle(
+        device: *mut libinput_device,
+    ) -> libinput_config_area_rectangle;
 }
 impl libinput_config_send_events_mode {
     #[doc = " Send events from this device normally. This is a placeholder\n mode only, any device detected by libinput can be enabled. Do not\n test for this value as bitmask."]
@@ -1697,7 +1871,7 @@ unsafe extern "C" {
         accel_type: libinput_config_accel_type,
         step: f64,
         npoints: usize,
-        points: *mut f64,
+        points: *const f64,
     ) -> libinput_config_status;
 }
 unsafe extern "C" {
@@ -1810,6 +1984,25 @@ unsafe extern "C" {
     pub fn libinput_device_config_click_get_default_method(
         device: *mut libinput_device,
     ) -> libinput_config_click_method;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Set the finger number to button number mapping for clickfinger. The\n default mapping on most devices is to have a 1, 2 and 3 finger tap to map\n to the left, right and middle button, respectively.\n A device may permit changing the button mapping but disallow specific\n maps. In this case @ref LIBINPUT_CONFIG_STATUS_UNSUPPORTED is returned,\n the caller is expected to handle this case correctly.\n\n Changing the button mapping may not take effect immediately,\n the device may wait until it is in a neutral state before applying any\n changes.\n\n @param device The device to configure\n @param map The new finger-to-button number mapping\n\n @return A config status code. Changing the order on a device that does not\n support the clickfinger method always fails with @ref\n LIBINPUT_CONFIG_STATUS_UNSUPPORTED.\n\n @see libinput_device_config_click_get_clickfinger_button_map\n @see libinput_device_config_click_get_default_clickfinger_button_map"]
+    pub fn libinput_device_config_click_set_clickfinger_button_map(
+        device: *mut libinput_device,
+        map: libinput_config_clickfinger_button_map,
+    ) -> libinput_config_status;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the finger number to button number mapping for clickfinger.\n\n The return value for a device that does not support clickfinger is always\n @ref LIBINPUT_CONFIG_CLICKFINGER_MAP_LRM.\n\n @param device The device to configure\n @return The current finger-to-button number mapping\n\n @see libinput_device_config_click_set_clickfinger_button_map\n @see libinput_device_config_click_get_default_clickfinger_button_map"]
+    pub fn libinput_device_config_click_get_clickfinger_button_map(
+        device: *mut libinput_device,
+    ) -> libinput_config_clickfinger_button_map;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the default finger number to button number mapping for clickfinger.\n\n The return value for a device that does not support clickfinger is always\n @ref LIBINPUT_CONFIG_CLICKFINGER_MAP_LRM.\n\n @param device The device to configure\n @return The default finger-to-button number mapping\n\n @see libinput_device_config_click_set_clickfinger_button_map\n @see libinput_device_config_click_get_clickfinger_button_map"]
+    pub fn libinput_device_config_click_get_default_clickfinger_button_map(
+        device: *mut libinput_device,
+    ) -> libinput_config_clickfinger_button_map;
 }
 impl libinput_config_middle_emulation_state {
     #[doc = " Middle mouse button emulation is to be disabled, or\n is currently disabled."]
@@ -1942,29 +2135,44 @@ impl libinput_config_dwt_state {
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct libinput_config_dwt_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Check if this device supports configurable disable-while-typing feature.\n This feature is usually available on built-in touchpads and disables the\n touchpad while typing. See the libinput documentation for details.\n\n @param device The device to configure\n @return 0 if this device does not support disable-while-typing, or 1\n otherwise.\n\n @see libinput_device_config_dwt_set_enabled\n @see libinput_device_config_dwt_get_enabled\n @see libinput_device_config_dwt_get_default_enabled"]
+    #[doc = " @ingroup config\n\n Check if this device supports configurable disable-while-typing feature.\n This feature is usually available on built-in touchpads and disables the\n touchpad while typing. See the libinput documentation for details.\n\n @param device The device to configure\n @return 0 if this device does not support disable-while-typing, or 1\n otherwise.\n\n @see libinput_device_config_dwt_set_enabled\n @see libinput_device_config_dwt_get_enabled\n @see libinput_device_config_dwt_get_default_enabled\n @see libinput_device_config_dwt_get_timeout\n @see libinput_device_config_dwt_set_timeout"]
     pub fn libinput_device_config_dwt_is_available(
         device: *mut libinput_device,
     ) -> ::core::ffi::c_int;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Enable or disable the disable-while-typing feature. When enabled, the\n device will be disabled while typing and for a short period after. See\n the libinput documentation for details.\n\n @note Enabling or disabling disable-while-typing may not take effect\n immediately.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DWT_DISABLED to disable\n disable-while-typing, @ref LIBINPUT_CONFIG_DWT_ENABLED to enable\n\n @return A config status code. Disabling disable-while-typing on a\n device that does not support the feature always succeeds.\n\n @see libinput_device_config_dwt_is_available\n @see libinput_device_config_dwt_get_enabled\n @see libinput_device_config_dwt_get_default_enabled"]
+    #[doc = " @ingroup config\n\n Enable or disable the disable-while-typing feature. When enabled, the\n device will be disabled while typing and for a short period after. See\n the libinput documentation for details.\n\n @note Enabling or disabling disable-while-typing may not take effect\n immediately.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DWT_DISABLED to disable\n disable-while-typing, @ref LIBINPUT_CONFIG_DWT_ENABLED to enable\n\n @return A config status code. Disabling disable-while-typing on a\n device that does not support the feature always succeeds.\n\n @see libinput_device_config_dwt_is_available\n @see libinput_device_config_dwt_get_enabled\n @see libinput_device_config_dwt_get_default_enabled\n @see libinput_device_config_dwt_get_timeout\n @see libinput_device_config_dwt_set_timeout"]
     pub fn libinput_device_config_dwt_set_enabled(
         device: *mut libinput_device,
         enable: libinput_config_dwt_state,
     ) -> libinput_config_status;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Check if the disable-while typing feature is currently enabled on this\n device. If the device does not support disable-while-typing, this\n function returns @ref LIBINPUT_CONFIG_DWT_DISABLED.\n\n @param device The device to configure\n @return @ref LIBINPUT_CONFIG_DWT_DISABLED if disabled, @ref\n LIBINPUT_CONFIG_DWT_ENABLED if enabled.\n\n @see libinput_device_config_dwt_is_available\n @see libinput_device_config_dwt_set_enabled\n @see libinput_device_config_dwt_get_default_enabled"]
+    #[doc = " @ingroup config\n\n Check if the disable-while-typing feature is currently enabled on this\n device. If the device does not support disable-while-typing, this\n function returns @ref LIBINPUT_CONFIG_DWT_DISABLED.\n\n @param device The device to configure\n @return @ref LIBINPUT_CONFIG_DWT_DISABLED if disabled, @ref\n LIBINPUT_CONFIG_DWT_ENABLED if enabled.\n\n @see libinput_device_config_dwt_is_available\n @see libinput_device_config_dwt_set_enabled\n @see libinput_device_config_dwt_get_default_enabled\n @see libinput_device_config_dwt_get_timeout\n @see libinput_device_config_dwt_set_timeout"]
     pub fn libinput_device_config_dwt_get_enabled(
         device: *mut libinput_device,
     ) -> libinput_config_dwt_state;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Check if the disable-while typing feature is enabled on this device by\n default. If the device does not support disable-while-typing, this\n function returns @ref LIBINPUT_CONFIG_DWT_DISABLED.\n\n @param device The device to configure\n @return @ref LIBINPUT_CONFIG_DWT_DISABLED if disabled, @ref\n LIBINPUT_CONFIG_DWT_ENABLED if enabled.\n\n @see libinput_device_config_dwt_is_available\n @see libinput_device_config_dwt_set_enabled\n @see libinput_device_config_dwt_get_enabled"]
+    #[doc = " @ingroup config\n\n Check if the disable-while-typing feature is enabled on this device by\n default. If the device does not support disable-while-typing, this\n function returns @ref LIBINPUT_CONFIG_DWT_DISABLED.\n\n @param device The device to configure\n @return @ref LIBINPUT_CONFIG_DWT_DISABLED if disabled, @ref\n LIBINPUT_CONFIG_DWT_ENABLED if enabled.\n\n @see libinput_device_config_dwt_is_available\n @see libinput_device_config_dwt_set_enabled\n @see libinput_device_config_dwt_get_enabled\n @see libinput_device_config_dwt_get_timeout\n @see libinput_device_config_dwt_set_timeout"]
     pub fn libinput_device_config_dwt_get_default_enabled(
         device: *mut libinput_device,
     ) -> libinput_config_dwt_state;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Set the disable-while-typing timeout. This timeout denotes the time\n in milliseconds between the last key event and the touchpad re-enabling.\n\n The timeout only takes effect if disable-while-typing is enabled. libinput\n implements implementation-defined minimum/maximum timeout values, setting\n a timeout outside of those returns @ref LIBINPUT_CONFIG_STATUS_INVALID.\n Normal use-cases should never hit these limits.\n\n @note The timeout is not the only condition for disable-while-typing, expiry of\n       the timeout does not guarantee that the touchpad is re-enabled.\n\n @see libinput_device_config_dwt_is_available\n @see libinput_device_config_dwt_set_enabled\n @see libinput_device_config_dwt_get_enabled\n @see libinput_device_config_dwt_get_timeout\n\n @since 1.31"]
+    pub fn libinput_device_config_dwt_set_timeout(
+        device: *mut libinput_device,
+        millis: u32,
+    ) -> libinput_config_status;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the current disable-while-typing timeout.\n\n @see libinput_device_config_dwt_is_available\n @see libinput_device_config_dwt_set_enabled\n @see libinput_device_config_dwt_get_enabled\n @see libinput_device_config_dwt_set_timeout\n\n @since 1.31"]
+    pub fn libinput_device_config_dwt_get_timeout(device: *mut libinput_device) -> u32;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the default disable-while-typing timeout.\n\n @param device The device to configure\n @return The default timeout in milliseconds for this device.\n\n @see libinput_device_config_dwt_is_available\n @see libinput_device_config_dwt_set_enabled\n @see libinput_device_config_dwt_get_enabled\n @see libinput_device_config_dwt_set_timeout\n @see libinput_device_config_dwt_get_timeout\n\n @since 1.31"]
+    pub fn libinput_device_config_dwt_get_default_timeout(device: *mut libinput_device) -> u32;
 }
 impl libinput_config_dwtp_state {
     pub const LIBINPUT_CONFIG_DWTP_DISABLED: libinput_config_dwtp_state =
@@ -1977,29 +2185,44 @@ impl libinput_config_dwtp_state {
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct libinput_config_dwtp_state(pub ::core::ffi::c_uint);
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Check if this device supports configurable disable-while-trackpointing\n feature. This feature is usually available on Thinkpads and disables the\n touchpad while using the trackpoint. See the libinput documentation for\n details.\n\n @param device The device to configure\n @return 0 if this device does not support disable-while-trackpointing, or 1\n otherwise.\n\n @see libinput_device_config_dwtp_set_enabled\n @see libinput_device_config_dwtp_get_enabled\n @see libinput_device_config_dwtp_get_default_enabled\n\n @since 1.21"]
+    #[doc = " @ingroup config\n\n Check if this device supports configurable disable-while-trackpointing\n feature. This feature is usually available on Thinkpads and disables the\n touchpad while using the trackpoint. See the libinput documentation for\n details.\n\n @param device The device to configure\n @return 0 if this device does not support disable-while-trackpointing, or 1\n otherwise.\n\n @see libinput_device_config_dwtp_set_enabled\n @see libinput_device_config_dwtp_get_enabled\n @see libinput_device_config_dwtp_get_default_enabled\n @see libinput_device_config_dwtp_get_timeout\n @see libinput_device_config_dwtp_set_timeout\n\n @since 1.21"]
     pub fn libinput_device_config_dwtp_is_available(
         device: *mut libinput_device,
     ) -> ::core::ffi::c_int;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Enable or disable the disable-while-trackpointing feature. When enabled, the\n device will be disabled while using the trackpoint and for a short period\n after. See the libinput documentation for details.\n\n @note Enabling or disabling disable-while-trackpointing may not take effect\n immediately.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DWTP_DISABLED to disable\n disable-while-trackpointing, @ref LIBINPUT_CONFIG_DWTP_ENABLED to enable\n\n @return A config status code. Disabling disable-while-trackpointing on a\n device that does not support the feature always succeeds.\n\n @see libinput_device_config_dwtp_is_available\n @see libinput_device_config_dwtp_get_enabled\n @see libinput_device_config_dwtp_get_default_enabled\n\n @since 1.21"]
+    #[doc = " @ingroup config\n\n Enable or disable the disable-while-trackpointing feature. When enabled, the\n device will be disabled while using the trackpoint and for a short period\n after. See the libinput documentation for details.\n\n @note Enabling or disabling disable-while-trackpointing may not take effect\n immediately.\n\n @param device The device to configure\n @param enable @ref LIBINPUT_CONFIG_DWTP_DISABLED to disable\n disable-while-trackpointing, @ref LIBINPUT_CONFIG_DWTP_ENABLED to enable\n\n @return A config status code. Disabling disable-while-trackpointing on a\n device that does not support the feature always succeeds.\n\n @see libinput_device_config_dwtp_is_available\n @see libinput_device_config_dwtp_get_enabled\n @see libinput_device_config_dwtp_get_default_enabled\n @see libinput_device_config_dwtp_get_timeout\n @see libinput_device_config_dwtp_set_timeout\n\n @since 1.21"]
     pub fn libinput_device_config_dwtp_set_enabled(
         device: *mut libinput_device,
         enable: libinput_config_dwtp_state,
     ) -> libinput_config_status;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Check if the disable-while trackpointing feature is currently enabled on\n this device. If the device does not support disable-while-trackpointing,\n this function returns @ref LIBINPUT_CONFIG_DWTP_DISABLED.\n\n @param device The device to configure\n @return @ref LIBINPUT_CONFIG_DWTP_DISABLED if disabled, @ref\n LIBINPUT_CONFIG_DWTP_ENABLED if enabled.\n\n @see libinput_device_config_dwtp_is_available\n @see libinput_device_config_dwtp_set_enabled\n @see libinput_device_config_dwtp_get_default_enabled\n\n @since 1.21"]
+    #[doc = " @ingroup config\n\n Check if the disable-while-trackpointing feature is currently enabled on\n this device. If the device does not support disable-while-trackpointing,\n this function returns @ref LIBINPUT_CONFIG_DWTP_DISABLED.\n\n @param device The device to configure\n @return @ref LIBINPUT_CONFIG_DWTP_DISABLED if disabled, @ref\n LIBINPUT_CONFIG_DWTP_ENABLED if enabled.\n\n @see libinput_device_config_dwtp_is_available\n @see libinput_device_config_dwtp_set_enabled\n @see libinput_device_config_dwtp_get_default_enabled\n @see libinput_device_config_dwtp_get_timeout\n @see libinput_device_config_dwtp_set_timeout\n\n @since 1.21"]
     pub fn libinput_device_config_dwtp_get_enabled(
         device: *mut libinput_device,
     ) -> libinput_config_dwtp_state;
 }
 unsafe extern "C" {
-    #[doc = " @ingroup config\n\n Check if the disable-while trackpointing feature is enabled on this device\n by default. If the device does not support disable-while-trackpointing, this\n function returns @ref LIBINPUT_CONFIG_DWTP_DISABLED.\n\n @param device The device to configure\n @return @ref LIBINPUT_CONFIG_DWTP_DISABLED if disabled, @ref\n LIBINPUT_CONFIG_DWTP_ENABLED if enabled.\n\n @see libinput_device_config_dwtp_is_available\n @see libinput_device_config_dwtp_set_enabled\n @see libinput_device_config_dwtp_get_enabled\n\n @since 1.21"]
+    #[doc = " @ingroup config\n\n Check if the disable-while-trackpointing feature is enabled on this device\n by default. If the device does not support disable-while-trackpointing, this\n function returns @ref LIBINPUT_CONFIG_DWTP_DISABLED.\n\n @param device The device to configure\n @return @ref LIBINPUT_CONFIG_DWTP_DISABLED if disabled, @ref\n LIBINPUT_CONFIG_DWTP_ENABLED if enabled.\n\n @see libinput_device_config_dwtp_is_available\n @see libinput_device_config_dwtp_set_enabled\n @see libinput_device_config_dwtp_get_enabled\n @see libinput_device_config_dwtp_get_timeout\n @see libinput_device_config_dwtp_set_timeout\n\n @since 1.21"]
     pub fn libinput_device_config_dwtp_get_default_enabled(
         device: *mut libinput_device,
     ) -> libinput_config_dwtp_state;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Set the disable-while-trackpointing timeout. This timeout denotes the time\n in milliseconds between the last trackpoint event and the touchpad re-enabling.\n\n The timeout only takes effect if disable-while-trackpointing is enabled.\n\n @note The timeout is not the only condition for disable-while-trackpointing, expiry\n of the timeout does not guarantee that the touchpad is re-enabled.\n\n @see libinput_device_config_dwtp_is_available\n @see libinput_device_config_dwtp_set_enabled\n @see libinput_device_config_dwtp_get_enabled\n @see libinput_device_config_dwtp_get_timeout\n\n @since 1.31"]
+    pub fn libinput_device_config_dwtp_set_timeout(
+        device: *mut libinput_device,
+        millis: u32,
+    ) -> libinput_config_status;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the current disable-while-trackpointing timeout.\n\n @see libinput_device_config_dwtp_is_available\n @see libinput_device_config_dwtp_set_enabled\n @see libinput_device_config_dwtp_get_enabled\n @see libinput_device_config_dwtp_set_timeout\n\n @since 1.31"]
+    pub fn libinput_device_config_dwtp_get_timeout(device: *mut libinput_device) -> u32;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the default disable-while-trackpointing timeout.\n\n @param device The device to configure\n @return The default timeout in milliseconds for this device.\n\n @see libinput_device_config_dwtp_is_available\n @see libinput_device_config_dwtp_set_enabled\n @see libinput_device_config_dwtp_get_enabled\n @see libinput_device_config_dwtp_set_timeout\n @see libinput_device_config_dwtp_get_timeout\n\n @since 1.31"]
+    pub fn libinput_device_config_dwtp_get_default_timeout(device: *mut libinput_device) -> u32;
 }
 unsafe extern "C" {
     #[doc = " @ingroup config\n\n Check whether a device can have a custom rotation applied.\n\n @param device The device to configure\n @return Non-zero if a device can be rotated, zero otherwise.\n\n @see libinput_device_config_rotation_set_angle\n @see libinput_device_config_rotation_get_angle\n @see libinput_device_config_rotation_get_default_angle\n\n @since 1.4"]
@@ -2024,6 +2247,100 @@ unsafe extern "C" {
     #[doc = " @ingroup config\n\n Get the default rotation of a device in degrees clockwise off the logical\n neutral position. If this device does not support rotation, the return\n value is always 0.\n\n @param device The device to configure\n @return The default angle in degrees clockwise\n\n @see libinput_device_config_rotation_is_available\n @see libinput_device_config_rotation_set_angle\n @see libinput_device_config_rotation_get_angle\n\n @since 1.4"]
     pub fn libinput_device_config_rotation_get_default_angle(
         device: *mut libinput_device,
+    ) -> ::core::ffi::c_uint;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Check if a tablet tool can have a custom pressure range.\n\n @param tool The libinput tool\n @return Non-zero if a device has an adjustible pressure range, zero otherwise.\n\n @see libinput_tablet_tool_config_pressure_range_set\n @see libinput_tablet_tool_config_pressure_range_get_minimum\n @see libinput_tablet_tool_config_pressure_range_get_maximum\n @see libinput_tablet_tool_config_pressure_range_get_default_minimum\n @see libinput_tablet_tool_config_pressure_range_get_default_maximum\n\n @since 1.26"]
+    pub fn libinput_tablet_tool_config_pressure_range_is_available(
+        tool: *mut libinput_tablet_tool,
+    ) -> ::core::ffi::c_int;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Set the pressure range for this tablet tool. This maps the given logical\n pressure range into the available hardware pressure range so that a hardware\n pressure of the given minimum value maps into a logical pressure of 0.0 (as\n returned by libinput_event_tablet_tool_get_pressure()) and the hardware\n pressure of the given maximum value is mapped into the logical pressure\n of 1.0 (as returned by libinput_event_tablet_tool_get_pressure())\n\n The minimum value must be less than the maximum value, libinput may\n require the values to have a specific distance to each other,\n i.e. that (maximum - minimum > N) for an implementation-defined value of N.\n\n @param tool The libinput tool\n @param minimum The minimum pressure value in the range [0.0, 1.0)\n @param maximum The maximum pressure value in the range (0.0, 1.0]\n\n @return A config status code\n\n @see libinput_tablet_tool_config_pressure_range_is_available\n @see libinput_tablet_tool_config_pressure_range_get_minimum\n @see libinput_tablet_tool_config_pressure_range_get_maximum\n @see libinput_tablet_tool_config_pressure_range_get_default_minimum\n @see libinput_tablet_tool_config_pressure_range_get_default_maximum\n\n @since 1.26"]
+    pub fn libinput_tablet_tool_config_pressure_range_set(
+        tool: *mut libinput_tablet_tool,
+        minimum: f64,
+        maximum: f64,
+    ) -> libinput_config_status;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the minimum pressure value for this tablet tool, normalized to the\n range [0.0, 1.0] of the available hardware pressure.\n\n If the tool does not support pressure range configuration, the return value\n of this function is always 0.0.\n\n @param tool The libinput tool\n @return The minimum pressure value for this tablet tool\n\n @see libinput_tablet_tool_config_pressure_range_is_available\n @see libinput_tablet_tool_config_pressure_range_get_maximum\n @see libinput_tablet_tool_config_pressure_range_get_default_minimum\n @see libinput_tablet_tool_config_pressure_range_get_default_maximum\n\n @since 1.26"]
+    pub fn libinput_tablet_tool_config_pressure_range_get_minimum(
+        tool: *mut libinput_tablet_tool,
+    ) -> f64;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the maximum pressure value for this tablet tool, normalized to the\n range [0.0, 1.0] of the available hardware pressure.\n\n If the tool does not support pressure range configuration, the return value\n of this function is always 1.0.\n\n @param tool The libinput tool\n @return The maximum pressure value for this tablet tool\n\n @see libinput_tablet_tool_config_pressure_range_is_available\n @see libinput_tablet_tool_config_pressure_range_get_minimum\n @see libinput_tablet_tool_config_pressure_range_get_default_minimum\n @see libinput_tablet_tool_config_pressure_range_get_default_maximum\n\n @since 1.26"]
+    pub fn libinput_tablet_tool_config_pressure_range_get_maximum(
+        tool: *mut libinput_tablet_tool,
+    ) -> f64;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the minimum pressure value for this tablet tool, normalized to the\n range [0.0, 1.0] of the available hardware pressure.\n\n If the tool does not support pressure range configuration, the return value\n of this function is always 0.0.\n\n @param tool The libinput tool\n @return The minimum pressure value for this tablet tool\n\n @see libinput_tablet_tool_config_pressure_range_is_available\n @see libinput_tablet_tool_config_pressure_range_get_minimum\n @see libinput_tablet_tool_config_pressure_range_get_maximum\n @see libinput_tablet_tool_config_pressure_range_get_default_maximum\n\n @since 1.26"]
+    pub fn libinput_tablet_tool_config_pressure_range_get_default_minimum(
+        tool: *mut libinput_tablet_tool,
+    ) -> f64;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the maximum pressure value for this tablet tool, normalized to the\n range [0.0, 1.0] of the available hardware pressure.\n\n If the tool does not support pressure range configuration, the return value\n of this function is always 1.0.\n\n @param tool The libinput tool\n @return The maximum pressure value for this tablet tool\n\n @see libinput_tablet_tool_config_pressure_range_is_available\n @see libinput_tablet_tool_config_pressure_range_get_minimum\n @see libinput_tablet_tool_config_pressure_range_get_maximum\n @see libinput_tablet_tool_config_pressure_range_get_default_maximum\n\n @since 1.26"]
+    pub fn libinput_tablet_tool_config_pressure_range_get_default_maximum(
+        tool: *mut libinput_tablet_tool,
+    ) -> f64;
+}
+impl libinput_config_eraser_button_mode {
+    #[doc = " Use the default hardware behavior of the tool. libinput\n does not modify the behavior of the eraser button (if any)."]
+    pub const LIBINPUT_CONFIG_ERASER_BUTTON_DEFAULT: libinput_config_eraser_button_mode =
+        libinput_config_eraser_button_mode(0);
+    #[doc = " The eraser button on the tool sends a button event\n instead. If this tool comes into proximity as an eraser,\n a button event on the pen is emulated instead.\n\n See libinput_tablet_tool_config_eraser_button_set_mode() for details."]
+    pub const LIBINPUT_CONFIG_ERASER_BUTTON_BUTTON: libinput_config_eraser_button_mode =
+        libinput_config_eraser_button_mode(1);
+}
+#[repr(transparent)]
+#[doc = " @ingroup config"]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct libinput_config_eraser_button_mode(pub ::core::ffi::c_uint);
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Check if a tool can change the behavior of or to a firmware eraser button.\n\n A firmware eraser button is a button on the tool that, when pressed,\n virtually toggles the pen going out of proximity followed by the\n eraser tool coming in proximity. When released, the eraser goes\n out of proximity followed by the pen coming back into proximity.\n\n This is the default behavior for many contemporary pens who implement\n this in firmware. See also the [Windows Pen\n States](https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-pen-states).\n\n See the libinput documentation for more details.\n\n @param tool The libinput tool\n @return Non-zero if the device can be set to change to an eraser on button\n press.\n\n @see libinput_tablet_tool_config_eraser_button_get_modes\n @see libinput_tablet_tool_config_eraser_button_set_mode\n @see libinput_tablet_tool_config_eraser_button_get_mode\n @see libinput_tablet_tool_config_eraser_button_get_default_mode\n\n @since 1.29"]
+    pub fn libinput_tablet_tool_config_eraser_button_get_modes(
+        tool: *mut libinput_tablet_tool,
+    ) -> u32;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Change the eraser button behavior on a tool.\n\n If set to @ref LIBINPUT_CONFIG_ERASER_BUTTON_BUTTON, pressing the\n firmware eraser button on the tool instead triggers an event\n of type @ref LIBINPUT_EVENT_TABLET_TOOL_BUTTON.\n This event's libinput_event_tablet_tool_get_button() returns the\n button set with\n libinput_tablet_tool_config_eraser_button_set_button()\n Releasing the firmware eraser button releases that button again.\n\n @param tool The libinput tool\n @param mode The eraser button mode to switch to\n\n @return A config status code\n\n @see libinput_tablet_tool_config_eraser_button_get_modes\n @see libinput_tablet_tool_config_eraser_button_set_mode\n @see libinput_tablet_tool_config_eraser_button_get_mode\n @see libinput_tablet_tool_config_eraser_button_get_default_mode\n @see libinput_tablet_tool_config_eraser_button_set_button\n @see libinput_tablet_tool_config_eraser_button_get_button\n @see libinput_tablet_tool_config_eraser_button_get_default_button\n\n @since 1.29"]
+    pub fn libinput_tablet_tool_config_eraser_button_set_mode(
+        tool: *mut libinput_tablet_tool,
+        mode: libinput_config_eraser_button_mode,
+    ) -> libinput_config_status;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the mode for the eraser button.\n\n @param tool The libinput tool\n\n @return The eraser mode\n\n @see libinput_tablet_tool_config_eraser_button_get_modes\n @see libinput_tablet_tool_config_eraser_button_set_mode\n @see libinput_tablet_tool_config_eraser_button_get_mode\n @see libinput_tablet_tool_config_eraser_button_get_default_mode\n @see libinput_tablet_tool_config_eraser_button_set_button\n @see libinput_tablet_tool_config_eraser_button_get_button\n @see libinput_tablet_tool_config_eraser_button_get_default_button\n\n @since 1.29"]
+    pub fn libinput_tablet_tool_config_eraser_button_get_mode(
+        tool: *mut libinput_tablet_tool,
+    ) -> libinput_config_eraser_button_mode;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the default mode for the eraser button.\n\n @param tool The libinput tool\n\n @return The eraser button, if any, or zero otherwise\n\n @see libinput_tablet_tool_config_eraser_button_get_modes\n @see libinput_tablet_tool_config_eraser_button_set_mode\n @see libinput_tablet_tool_config_eraser_button_get_mode\n @see libinput_tablet_tool_config_eraser_button_get_default_mode\n @see libinput_tablet_tool_config_eraser_button_set_button\n @see libinput_tablet_tool_config_eraser_button_get_button\n @see libinput_tablet_tool_config_eraser_button_get_default_button\n\n @since 1.29"]
+    pub fn libinput_tablet_tool_config_eraser_button_get_default_mode(
+        tool: *mut libinput_tablet_tool,
+    ) -> libinput_config_eraser_button_mode;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Set a button to be the eraser button for this tool.\n This configuration has no effect unless the caller also sets\n the eraser mode to @ref LIBINPUT_CONFIG_ERASER_BUTTON_BUTTON via\n libinput_tablet_tool_config_eraser_button_set_mode().\n\n @param tool The libinput tool\n @param button The button code. Must be a valid button (e.g. BTN_STYLUS)\n excluding fake buttons (e.g. BTN_TOOL_*) and keys (KEY_*)\n\n @return A config status code\n\n @see libinput_tablet_tool_config_eraser_button_get_modes\n @see libinput_tablet_tool_config_eraser_button_set_mode\n @see libinput_tablet_tool_config_eraser_button_get_mode\n @see libinput_tablet_tool_config_eraser_button_get_default_mode\n @see libinput_tablet_tool_config_eraser_button_set_button\n @see libinput_tablet_tool_config_eraser_button_get_button\n @see libinput_tablet_tool_config_eraser_button_get_default_button\n\n @since 1.29"]
+    pub fn libinput_tablet_tool_config_eraser_button_set_button(
+        tool: *mut libinput_tablet_tool,
+        button: u32,
+    ) -> libinput_config_status;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the button configured to emulate an eraser for this tool.\n\n @param tool The libinput tool\n\n @return The eraser button, if any, or zero otherwise\n\n @see libinput_tablet_tool_config_eraser_button_get_modes\n @see libinput_tablet_tool_config_eraser_button_set_mode\n @see libinput_tablet_tool_config_eraser_button_get_mode\n @see libinput_tablet_tool_config_eraser_button_get_default_mode\n @see libinput_tablet_tool_config_eraser_button_set_button\n @see libinput_tablet_tool_config_eraser_button_get_button\n @see libinput_tablet_tool_config_eraser_button_get_default_button\n\n @since 1.29"]
+    pub fn libinput_tablet_tool_config_eraser_button_get_button(
+        tool: *mut libinput_tablet_tool,
+    ) -> ::core::ffi::c_uint;
+}
+unsafe extern "C" {
+    #[doc = " @ingroup config\n\n Get the default button configured to emulate an eraser for this tool.\n\n @param tool The libinput tool\n\n @return The eraser button, if any, or zero otherwise\n\n @see libinput_tablet_tool_config_eraser_button_get_modes\n @see libinput_tablet_tool_config_eraser_button_set_mode\n @see libinput_tablet_tool_config_eraser_button_get_mode\n @see libinput_tablet_tool_config_eraser_button_get_default_mode\n @see libinput_tablet_tool_config_eraser_button_set_button\n @see libinput_tablet_tool_config_eraser_button_get_button\n @see libinput_tablet_tool_config_eraser_button_get_default_button\n\n @since 1.29"]
+    pub fn libinput_tablet_tool_config_eraser_button_get_default_button(
+        tool: *mut libinput_tablet_tool,
     ) -> ::core::ffi::c_uint;
 }
 pub type __builtin_va_list = [__va_list_tag; 1usize];
