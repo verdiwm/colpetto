@@ -50,5 +50,6 @@ fn main() {
     cc::Build::new()
         .file("src/logger.c")
         .flag_if_supported("-Wno-unused-parameter") // This gets a false positive because of libinput_log_handler
+        .flag_if_supported("-Wno-cpp") // Suppresses _FORTIFY_SOURCE warning in unoptimized (dev) builds
         .compile("colpetto_logger");
 }
