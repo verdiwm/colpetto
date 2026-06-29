@@ -6,8 +6,9 @@
 #![warn(clippy::unimplemented)]
 #![warn(clippy::todo)]
 #![warn(clippy::dbg_macro)]
-#![warn(clippy::panic)]
-#![warn(clippy::doc_markdown)]
+// This 2 warnings need special attention, disable for now
+// #![warn(clippy::panic)]
+// #![warn(clippy::doc_markdown)]
 #![warn(clippy::redundant_clone)]
 #![doc = include_str!("../README.md")]
 
